@@ -3,7 +3,7 @@ cd my-monorepo
 git init
 mkdir frontend
 mkdir backend
-npx create-next-app frontend --use-npm --example default
+npx create-next-app frontend 
 npx @nestjs/cli new backend --skip-git
 # .gitignore
 node_modules/

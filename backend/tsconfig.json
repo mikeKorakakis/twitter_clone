@@ -9,7 +9,13 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    // "baseUrl": "./",
+    // "paths": {
+    //     "@app/*": ["backend/src/app/*"],
+    //     "@user/*": ["backend/src/user/*"],
+    //     "@auth/*": ["backend/src/auth/*"],
+    //     "@tweet/*": ["backend/src/tweet/*"]
+    //   },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,

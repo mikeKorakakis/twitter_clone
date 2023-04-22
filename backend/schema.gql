@@ -1,0 +1,40 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  role: String!
+  email: String!
+}
+
+type AuthPayload {
+  access_token: String!
+  refresh_token: String!
+}
+
+type Query {
+  getUsers: [User!]!
+}
+
+type Mutation {
+  updateUser(id: String!, username: String!, email: String!): User!
+  deleteUser(id: String!): Boolean!
+  signup(input: SignupDto!): String!
+  signin(input: SigninDto!): AuthPayload!
+  refreshToken(refreshTokenInput: RefreshTokenInput!): AuthPayload!
+}
+
+input SignupDto {
+  email: String!
+  password: String!
+}
+
+input SigninDto {
+  email: String!
+  password: String!
+}
+
+input RefreshTokenInput {
+  refresh_token: String!
+}

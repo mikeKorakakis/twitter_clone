@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  },
+  "scripts": {
+    "start:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && npm run start:dev",
+    "start:both": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "class-validator": "^0.14.0",
+    "jsonwebtoken": "^9.0.0"
+  }
+}
