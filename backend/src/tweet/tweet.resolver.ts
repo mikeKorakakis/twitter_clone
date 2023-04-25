@@ -8,7 +8,7 @@ export class TweetResolver {
   constructor(private tweetService: TweetService) {}
 
   @Query(() => [Tweet])
-  async getTweets(): Promise<Tweet[]> {
+  async tweets(): Promise<Tweet[]> {
     return this.tweetService.getAllTweets();
   }
 

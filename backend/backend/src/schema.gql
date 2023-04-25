@@ -26,8 +26,8 @@ type AuthPayload {
 }
 
 type Query {
-  getUsers: [User!]!
-  getTweets: [Tweet!]!
+  users: [User!]!
+  tweets: [Tweet!]!
 }
 
 type Mutation {
