@@ -1,3 +1,5 @@
+'use client'
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -12,8 +14,18 @@ import { useGetUsersQuery } from "../../generated/graphql";
 
 export default async function IndexPage() {
 	
-    const { data, error, isLoading } = useGetUsersQuery();
+    console.log('UsersList component rendering');
+    // const { data, error, isLoading } = useGetUsersQuery();
+    // console.log('Query data:', data, 'Error:', error, 'Loading:', isLoading);
 
+    // if (isLoading) {
+    //     return <div>Loading...</div>;
+    //   }
+    
+    //   if (error) {
+    //     return <div>Error</div>;
+    //   }
+    
     
 	return (
 		<>

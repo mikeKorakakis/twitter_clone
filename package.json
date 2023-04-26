@@ -8,6 +8,7 @@
     "start:both": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.29.5",
     "bcrypt": "^5.1.0",
     "class-validator": "^0.14.0",
     "jsonwebtoken": "^9.0.0"

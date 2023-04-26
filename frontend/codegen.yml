@@ -7,3 +7,8 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-query"
+    config:
+        fetcher:
+          endpoint: "http://localhost:4000/graphql" # Replace with your GraphQL API URL
+          moduleName: "graphql-request"
+          functionName: "request"

@@ -5,11 +5,10 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 
-function fetcher<TData, TVariables>(endpoint: string, requestInit: RequestInit, query: string, variables?: TVariables) {
+function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      ...requestInit,
+    const res = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
       body: JSON.stringify({ query, variables }),
     });
 
@@ -136,12 +135,11 @@ export const useGetUsersQuery = <
       TData = GetUsersQuery,
       TError = unknown
     >(
-      dataSource: { endpoint: string, fetchParams?: RequestInit },
       variables?: GetUsersQueryVariables,
       options?: UseQueryOptions<GetUsersQuery, TError, TData>
     ) =>
     useQuery<GetUsersQuery, TError, TData>(
       variables === undefined ? ['GetUsers'] : ['GetUsers', variables],
-      fetcher<GetUsersQuery, GetUsersQueryVariables>(dataSource.endpoint, dataSource.fetchParams || {}, GetUsersDocument, variables),
+      fetcher<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, variables),
       options
     );
