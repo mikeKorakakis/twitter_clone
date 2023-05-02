@@ -6,24 +6,26 @@ import {
 } from '@nestjs/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../auth/auth.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 // import  { join } from 'path';
 import * as path from 'path';
 import { GraphQLModule } from '@nestjs/graphql';
+import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { User } from '../user/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+
 // const cookieSession = require('cookie-session');
 
 // import cookieSession from 'cookie-session';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
-import { Tweet } from '../tweet/tweet.entity';
-import { TweetModule } from '../tweet/tweet.module';
+// import { Tweet } from '../tweet/tweet.entity';
+// import { TweetModule } from '../tweet/tweet.module';
 
 const isProduction = process.env.NODE_ENV === 'production';
 console.log(' process.cwd(),', process.cwd());
@@ -45,7 +47,13 @@ console.log(' process.cwd(),', process.cwd());
       }),
       inject: [ConfigService],
     }),
- 
+    ConfigModule.forRoot({
+        isGlobal: true
+    }),
+    ThrottlerModule.forRoot({
+        ttl: 60,
+        limit: 10,
+    }),
 
     // TypeOrmModule.forRoot({
     //   type: isProduction ? 'postgres' : 'sqlite',
@@ -74,7 +82,7 @@ console.log(' process.cwd(),', process.cwd());
             configService.get('DATABASE_TYPE') === 'postgres'
               ? (configService.get('DATABASE_NAME') as string)
               : path.resolve(__dirname, '../../../sqlite.db'),
-          entities: [User, Tweet],
+          entities: [User],
           synchronize: true,
         };
       },
@@ -88,7 +96,7 @@ console.log(' process.cwd(),', process.cwd());
     }),
     UserModule,
     AuthModule,
-    TweetModule
+    // TweetModule
   ],
   controllers: [AppController],
   providers: [

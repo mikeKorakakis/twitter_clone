@@ -1,5 +1,8 @@
 // import { ApiProperty } from '@nestjs/swagger'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, NotContains, Length, Matches, IsEmail } from 'class-validator'
+
+@InputType()
 
 export class CreateAccountDto {
 
@@ -7,6 +10,8 @@ export class CreateAccountDto {
     //     required: true,
     //     example: 'demo@demo.com',
     // })
+    @Field()
+
     @IsNotEmpty({
         message: 'Email cannot be empty or whitespace'
     })
@@ -20,6 +25,7 @@ export class CreateAccountDto {
     //     required: true,
     //     example: 'demo123',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Password cannot be empty or whitespace'
     })
@@ -36,6 +42,7 @@ export class CreateAccountDto {
     //     required: true,
     //     example: 'John',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'First name cannot be empty or whitespace'
     })
@@ -49,6 +56,7 @@ export class CreateAccountDto {
     //     required: true,
     //     example: 'Doe',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Last name cannot be empty or whitespace'
     })
@@ -61,6 +69,7 @@ export class CreateAccountDto {
     //     required: true,
     //     example: 'JohnDoe2137',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Display name cannot be empty or whitespace'
     })

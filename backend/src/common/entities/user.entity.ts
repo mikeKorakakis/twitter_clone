@@ -4,9 +4,10 @@ import * as argon2 from 'argon2'
 
 import { AbstractEntity } from './'
 import { Providers, AccountStatus, Role } from '../enums'
+import { ObjectType } from '@nestjs/graphql'
 // import { Invitation, Room } from '../../modules/v1/room/entities'
 // import { Message } from '../../modules/v1/message/message.entity'
-
+@ObjectType()
 @Entity()
 export class User extends AbstractEntity<User> {
 

@@ -13,7 +13,6 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthPayload } from './dtos/auth-payload.dto';
 import { RefreshTokenInput } from './dtos/refresh-token.input';
-import { CreateAccountDto } from '../common/dtos';
 
 export const GqlSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
@@ -26,8 +25,8 @@ export class AuthResolver {
   constructor(private authService: AuthService) {}
 
   @Mutation(() => String)
-  async register(@Args('input') signupDto: CreateAccountDto): Promise<string> {
-    return this.authService.register(signupDto);
+  async signup(@Args('input') signupDto: SignupDto): Promise<string> {
+    return this.authService.signup(signupDto);
   }
 
   @Mutation(() => AuthPayload)
