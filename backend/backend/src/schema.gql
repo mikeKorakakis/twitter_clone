@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  provider: String!
+  providerId: String!
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  displayName: String!
+  image: String!
+  role: String!
+  accountStatus: String!
+}
+
+type AuthPayload {
+  user: User!
+  accessToken: String!
+}
+
+type Query {
+  hello: String!
+}
+
+type Mutation {
+  register(input: CreateAccountDto!): AuthPayload!
+}
+
+input CreateAccountDto {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  displayName: String!
+}

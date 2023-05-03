@@ -14,8 +14,10 @@ import * as path from 'path';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
-import { User } from '../user/user.entity';
+import { User } from '../common/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis'
+
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 
 // const cookieSession = require('cookie-session');
@@ -54,6 +56,18 @@ console.log(' process.cwd(),', process.cwd());
         ttl: 60,
         limit: 10,
     }),
+    RedisModule.forRootAsync({
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: async (configService: ConfigService): Promise<RedisModuleOptions> => {
+            return {
+                config: {
+                    host: configService.get('REDIS_HOST') || 'localhost',
+                    port: configService.get('REDIS_PORT') || 6379,
+                }
+            }
+        }
+    }),
 
     // TypeOrmModule.forRoot({
     //   type: isProduction ? 'postgres' : 'sqlite',
@@ -71,16 +85,16 @@ console.log(' process.cwd(),', process.cwd());
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        console.log('DATABASE_TYPE', configService.get('DATABASE_TYPE'));
+        console.log('DB_TYPE', configService.get('DB_TYPE'));
         return {
-          type: configService.get('DATABASE_TYPE') as any,
-          host: configService.get('DATABASE_HOST'),
-          port: configService.get<number>('DATABASE_PORT'),
-          username: configService.get('DATABASE_USERNAME'),
-          password: configService.get('DATABASE_PASSWORD'),
+          type: configService.get('DB_TYPE') as any,
+          host: configService.get('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get('DB_USERNAME'),
+          password: configService.get('DB_PASSWORD'),
           database:
-            configService.get('DATABASE_TYPE') === 'postgres'
-              ? (configService.get('DATABASE_NAME') as string)
+            configService.get('DB_TYPE') === 'postgres'
+              ? (configService.get('DB_NAME') as string)
               : path.resolve(__dirname, '../../../sqlite.db'),
           entities: [User],
           synchronize: true,

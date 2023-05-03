@@ -4,21 +4,23 @@ import * as argon2 from 'argon2'
 
 import { AbstractEntity } from './'
 import { Providers, AccountStatus, Role } from '../enums'
-import { ObjectType } from '@nestjs/graphql'
+import { Field, ObjectType } from '@nestjs/graphql'
 // import { Invitation, Room } from '../../modules/v1/room/entities'
 // import { Message } from '../../modules/v1/message/message.entity'
 @ObjectType()
 @Entity()
 export class User extends AbstractEntity<User> {
-
+    @Field()
     @Column({
         name: 'provider',
         nullable: true,
-        type: 'enum',
-        enum: Providers
+        type: 'text'
+        // type: 'enum',
+        // enum: Providers
     })
     public provider: Providers
 
+    @Field()
     @Index()
     @Column({
         length: 200,
@@ -27,6 +29,7 @@ export class User extends AbstractEntity<User> {
     })
     public providerId: string
 
+    @Field()
     @Index()
     @Column({ 
         unique: true,
@@ -36,14 +39,15 @@ export class User extends AbstractEntity<User> {
     })
     public email: string
 
-    @Exclude()
+    @Field()
     @Column({
         length: 200,
         name: 'password',
         nullable: false
     })
     public password: string
-
+    
+    @Field()
     @Column({
         length: 200,
         name: 'first_name',
@@ -51,6 +55,7 @@ export class User extends AbstractEntity<User> {
     })
     public firstName: string
 
+    @Field()
     @Column({
         length: 200,
         name: 'last_name',
@@ -58,6 +63,7 @@ export class User extends AbstractEntity<User> {
     })
     public lastName: string
 
+    @Field()
     @Column({
         unique: true,
         length: 200,
@@ -66,6 +72,7 @@ export class User extends AbstractEntity<User> {
     })
     public displayName: string
 
+    @Field()
     @Column({
         length: 400,
         name: 'image',
@@ -74,22 +81,27 @@ export class User extends AbstractEntity<User> {
     })
     public image: string
 
+    @Field()
     @Column({
         name: 'role',
         nullable: false,
-        default: Role.USER,
-        type: 'enum',
-        enum: Role
+        type: 'text'
+        // default: Role.USER,
+        // type: 'enum',
+        // enum: Role
     })
     public role: Role
 
+    @Field()
     @Column({
         name: 'account_status',
         nullable: false,
-        default: AccountStatus.PENDING,
-        type: 'enum',
-        enum: AccountStatus
+        type: 'text'
+        // default: AccountStatus.PENDING,
+        // type: 'enum',
+        // enum: AccountStatus
     })
+    
     public accountStatus: AccountStatus
 
     // @ManyToMany(() => Room, room => room.users)

@@ -5,7 +5,7 @@ import * as argon2 from 'argon2'
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { createHash } from 'crypto';
-import { nanoid } from 'nanoid'
+// import { nanoid } from 'nanoid'
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull'
 
@@ -97,7 +97,8 @@ export class AuthService {
 
     private async generateTokens(user: User) {
 
-        const jwtid = nanoid()
+        const jwtid = "asdfdsfsfdfdfdf"
+        // const jwtid = nanoid()
 
         const accessToken = await this.jwtService.signAsync({ 
             displayName: user.displayName,
@@ -195,7 +196,9 @@ export class AuthService {
     }
 
     private async sendConfirmationToken(user: User) {
-        const token = nanoid()
+        // const token = nanoid()
+        const token = "asdfdsfsfdfdfdf"
+
 
         await this.redisService.getClient().set(`confirm-account:${token}`, user.id, 'EX', 60 * 60 * 1) // 1 hour until expires
 
@@ -203,7 +206,9 @@ export class AuthService {
     }
 
     private async sendResetToken(user: User) {
-        const token = nanoid()
+        // const token = nanoid()
+        const token = "asdfdsfsfdfdfdf"
+
 
         await this.redisService.getClient().set(`reset-password:${token}`, user.id, 'EX', 60 * 60 * 1) // 1 hour until expires
 
