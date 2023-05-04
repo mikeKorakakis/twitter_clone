@@ -15,15 +15,13 @@ export abstract class AbstractEntity<T> {
     public id: string
   
     @CreateDateColumn({
-        type: 'datetime',
-        // type: 'timestamp without time zone',
+        type: 'timestamp without time zone',
         name: 'created_at'
     })
     public createdAt: Date
   
     @UpdateDateColumn({
-        type: 'datetime',
-        // type: 'timestamp without time zone',
+        type: 'timestamp without time zone',
         name: 'updated_at',
     })
     public updatedAt: Date

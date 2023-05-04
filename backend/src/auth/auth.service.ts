@@ -49,9 +49,10 @@ export class AuthService {
 
             return {
                 user,
-                accessToken
+                accessToken:"1234"
             }
         } catch (err: any) {
+            console.log(err)
             if(err.code == PostgresErrorCode.UniqueViolation) {
                 if(err.detail.includes('email')) {
                     throw new UniqueViolation('email')

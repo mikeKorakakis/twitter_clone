@@ -105,7 +105,7 @@ console.log(' process.cwd(),', process.cwd());
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: path.join(process.cwd(), 'backend', 'src', 'schema.gql'),
-      //   context: ({ req, res }) => ({ req, res }),
+        context: ({ req, res }) => ({ req, res }),
       playground: true, // Enable GraphQL Playground
     }),
     UserModule,

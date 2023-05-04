@@ -35,17 +35,35 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const reflector = app.get(Reflector);
 
   // GLOBAL MIDDLEWARES
-  app.enableCors({
-    credentials: true,
-    origin: [configService.get('ORIGIN')],
-    optionsSuccessStatus: 200,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-  });
+//   app.enableCors({
+//     credentials: true,
+//     origin: [configService.get('ORIGIN')],
+//     optionsSuccessStatus: 200,
+//     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+//   });
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(helmet());
+//   app.use(helmet({
+//     contentSecurityPolicy: {
+//         directives: {
+//           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+//           'script-src': ["'self'", 'cdn.jsdelivr.net'],
+//         }}
+//     }));
+
+  // Configure helmet with a custom CSP
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+          'script-src': ["'self'", "cdn.jsdelivr.net", "'unsafe-inline'"],
+        },
+      },
+    }),
+  );
   app.use(compression());
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));

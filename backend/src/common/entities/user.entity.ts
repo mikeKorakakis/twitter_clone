@@ -14,9 +14,8 @@ export class User extends AbstractEntity<User> {
     @Column({
         name: 'provider',
         nullable: true,
-        type: 'text'
-        // type: 'enum',
-        // enum: Providers
+        type: 'enum',
+        enum: Providers
     })
     public provider: Providers
 
@@ -85,10 +84,9 @@ export class User extends AbstractEntity<User> {
     @Column({
         name: 'role',
         nullable: false,
-        type: 'text'
-        // default: Role.USER,
-        // type: 'enum',
-        // enum: Role
+        default: Role.USER,
+        type: 'enum',
+        enum: Role
     })
     public role: Role
 
@@ -96,10 +94,9 @@ export class User extends AbstractEntity<User> {
     @Column({
         name: 'account_status',
         nullable: false,
-        type: 'text'
-        // default: AccountStatus.PENDING,
-        // type: 'enum',
-        // enum: AccountStatus
+        default: AccountStatus.PENDING,
+        type: 'enum',
+        enum: AccountStatus
     })
     
     public accountStatus: AccountStatus
