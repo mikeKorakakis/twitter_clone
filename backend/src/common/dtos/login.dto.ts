@@ -1,11 +1,14 @@
 // import { ApiProperty } from '@nestjs/swagger'
+import { Field, InputType, ObjectType } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty, NotContains, Length } from 'class-validator'
 
+@InputType()
 export class LoginDto {
     // @ApiProperty({
     //     required: false,
     //     example: 'demo@demo.com',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Email cannot be empty or whitespace'
     })
@@ -18,6 +21,7 @@ export class LoginDto {
     //     required: true,
     //     example: 'demo123',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Password cannot be empty or whitespace'
     })

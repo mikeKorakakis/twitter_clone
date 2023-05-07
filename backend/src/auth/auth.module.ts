@@ -5,6 +5,12 @@ import { AuthResolver } from './auth.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule, BullModuleOptions } from '@nestjs/bull';
+import { AuthController } from './auth.controller';
+import {
+  GoogleOauthStrategy,
+  FacebookOauthStrategy,
+  JwtAuthStrategy,
+} from './strategies';
 
 @Module({
   imports: [
@@ -33,7 +39,14 @@ import { BullModule, BullModuleOptions } from '@nestjs/bull';
       }),
     }),
   ],
-  providers: [AuthService, AuthResolver],
+  providers: [
+    AuthService,
+    AuthResolver,
+    // GoogleOauthStrategy,
+    // FacebookOauthStrategy,
+    JwtAuthStrategy,
+  ],
   exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}

@@ -3,7 +3,6 @@ import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, NotContains, Length, Matches, IsEmail } from 'class-validator'
 
 @InputType()
-
 export class CreateAccountDto {
 
     // @ApiProperty({

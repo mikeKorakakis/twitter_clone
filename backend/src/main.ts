@@ -35,24 +35,17 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   const reflector = app.get(Reflector);
 
   // GLOBAL MIDDLEWARES
-//   app.enableCors({
-//     credentials: true,
-//     origin: [configService.get('ORIGIN')],
-//     optionsSuccessStatus: 200,
-//     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-//   });
+  app.enableCors({
+    credentials: true,
+    origin: [configService.get('ORIGIN')],
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  });
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-//   app.use(helmet({
-//     contentSecurityPolicy: {
-//         directives: {
-//           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-//           'script-src': ["'self'", 'cdn.jsdelivr.net'],
-//         }}
-//     }));
-
+  
   // Configure helmet with a custom CSP
   app.use(
     helmet({
@@ -73,8 +66,8 @@ export async function bootstrap(): Promise<NestExpressApplication> {
 
   //   app.useWebSocketAdapter(redisIoAdapter)
 
-  const globalPrefix = 'api';
-  app.setGlobalPrefix(globalPrefix);
+//   const globalPrefix = 'api';
+//   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 4000;
 
   //   app.useGlobalPipes(
@@ -99,7 +92,8 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   await app.listen(Number(configService.get('APP_PORT')));
 
   Logger.log(
-    `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
+    // `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`,
+    `🚀 Application is running on: http://localhost:${port}`,
   );
   return app;
 }

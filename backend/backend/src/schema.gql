@@ -22,10 +22,13 @@ type AuthPayload {
 
 type Query {
   hello: String!
+  me: User!
 }
 
 type Mutation {
   register(input: CreateAccountDto!): AuthPayload!
+  login(input: LoginDto!): AuthPayload!
+  logout: Boolean!
 }
 
 input CreateAccountDto {
@@ -34,4 +37,9 @@ input CreateAccountDto {
   firstName: String!
   lastName: String!
   displayName: String!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
 }

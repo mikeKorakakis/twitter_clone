@@ -1,6 +1,8 @@
-query GetUsers {
-  users {
-    id
-    email
-  }
+query Me {
+	me {
+		email
+		firstName
+		lastName
+		displayName
+	}
 }
