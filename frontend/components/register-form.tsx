@@ -15,10 +15,11 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
 import { gqlClient } from "@/lib/client";
-import { RegisterUserDocument } from "@/gql/graphql";
+import { RegisterDocument } from "@/gql/graphql";
+import { siteConfig } from "@/config/site";
 
 async function registerUser(data: FormData) {
-	const res = await gqlClient().request(RegisterUserDocument, {
+	const res = await gqlClient().request(RegisterDocument, {
 		email: data.email.toLowerCase(),
 		password: data.password,
 		firstName: data.firstName,
@@ -71,9 +72,9 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 				description:
 					"Your account has been created. Please check your email to activate you account.",
 			});
-			// setTimeout(() => {
-			// 	push("/");
-			// }, 2000);
+			setTimeout(() => {
+				push(siteConfig.pages.home);
+			}, 2000);
 		}
 	}
 

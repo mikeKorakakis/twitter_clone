@@ -1,8 +1,10 @@
 // contexts/AuthContext.tsx
 "use client";
 import {
-	LoginUserDocument,
-	LoginUserMutation,
+	LoginDocument,
+	LoginMutation,
+	LogoutDocument,
+	LogoutMutation,
 	MeDocument,
 	User,
 } from "@/gql/graphql";
@@ -16,14 +18,6 @@ type LoginSchema = z.infer<typeof loginSchema>;
 
 type UserType = Pick<User, "email" | "firstName" | "lastName">;
 
-async function logIn(data: LoginSchema) {
-	const res = await gqlClient().request(LoginUserDocument, {
-		email: data.email.toLowerCase(),
-		password: data.password,
-	});
-	return res;
-}
-
 // async function me() {
 // 	const client = await gqlClient_server();
 // 	const res = await client.request(MeDocument, {});
@@ -36,9 +30,9 @@ async function logIn(data: LoginSchema) {
 // }
 
 interface AuthContextData {
-	initialUser?: UserType | null;
-	logIn: (data: LoginSchema) => Promise<LoginUserMutation>;
-	logOut: () => boolean;
+	user?: UserType | null;
+	logIn: (data: LoginSchema) => Promise<LoginMutation>;
+	logOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
@@ -48,9 +42,30 @@ export const AuthProvider: React.FC<{
 	initialUser?: UserType | null;
 }> = ({ children, initialUser }) => {
 	console.log("initialUser", initialUser);
-	// const [user, setUser] = useState<
-	// 	UserType | null | undefined
-	// >(undefined);
+
+	const [user, setUser] = useState<UserType | null | undefined>(initialUser);
+
+	async function logIn(data: LoginSchema) {
+		const res = await gqlClient().request(LoginDocument, {
+			email: data.email.toLowerCase(),
+			password: data.password,
+		});
+		if (res?.login?.user?.email) setUser(res.login.user);
+		return res;
+	}
+
+	async function logOut() {
+		try {
+            console.log('logout')
+			const res = await gqlClient().request(LogoutDocument);
+			setUser(null);
+
+			return 
+		} catch (e) {
+			return 
+		}
+	}
+
 	// me().then((res) => {
 	// 	setUser({
 	// 		// id: res?.me?.id,
@@ -60,15 +75,9 @@ export const AuthProvider: React.FC<{
 	// 	});
 	// });
 
-	// const logIn = async (email: string, password: string) => {};
-	const logOut = () => true;
-	// ...
-	// logIn, logOut, and other functions
-
+   console.log("user", user)
 	return (
-		<AuthContext.Provider
-			value={{ initialUser, logIn, logOut }}
-		>
+		<AuthContext.Provider value={{ user, logIn, logOut }}>
 			{children}
 		</AuthContext.Provider>
 	);

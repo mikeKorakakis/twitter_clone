@@ -1,4 +1,4 @@
-mutation RegisterUser(
+mutation Register(
   $email: String!,
   $password: String!,
   $firstName: String!,

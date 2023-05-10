@@ -5,6 +5,7 @@ export default async function me() {
 	const client = await gqlClient();
 	try {
 		const res = await client.request(MeDocument, {});
+        console.log('fetching user')
 		return {
 			email: res?.me?.email,
 			firstName: res?.me?.firstName,

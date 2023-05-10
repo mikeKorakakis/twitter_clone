@@ -9,8 +9,6 @@ import { ConfigService } from '@nestjs/config'
 
 export async function bootstrap(): Promise<INestApplicationContext> {
     const app = await NestFactory.createApplicationContext(AppModule)
-    const configService = app.get<ConfigService>(ConfigService);
-    console.log(configService.get('SMTP_USER'))
     const logger = new Logger('WorkerMain')
     const appService = app.get(AppService)
 

@@ -14,23 +14,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
+import { useAuth } from "@/contexts/AuthContext";
+import { siteConfig } from "@/config/site";
 import { gqlClient } from "@/lib/client";
-import { LoginUserDocument } from "@/gql/graphql";
-
-async function loginUser(data: FormData) {
-	const res = await gqlClient().request(LoginUserDocument, {
-		email: data.email.toLowerCase(),
-		password: data.password,
-	});
-	return res;
-}
+import { MeDocument } from "@/gql/graphql";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type FormData = z.infer<typeof loginSchema>;
 
 export function LoginForm({ className, ...props }: LoginFormProps) {
-    const {push} = useRouter();
+	const { logIn } = useAuth();
+	const { push } = useRouter();
 	const {
 		register,
 		handleSubmit,
@@ -52,7 +47,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 		//   callbackUrl: searchParams?.get("from") || "/dashboard",
 		// })
 
-		const signInResult = await loginUser(data);
+		const signInResult = await logIn(data);
 
 		setIsLoading(false);
 		if (!signInResult?.login?.user?.email) {
@@ -61,8 +56,10 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 				description: "Your sign in request failed. Please try again.",
 				variant: "destructive",
 			});
-		} 
-        push("/");
+		}
+        const me = await gqlClient().request(MeDocument);
+		push(siteConfig.pages.home);
+		// window.location.href = (siteConfig.pages.home);
 	}
 
 	return (
