@@ -71,9 +71,9 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 				description:
 					"Your account has been created. Please check your email to activate you account.",
 			});
-			setTimeout(() => {
-				push("/");
-			}, 2000);
+			// setTimeout(() => {
+			// 	push("/");
+			// }, 2000);
 		}
 	}
 

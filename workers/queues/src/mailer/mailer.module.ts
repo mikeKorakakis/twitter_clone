@@ -19,7 +19,7 @@ import { MailProcessor } from './mail-queue.processor';
                     port: 2525,
                     auth: {
                         user: configService.get('SMTP_USER'),
-                        pass: configService.get('SMPT_PASSWORD')
+                        pass: configService.get('SMTP_PASSWORD')
                     }
                 },
                 defaults: {
