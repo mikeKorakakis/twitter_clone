@@ -18,6 +18,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { siteConfig } from "@/config/site";
 import { gqlClient } from "@/lib/client";
 import { MeDocument } from "@/gql/graphql";
+import { PasswordInput } from "@/components/ui/password-input";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -90,7 +91,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 						<Label className="sr-only" htmlFor="password">
 							Password
 						</Label>
-						<Input
+						<PasswordInput
 							id="password"
 							placeholder="Password"
 							type="password"

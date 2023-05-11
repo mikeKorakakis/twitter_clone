@@ -1,4 +1,6 @@
 import {
+    Eye,
+    EyeOff,
     AlertTriangle,
     ArrowRight,
     Check,
@@ -29,6 +31,8 @@ import {
   export type Icon = LucideIcon
   
   export const Icons = {
+    eye: Eye,
+    eyeOff: EyeOff,
     logo: Command,
     close: X,
     spinner: Loader2,

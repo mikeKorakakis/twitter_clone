@@ -361,7 +361,6 @@ export class AuthService {
 
   public async refreshTokens(refreshTokenCookie: string, req: Request) {
     // const refreshTokenCookie = req.cookies['refresh_token'];
-    console.log("refreshTokenCookie",refreshTokenCookie)
     if (!refreshTokenCookie) {
       throw new UnauthorizedException('Invalid cookie');
     }
@@ -412,7 +411,6 @@ export class AuthService {
   }
 
   public async getProfile(req: AuthRequest) {
-    console.log("req",req?.user)
     return {
       user: req.user,
     };
