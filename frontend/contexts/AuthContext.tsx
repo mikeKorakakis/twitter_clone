@@ -11,7 +11,7 @@ import {
 import { gqlClient } from "@/lib/client";
 import { gqlClient as gqlClient_server } from "@/lib/gql_client_server";
 import { loginSchema } from "@/lib/validations/auth";
-import { ReactNode, createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useMemo, useState } from "react";
 import { z } from "zod";
 
 type LoginSchema = z.infer<typeof loginSchema>;
@@ -35,6 +35,10 @@ interface AuthContextData {
 	logOut: () => Promise<void>;
 }
 
+// interface AuthContextData {
+//     context: any
+// }
+
 const AuthContext = createContext<AuthContextData | undefined>(undefined);
 
 export const AuthProvider: React.FC<{
@@ -46,7 +50,7 @@ export const AuthProvider: React.FC<{
 	const [user, setUser] = useState<UserType | null | undefined>(initialUser);
 
 	async function logIn(data: LoginSchema) {
-		const res = await gqlClient().request(LoginDocument, {
+		const res = await gqlClient().request<LoginMutation>(LoginDocument, {
 			email: data.email.toLowerCase(),
 			password: data.password,
 		});
@@ -56,13 +60,12 @@ export const AuthProvider: React.FC<{
 
 	async function logOut() {
 		try {
-            console.log('logout')
+			console.log("logout");
 			const res = await gqlClient().request(LogoutDocument);
 			setUser(null);
-
-			return 
+			return;
 		} catch (e) {
-			return 
+			return;
 		}
 	}
 
@@ -74,10 +77,11 @@ export const AuthProvider: React.FC<{
 	// 		lastName: res?.me?.lastName,
 	// 	});
 	// });
+    const context = useMemo(() => ({ user, logIn, logOut }), [user]);
 
-   console.log("user", user)
+	console.log("user", user);
 	return (
-		<AuthContext.Provider value={{ user, logIn, logOut }}>
+		<AuthContext.Provider value={context}>
 			{children}
 		</AuthContext.Provider>
 	);

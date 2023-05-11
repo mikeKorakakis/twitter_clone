@@ -27,6 +27,7 @@ import {
 import { User } from '../common/entities';
 import { SkipThrottle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../common/guards';
+import { RefreshTokenDto } from '../common/dtos/refresh-token.dto';
 
 export const GqlSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
@@ -41,7 +42,6 @@ export const GqlSession = createParamDecorator(
 //       return ctx.getContext();
 //     },
 //   );
-  
 
 @Resolver()
 export class AuthResolver {
@@ -80,10 +80,18 @@ export class AuthResolver {
   async me(@Context() ctx: IGraphQLAuthContext): Promise<User> {
     return (await this.authService.getProfile(ctx.req)).user;
   }
-  //   @Mutation(() => AuthPayload)
-  //   async refreshToken(
-  //     @Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput
-  //   ): Promise<AuthPayload> {
-  //     return await this.authService.refreshToken(refreshTokenInput.refresh_token);
-  //   }
+
+  @Mutation(() => AuthPayload)
+  async refreshToken(
+    @Args('input') input: RefreshTokenDto,
+    @Context() ctx: IGraphQLAuthContext,
+  ): Promise<AuthPayload> {
+    return await this.authService.refreshTokens(input.refreshToken, ctx.req);
+  }
+  // @Mutation(() => AuthPayload)
+  // async refreshToken(
+  //   @Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput
+  // ): Promise<AuthPayload> {
+  //   return await this.authService.refreshToken(refreshTokenInput.refresh_token);
+  // }
 }

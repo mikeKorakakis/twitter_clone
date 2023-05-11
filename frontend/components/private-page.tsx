@@ -5,7 +5,7 @@ import me from "@/lib/me";
 export default async function PrivatePage({
 	children,
 }: {
-	children: React.ReactNode;
+	children: React.ReactElement;
 }) {
 	const user = await me();
 	if (!user) {

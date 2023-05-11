@@ -11,7 +11,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import me from "@/lib/me";
 
-
 const fontSans = FontSans({
 	subsets: ["latin"],
 	variable: "--font-sans",
@@ -75,7 +74,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-    const user = await me();
+	const user = await me();
 
 	return (
 		<html lang="en" suppressHydrationWarning>

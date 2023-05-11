@@ -4,35 +4,35 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-async function getGitHubStars(): Promise<string | null> {
-  try {
-    const response = await fetch(
-      "https://api.github.com/repos/shadcn/taxonomy",
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
-        },
-        next: {
-          revalidate: 60,
-        },
-      }
-    )
+// async function getGitHubStars(): Promise<string | null> {
+//   try {
+//     const response = await fetch(
+//       "https://api.github.com/repos/shadcn/taxonomy",
+//       {
+//         headers: {
+//           Accept: "application/vnd.github+json",
+//           Authorization: `Bearer ${process.env.GITHUB_ACCESS_TOKEN}`,
+//         },
+//         next: {
+//           revalidate: 60,
+//         },
+//       }
+//     )
 
-    if (!response?.ok) {
-      return null
-    }
+//     if (!response?.ok) {
+//       return null
+//     }
 
-    const json = await response.json()
+//     const json = await response.json()
 
-    return parseInt(json["stargazers_count"]).toLocaleString()
-  } catch (error) {
-    return null
-  }
-}
+//     return parseInt(json["stargazers_count"]).toLocaleString()
+//   } catch (error) {
+//     return null
+//   }
+// }
 
-export default async function IndexPage() {
-  const stars = await getGitHubStars()
+export default function IndexPage() {
+//   const stars = await getGitHubStars()
 
   return (
     <>
@@ -193,7 +193,7 @@ export default async function IndexPage() {
             </Link>
             .{" "}
           </p>
-          {stars && (
+          {/* {stars && (
             <Link
               href={siteConfig.links.github}
               target="_blank"
@@ -217,7 +217,7 @@ export default async function IndexPage() {
                 </div>
               </div>
             </Link>
-          )}
+          )} */}
         </div>
       </section>
     </>

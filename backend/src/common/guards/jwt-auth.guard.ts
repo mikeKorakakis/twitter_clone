@@ -19,13 +19,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user, info, context) {
     const req = this.getRequest(context);
+    const refreshToken = req.cookies['refresh_token'];
 
-    if (info) {
+    if (info && refreshToken) {
       if (
         info instanceof TokenExpiredError &&
         req.cookies['refresh_token']
       ) {
-        return this.authService.refreshTokens(req);
+        return this.authService.refreshTokens(refreshToken,req);
       }
       if (
         info instanceof Error &&
@@ -33,7 +34,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         req.cookies['refresh_token'] &&
         !req.cookies['access_token']
       ) {
-        return this.authService.refreshTokens(req);
+        return this.authService.refreshTokens(refreshToken, req);
       }
     }
     if (err || !user) {

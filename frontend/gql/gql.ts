@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "mutation Login($email: String!, $password: String!) {\n  login(input: {email: $email, password: $password}) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout\n}": types.LogoutDocument,
+    "mutation RefreshToken($refreshToken: String!) {\n  refreshToken(input: {refreshToken: $refreshToken}) {\n    accessToken\n  }\n}": types.RefreshTokenDocument,
     "mutation Register($email: String!, $password: String!, $firstName: String!, $lastName: String!, $displayName: String!) {\n  register(\n    input: {email: $email, password: $password, firstName: $firstName, lastName: $lastName, displayName: $displayName}\n  ) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n  }\n}": types.RegisterDocument,
     "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n  }\n}": types.MeDocument,
 };
@@ -41,6 +42,10 @@ export function graphql(source: "mutation Login($email: String!, $password: Stri
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation Logout {\n  logout\n}"): (typeof documents)["mutation Logout {\n  logout\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation RefreshToken($refreshToken: String!) {\n  refreshToken(input: {refreshToken: $refreshToken}) {\n    accessToken\n  }\n}"): (typeof documents)["mutation RefreshToken($refreshToken: String!) {\n  refreshToken(input: {refreshToken: $refreshToken}) {\n    accessToken\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

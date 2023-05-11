@@ -359,9 +359,9 @@ export class AuthService {
     };
   }
 
-  public async refreshTokens(req: Request) {
-    const refreshTokenCookie = req.cookies['refresh_token'];
-
+  public async refreshTokens(refreshTokenCookie: string, req: Request) {
+    // const refreshTokenCookie = req.cookies['refresh_token'];
+    console.log("refreshTokenCookie",refreshTokenCookie)
     if (!refreshTokenCookie) {
       throw new UnauthorizedException('Invalid cookie');
     }
@@ -396,7 +396,7 @@ export class AuthService {
 
     await this.setTokens(req, { accessToken });
     const user = await this.userService.getUserByField('id', verifiedJWt.id);
-    return user;
+    return {user, accessToken};
   }
 
   public async getUserFromAccessToken(token: string) {

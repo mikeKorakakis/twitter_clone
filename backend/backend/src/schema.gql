@@ -29,6 +29,7 @@ type Mutation {
   register(input: CreateAccountDto!): AuthPayload!
   login(input: LoginDto!): AuthPayload!
   logout: Boolean!
+  refreshToken(input: RefreshTokenDto!): AuthPayload!
 }
 
 input CreateAccountDto {
@@ -42,4 +43,8 @@ input CreateAccountDto {
 input LoginDto {
   email: String!
   password: String!
+}
+
+input RefreshTokenDto {
+  refreshToken: String!
 }
