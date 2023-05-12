@@ -17,7 +17,7 @@ import { Icons } from "@/components/icons";
 import { useAuth } from "@/contexts/AuthContext";
 import { siteConfig } from "@/config/site";
 import { gqlClient } from "@/lib/client";
-import { MeDocument } from "@/gql/graphql";
+import { AuthenticationErrorType, MeDocument } from "@/gql/graphql";
 import { PasswordInput } from "@/components/ui/password-input";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -49,8 +49,20 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 		// })
 
 		const signInResult = await logIn(data);
+        setIsLoading(false);
 
-		setIsLoading(false);
+		if (
+			signInResult?.login?.error?.type ==
+			AuthenticationErrorType.InvalidCredentials
+		) {
+			return toast({
+				title: "Invalid Credentials",
+				description:
+					"Your email or password is incorrect. Please try again.",
+				variant: "destructive",
+			});
+		}
+
 		if (!signInResult?.login?.user?.email) {
 			toast({
 				title: "Something went wrong.",
@@ -58,7 +70,6 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 				variant: "destructive",
 			});
 		}
-        const me = await gqlClient().request(MeDocument);
 		push(siteConfig.pages.home);
 		// window.location.href = (siteConfig.pages.home);
 	}

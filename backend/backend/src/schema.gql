@@ -15,9 +15,34 @@ type User {
   accountStatus: String!
 }
 
+type AuthenticationError {
+  message: String!
+  time: DateTime!
+  type: AuthenticationErrorType!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum AuthenticationErrorType {
+  INVALID_CREDENTIALS
+  USER_NOT_FOUND
+  USER_ALREADY_EXISTS
+  UNAUTHORIZED
+  FORBIDDEN
+  NICKNAME_EXISTS
+  EMAIL_EXISTS
+  EMAIL_NOT_FOUND
+  EMAIL_NOT_VERIFIED
+  REGISTERED_WITH_SOCIAL
+}
+
 type AuthPayload {
-  user: User!
-  accessToken: String!
+  user: User
+  accessToken: String
+  error: AuthenticationError
 }
 
 type Query {

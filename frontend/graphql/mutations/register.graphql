@@ -1,22 +1,28 @@
 mutation Register(
-  $email: String!,
-  $password: String!,
-  $firstName: String!,
-  $lastName: String!,
-  $displayName: String!
+	$email: String!
+	$password: String!
+	$firstName: String!
+	$lastName: String!
+	$displayName: String!
 ) {
-  register(input: {
-    email: $email,
-    password: $password,
-    firstName: $firstName,
-    lastName: $lastName,
-    displayName: $displayName
-  }) {
-    user {
-      email
-      firstName
-      lastName
-      displayName
-    }
-  }
+	register(
+		input: {
+			email: $email
+			password: $password
+			firstName: $firstName
+			lastName: $lastName
+			displayName: $displayName
+		}
+	) {
+		user {
+			email
+			firstName
+			lastName
+			displayName
+		}
+		error {
+			type
+			message
+		}
+	}
 }

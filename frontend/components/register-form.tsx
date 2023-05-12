@@ -15,25 +15,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
 import { gqlClient } from "@/lib/client";
-import { RegisterDocument } from "@/gql/graphql";
+import {
+	AuthenticationErrorType,
+	RegisterDocument,
+	RegisterMutation,
+} from "@/gql/graphql";
 import { siteConfig } from "@/config/site";
-
-async function registerUser(data: FormData) {
-	const res = await gqlClient().request(RegisterDocument, {
-		email: data.email.toLowerCase(),
-		password: data.password,
-		firstName: data.firstName,
-		lastName: data.lastName,
-		displayName: data.displayName,
-	});
-	return res;
-}
+import { PasswordInput } from "@/components/ui/password-input";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface RegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type FormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm({ className, ...props }: RegisterFormProps) {
+	const { register: registerUser } = useAuth();
 	const { push } = useRouter();
 	const {
 		register,
@@ -57,6 +53,29 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 		// })
 
 		const registerResult = await registerUser(data);
+		setIsLoading(false);
+
+		if (
+			registerResult?.register?.error?.type ==
+			AuthenticationErrorType.EmailExists
+		) {
+			return toast({
+				title: "Email Already Exists",
+				description: "Your email already exists. Please try again.",
+				variant: "destructive",
+			});
+		}
+
+		if (
+			registerResult?.register?.error?.type ===
+			AuthenticationErrorType.NicknameExists
+		) {
+			return toast({
+				title: "Nickname Already Exists",
+				description: "Your nickname already exists. Please try again.",
+				variant: "destructive",
+			});
+		}
 
 		setIsLoading(false);
 
@@ -76,6 +95,8 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 				push(siteConfig.pages.home);
 			}, 2000);
 		}
+
+		push(siteConfig.pages.home);
 	}
 
 	return (
@@ -106,7 +127,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 						<Label className="sr-only" htmlFor="password">
 							Password
 						</Label>
-						<Input
+						<PasswordInput
 							id="password"
 							placeholder="Password"
 							type="password"

@@ -75,6 +75,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
 	const user = await me();
+    console.log("user", user);
 
 	return (
 		<html lang="en" suppressHydrationWarning>

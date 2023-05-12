@@ -4,5 +4,6 @@ query Me {
 		firstName
 		lastName
 		displayName
+        role
 	}
 }

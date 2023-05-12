@@ -20,7 +20,6 @@ export const gqlClient = (token?: string) => {
 		try {
 			return await client.request(query, variables);
 		} catch (error) {
-			console.log(error);
 			// if (isUnauthorizedError(error)) {
 			// 	// You'll need to implement isUnauthorizedError
 			// 	const newToken = await refreshToken(); // refreshToken is a function that gets a new access token

@@ -11,6 +11,8 @@ export default async function me() {
 			email: res?.me?.email,
 			firstName: res?.me?.firstName,
 			lastName: res?.me?.lastName,
+            role: res?.me?.role,
+            displayName: res?.me?.displayName
 		};
 	} catch (e:any) {
 		return null;

@@ -6,17 +6,21 @@ import {
 	LogoutDocument,
 	LogoutMutation,
 	MeDocument,
+	RegisterDocument,
+	RegisterMutation,
 	User,
 } from "@/gql/graphql";
 import { gqlClient } from "@/lib/client";
 import { gqlClient as gqlClient_server } from "@/lib/gql_client_server";
-import { loginSchema } from "@/lib/validations/auth";
+import { loginSchema, registerSchema } from "@/lib/validations/auth";
 import { ReactNode, createContext, useContext, useMemo, useState } from "react";
 import { z } from "zod";
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
-type UserType = Pick<User, "email" | "firstName" | "lastName">;
+type UserType = Pick<User, "email" | "firstName" | "lastName" | "displayName">;
+
+type RegisterSchema = z.infer<typeof registerSchema>;
 
 // async function me() {
 // 	const client = await gqlClient_server();
@@ -33,6 +37,7 @@ interface AuthContextData {
 	user?: UserType | null;
 	logIn: (data: LoginSchema) => Promise<LoginMutation>;
 	logOut: () => Promise<void>;
+	register: (data: RegisterSchema) => Promise<RegisterMutation>;
 }
 
 // interface AuthContextData {
@@ -45,8 +50,6 @@ export const AuthProvider: React.FC<{
 	children: ReactNode;
 	initialUser?: UserType | null;
 }> = ({ children, initialUser }) => {
-	console.log("initialUser", initialUser);
-
 	const [user, setUser] = useState<UserType | null | undefined>(initialUser);
 
 	async function logIn(data: LoginSchema) {
@@ -58,10 +61,26 @@ export const AuthProvider: React.FC<{
 		return res;
 	}
 
+	async function register(data: RegisterSchema) {
+		const res = await gqlClient().request<RegisterMutation>(
+			RegisterDocument,
+			{
+				email: data.email.toLowerCase(),
+				password: data.password,
+				firstName: data.firstName,
+				lastName: data.lastName,
+				displayName: data.displayName,
+			}
+		);
+		if (res?.register?.user?.email) setUser(res.register.user);
+		return res;
+	}
+
 	async function logOut() {
 		try {
-			console.log("logout");
-			const res = await gqlClient().request(LogoutDocument);
+			const res = await gqlClient().request<LogoutMutation>(
+				LogoutDocument
+			);
 			setUser(null);
 			return;
 		} catch (e) {
@@ -77,13 +96,10 @@ export const AuthProvider: React.FC<{
 	// 		lastName: res?.me?.lastName,
 	// 	});
 	// });
-    const context = useMemo(() => ({ user, logIn, logOut }), [user]);
+	const context = useMemo(() => ({ user, logIn, logOut, register }), [user]);
 
-	console.log("user", user);
 	return (
-		<AuthContext.Provider value={context}>
-			{children}
-		</AuthContext.Provider>
+		<AuthContext.Provider value={context}>{children}</AuthContext.Provider>
 	);
 };
 

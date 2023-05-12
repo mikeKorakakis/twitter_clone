@@ -47,6 +47,14 @@ export default function LoginPage() {
 					</Link>
 				</p>
 			</div>
+                <p className="pt-2 px-8 text-center text-sm text-slate-500 dark:text-slate-400">
+					<Link
+						href="/forgot-password"
+						className="hover:text-brand underline underline-offset-4"
+					>
+						Forgot your password?
+					</Link>
+				</p>
 		</div>
 	);
 }

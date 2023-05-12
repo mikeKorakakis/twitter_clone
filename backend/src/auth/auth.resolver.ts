@@ -28,6 +28,7 @@ import { User } from '../common/entities';
 import { SkipThrottle } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../common/guards';
 import { RefreshTokenDto } from '../common/dtos/refresh-token.dto';
+import { AuthenticationError } from '../common/errors/authenticationError';
 
 export const GqlSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {

@@ -11,7 +11,6 @@ export const gqlClient = async () => {
 	const cookieStore = await cookies();
 	const token = cookieStore.get("access_token");
     const refreshToken = cookieStore.get("refresh_token");
-	console.log("tokedddn", token?.value);
 	const client = new GraphQLClient("http://localhost:4000/graphql", {
 		fetch,
 		// credentials: "include",
@@ -26,7 +25,6 @@ export const gqlClient = async () => {
 		} catch (error) {
             if (isUnauthorizedError(error) && refreshToken) {
                 // You'll need to implement isUnauthorizedError
-                console.log('haha',error);
 				const newToken = await client.request(RefreshTokenDocument, {
                    refreshToken: refreshToken?.value
                 }); // refreshToken is a function that gets a new access token

@@ -21,9 +21,9 @@ export default function MainLayout({ children }: MarketingLayoutProps) {
 			<header className="container z-40 bg-background">
 				<div className="flex h-20 items-center justify-between py-6">
 					<MainNav items={marketingConfig.mainNav} />
-					{user?.email && (
+					{user?.displayName && (
 						<div className="flex items-center space-x-4">
-							{user?.email}
+							{user?.displayName}
 						</div>
 					)}
 					<nav>

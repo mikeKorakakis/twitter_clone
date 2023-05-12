@@ -24,6 +24,10 @@ import {
 } from '../common/exceptions';
 import { PostgresErrorCode, Providers, AccountStatus } from '../common/enums';
 import { User } from '../common/entities';
+import {
+  AuthenticationError,
+  AuthenticationErrorType,
+} from '../common/errors/authenticationError';
 
 export interface AuthRequest extends Request {
   user: IUser;
@@ -65,11 +69,22 @@ export class AuthService {
       console.log(err);
       if (err.code == PostgresErrorCode.UniqueViolation) {
         if (err.detail.includes('email')) {
-          throw new UniqueViolation('email');
+          return {
+            error: new AuthenticationError({
+              type: AuthenticationErrorType.EMAIL_EXISTS,
+              message: 'email already exists',
+            }),
+          };
         }
 
         if (err.detail.includes('nick_name' || 'nick' || 'nickName')) {
-          throw new UniqueViolation('nickName');
+          return {
+            error: new AuthenticationError({
+              type: AuthenticationErrorType.NICKNAME_EXISTS,
+              message: 'nickname already exists',
+            }),
+          };
+          //   throw new UniqueViolation('nickName');
         }
       }
       throw new InternalServerErrorException();
@@ -81,14 +96,18 @@ export class AuthService {
       const { email, password } = credentials;
 
       const user = await this.getAuthenticatedUser(email, password);
-      const [accessToken, refreshToken] = await this.generateTokens(user);
 
-      await this.setTokens(req, { accessToken, refreshToken });
+      if ('error' in user) {
+        return user;
+      } else {
+        const [accessToken, refreshToken] = await this.generateTokens(user);
+        await this.setTokens(req, { accessToken, refreshToken });
 
-      return {
-        user,
-        accessToken,
-      };
+        return {
+          user,
+          accessToken,
+        };
+      }
     } catch (err) {
       throw new HttpException(err.response, err.status);
     }
@@ -183,16 +202,32 @@ export class AuthService {
     try {
       const user = await this.userService.getUserByField('email', email);
       if (!user) {
-        throw new InvalidCredentials();
+        return {
+          error: new AuthenticationError({
+            type: AuthenticationErrorType.INVALID_CREDENTIALS,
+            message: 'Invalid credentials',
+          }),
+        };
+        // throw new InvalidCredentials();
       }
 
       if (user.provider !== Providers.Local) {
-        throw new SocialProvider();
+        return {
+          error: new AuthenticationError({
+            type: AuthenticationErrorType.REGISTERED_WITH_SOCIAL,
+            message: 'Registered with social provider',
+          }),
+        };
       }
 
       const isMatch = await argon2.verify(user.password, password);
       if (!isMatch) {
-        throw new InvalidCredentials();
+        return {
+          error: new AuthenticationError({
+            type: AuthenticationErrorType.INVALID_CREDENTIALS,
+            message: 'Invalid credentials',
+          }),
+        };
       }
 
       return user;
@@ -395,7 +430,7 @@ export class AuthService {
 
     await this.setTokens(req, { accessToken });
     const user = await this.userService.getUserByField('id', verifiedJWt.id);
-    return {user, accessToken};
+    return { user, accessToken, error: null };
   }
 
   public async getUserFromAccessToken(token: string) {
