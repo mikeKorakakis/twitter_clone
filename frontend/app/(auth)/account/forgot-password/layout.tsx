@@ -8,11 +8,11 @@ import { MainNav } from "@/components/main-nav";
 import { marketingConfig } from "@/config/marketing";
 // import { useRouter } from "next/navigation";
 
-interface MainLayoutProps {
+interface MarketingLayoutProps {
 	children: React.ReactNode;
 }
 
-export default function MainLayout({ children }: MainLayoutProps) {
+export default function MainLayout({ children }: MarketingLayoutProps) {
 	const { user, logOut } = useAuth();
 	// const router = useRouter();
 	return (

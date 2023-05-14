@@ -15,7 +15,6 @@ interface MarketingLayoutProps {
 export default function MainLayout({ children }: MarketingLayoutProps) {
 	const { user, logOut } = useAuth();
 	// const router = useRouter();
-	console.log("dfds");
 	return (
 		<div className="flex min-h-screen flex-col">
 			<header className="container z-40 bg-background">

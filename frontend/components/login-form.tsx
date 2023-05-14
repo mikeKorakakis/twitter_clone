@@ -47,30 +47,33 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 		//   redirect: false,
 		//   callbackUrl: searchParams?.get("from") || "/dashboard",
 		// })
+		try {
+			const signInResult = await logIn(data);
+			
 
-		const signInResult = await logIn(data);
-        setIsLoading(false);
+			if (
+				signInResult?.login?.error?.type ==
+				AuthenticationErrorType.InvalidCredentials
+			) {
+				return toast({
+					title: "Invalid Credentials",
+					description:
+						"Your email or password is incorrect. Please try again.",
+					variant: "destructive",
+				});
+			}
 
-		if (
-			signInResult?.login?.error?.type ==
-			AuthenticationErrorType.InvalidCredentials
-		) {
-			return toast({
-				title: "Invalid Credentials",
-				description:
-					"Your email or password is incorrect. Please try again.",
-				variant: "destructive",
-			});
-		}
-
-		if (!signInResult?.login?.user?.email) {
+			push(siteConfig.pages.home);
+		} catch (e) {
 			toast({
 				title: "Something went wrong.",
 				description: "Your sign in request failed. Please try again.",
 				variant: "destructive",
 			});
 		}
-		push(siteConfig.pages.home);
+        finally{
+            setIsLoading(false);
+        }
 		// window.location.href = (siteConfig.pages.home);
 	}
 
@@ -105,7 +108,6 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 						<PasswordInput
 							id="password"
 							placeholder="Password"
-							type="password"
 							autoCapitalize="none"
 							autoComplete="password"
 							autoCorrect="off"

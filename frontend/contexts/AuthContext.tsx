@@ -3,15 +3,16 @@
 import {
 	LoginDocument,
 	LoginMutation,
+	LoginMutationVariables,
 	LogoutDocument,
 	LogoutMutation,
 	MeDocument,
 	RegisterDocument,
 	RegisterMutation,
+	RegisterMutationVariables,
 	User,
 } from "@/gql/graphql";
 import { gqlClient } from "@/lib/client";
-import { gqlClient as gqlClient_server } from "@/lib/gql_client_server";
 import { loginSchema, registerSchema } from "@/lib/validations/auth";
 import { ReactNode, createContext, useContext, useMemo, useState } from "react";
 import { z } from "zod";
@@ -53,25 +54,29 @@ export const AuthProvider: React.FC<{
 	const [user, setUser] = useState<UserType | null | undefined>(initialUser);
 
 	async function logIn(data: LoginSchema) {
-		const res = await gqlClient().request<LoginMutation>(LoginDocument, {
-			email: data.email.toLowerCase(),
-			password: data.password,
+		const res = await gqlClient().request<
+			LoginMutation,
+			LoginMutationVariables
+		>(LoginDocument, {
+			input: { email: data.email.toLowerCase(), password: data.password },
 		});
 		if (res?.login?.user?.email) setUser(res.login.user);
 		return res;
 	}
 
 	async function register(data: RegisterSchema) {
-		const res = await gqlClient().request<RegisterMutation>(
-			RegisterDocument,
-			{
+		const res = await gqlClient().request<
+			RegisterMutation,
+			RegisterMutationVariables
+		>(RegisterDocument, {
+			input: {
 				email: data.email.toLowerCase(),
 				password: data.password,
 				firstName: data.firstName,
 				lastName: data.lastName,
 				displayName: data.displayName,
-			}
-		);
+			},
+		});
 		if (res?.register?.user?.email) setUser(res.register.user);
 		return res;
 	}

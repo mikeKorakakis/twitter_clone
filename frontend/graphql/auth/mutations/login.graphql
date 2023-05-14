@@ -1,0 +1,14 @@
+mutation Login($input: LoginDto!) {
+	login(input: $input) {
+		user {
+			email
+			firstName
+			lastName
+			displayName
+		}
+		error {
+			type
+			message
+		}
+	}
+}

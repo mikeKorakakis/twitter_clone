@@ -6,6 +6,7 @@ import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { LoginForm } from "@/components/login-form";
 import { useAuth } from "@/contexts/AuthContext";
+import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
 	title: "Login",
@@ -49,7 +50,7 @@ export default function LoginPage() {
 			</div>
                 <p className="pt-2 px-8 text-center text-sm text-slate-500 dark:text-slate-400">
 					<Link
-						href="/forgot-password"
+						href={siteConfig.pages.forgotPassword}
 						className="hover:text-brand underline underline-offset-4"
 					>
 						Forgot your password?

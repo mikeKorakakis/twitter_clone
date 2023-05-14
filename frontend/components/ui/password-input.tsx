@@ -8,7 +8,7 @@ export interface PasswordInputProps
 	extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-	({ className, type, ...props }, ref) => {
+	({ className, ...props }, ref) => {
 		const [showPassword, setShowPassword] = React.useState(false);
 
 		const handleShowPassword = () => {
@@ -26,7 +26,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 					ref={ref}
 					{...props}
 				/>
-				{type === "password" && (
+				
 					<div
 						className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
 						onClick={handleShowPassword}
@@ -35,7 +35,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 							{showPassword ? <Eye className="stroke-1"/> : <Icons.eyeOff className="stroke-1"/>}
 						</div>
 					</div>
-				)}
+				
 			</div>
 		);
 	}

@@ -1,11 +1,14 @@
 // import { ApiProperty } from '@nestjs/swagger'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, NotContains, Length } from 'class-validator'
 
+@InputType()
 export class PasswordValuesDto {
     // @ApiProperty({
     //     required: true,
     //     example: 'demo123',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Password cannot be empty or whitespace'
     })
@@ -21,6 +24,7 @@ export class PasswordValuesDto {
     //     required: true,
     //     example: 'demo123',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Password cannot be empty or whitespace'
     })

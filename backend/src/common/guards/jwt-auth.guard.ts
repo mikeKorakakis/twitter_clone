@@ -20,6 +20,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err, user, info, context) {
     const req = this.getRequest(context);
     const refreshToken = req.cookies['refresh_token'];
+    // console.log('refreshToken', req.cookies);
 
     if (info && refreshToken) {
       if (
@@ -40,6 +41,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (err || !user) {
       throw err || new UnauthorizedException();
     }
+    console.log('user', user);
     return user;
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Logger, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { SkipThrottle } from '@nestjs/throttler';
 
@@ -70,6 +70,8 @@ export class AuthController {
         return this.authService.getProfile(req)
     }
 
+
+
     // @UseGuards(JwtAuthGuard, RolesGuard)
     // @Roles(Role.ADMIN)
     // @Get('admin')
@@ -78,14 +80,15 @@ export class AuthController {
     // }
 
   
-    @Status(AccountStatus.PENDING)
-    @UseGuards(JwtAuthGuard, VerifiedGuard)
+    // @Status(AccountStatus.PENDING)
+    // @UseGuards(JwtAuthGuard, VerifiedGuard)
+    // @UseGuards(JwtAuthGuard)
     @Get('account/confirm')
     confirmAccount(
         @CurrentUser() user: User,
         @Query('token') token: string
     ) {
-        console.log('confirmAccount')
+        console.log('confirmAccount', user, token)
         return this.authService.confirmAccount(user, token)
     }
 

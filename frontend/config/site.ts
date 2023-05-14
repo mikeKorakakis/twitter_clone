@@ -14,5 +14,7 @@ export const siteConfig: SiteConfig = {
 		home: "/",
 		login: "/login",
 		register: "/register",
+        forgotPassword: "/account/forgot-password",
+        resetPassword: "/account/reset-password",
 	},
 };

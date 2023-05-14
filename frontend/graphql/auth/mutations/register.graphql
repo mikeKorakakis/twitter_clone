@@ -1,0 +1,19 @@
+mutation Register(
+	$input: CreateAccountDto!
+) {
+	register(
+		input: $input
+		
+	) {
+		user {
+			email
+			firstName
+			lastName
+			displayName
+		}
+		error {
+			type
+			message
+		}
+	}
+}

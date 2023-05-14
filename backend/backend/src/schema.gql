@@ -2,17 +2,9 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type User {
-  provider: String!
-  providerId: String!
-  email: String!
-  password: String!
-  firstName: String!
-  lastName: String!
-  displayName: String!
-  image: String!
-  role: String!
-  accountStatus: String!
+type ResponseMessageDto {
+  message: String
+  success: Boolean
 }
 
 type AuthenticationError {
@@ -37,11 +29,43 @@ enum AuthenticationErrorType {
   EMAIL_NOT_FOUND
   EMAIL_NOT_VERIFIED
   REGISTERED_WITH_SOCIAL
+  TOKEN_EXPIRED
+}
+
+type User {
+  provider: String!
+  providerId: String!
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  displayName: String!
+  image: String!
+  role: String!
+  accountStatus: String!
 }
 
 type AuthPayload {
   user: User
   accessToken: String
+  error: AuthenticationError
+}
+
+type ResetPasswordDto {
+  message: String
+  success: Boolean
+  email: String!
+}
+
+type SetNewPasswordPayload {
+  message: String
+  success: Boolean
+  error: AuthenticationError
+}
+
+type ChangePasswordPayload {
+  message: String
+  success: Boolean
   error: AuthenticationError
 }
 
@@ -55,6 +79,11 @@ type Mutation {
   login(input: LoginDto!): AuthPayload!
   logout: Boolean!
   refreshToken(input: RefreshTokenDto!): AuthPayload!
+  resetPassword(email: String!): ResetPasswordDto!
+  setNewPassword(input: SetNewPasswordDto!): SetNewPasswordPayload!
+  changePassword(input: PasswordValuesDto!): ChangePasswordPayload!
+  resendConfirmationEmail: ResponseMessageDto!
+  confirmEmail(token: String!): ResponseMessageDto!
 }
 
 input CreateAccountDto {
@@ -72,4 +101,14 @@ input LoginDto {
 
 input RefreshTokenDto {
   refreshToken: String!
+}
+
+input SetNewPasswordDto {
+  newPassword: String!
+  token: String!
+}
+
+input PasswordValuesDto {
+  oldPassword: String!
+  newPassword: String!
 }

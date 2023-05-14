@@ -1,33 +1,29 @@
-import {
-  BadRequestException,
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { Request } from 'express';
-import * as argon2 from 'argon2';
-import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@liaoliaots/nestjs-redis';
-import { createHash } from 'crypto';
-import { nanoid } from 'nanoid';
 import { InjectQueue } from '@nestjs/bull';
+import {
+    BadRequestException,
+    HttpException,
+    Injectable,
+    InternalServerErrorException,
+    UnauthorizedException,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import * as argon2 from 'argon2';
 import { Queue } from 'bull';
+import { createHash } from 'crypto';
+import { Request } from 'express';
+import { nanoid } from 'nanoid';
 
-import { UserService } from '../user/user.service';
 import { CreateAccountDto, LoginDto, PasswordValuesDto } from '../common/dtos';
-import {
-  UniqueViolation,
-  InvalidCredentials,
-  SocialProvider,
-} from '../common/exceptions';
-import { PostgresErrorCode, Providers, AccountStatus } from '../common/enums';
+import { ResponseMessageDto } from '../common/dtos/response-message.dto';
 import { User } from '../common/entities';
+import { AccountStatus, PostgresErrorCode, Providers } from '../common/enums';
 import {
-  AuthenticationError,
-  AuthenticationErrorType,
+    AuthenticationError,
+    AuthenticationErrorType,
 } from '../common/errors/authenticationError';
+import { UserService } from '../user/user.service';
 
 export interface AuthRequest extends Request {
   user: IUser;
@@ -66,7 +62,6 @@ export class AuthService {
         accessToken,
       };
     } catch (err: any) {
-      console.log(err);
       if (err.code == PostgresErrorCode.UniqueViolation) {
         if (err.detail.includes('email')) {
           return {
@@ -84,7 +79,6 @@ export class AuthService {
               message: 'nickname already exists',
             }),
           };
-          //   throw new UniqueViolation('nickName');
         }
       }
       throw new InternalServerErrorException();
@@ -208,7 +202,6 @@ export class AuthService {
             message: 'Invalid credentials',
           }),
         };
-        // throw new InvalidCredentials();
       }
 
       if (user.provider !== Providers.Local) {
@@ -287,8 +280,12 @@ export class AuthService {
     const accountId = await this.redisService
       .getClient()
       .get(`confirm-account:${token}`);
-
     if (!accountId) {
+      return {
+        success: false,
+        message: 'Confirmation token expired',
+      };
+    } else {
       if (
         accountId === user.id &&
         user.accountStatus === AccountStatus.VERIFIED
@@ -298,13 +295,7 @@ export class AuthService {
           message: 'Account already verified',
         };
       }
-
-      return {
-        success: false,
-        message: 'Confirmation token expired',
-      };
     }
-
     if (user.id === accountId) {
       await this.userService.update(user.id, {
         accountStatus: AccountStatus.VERIFIED,
@@ -319,6 +310,19 @@ export class AuthService {
   }
 
   public async resendConfirmationToken(user: any) {
+    if (!user) {
+      return {
+        success: false,
+        message: 'User not found',
+      };
+    }
+    if (user.accountStatus === AccountStatus.VERIFIED) {
+      return {
+        success: false,
+        message: 'Account already verified',
+      };
+    }
+
     this.sendConfirmationToken(user);
 
     return {
@@ -346,9 +350,15 @@ export class AuthService {
 
   public async changePassword(user: User, password: PasswordValuesDto) {
     if (user.provider !== Providers.Local) {
-      throw new BadRequestException(
-        `You can't change password while using social provider`,
-      );
+      //   throw new BadRequestException(
+      //     `You can't change password while using social provider`,
+      //   );
+      return {
+        error: new AuthenticationError({
+          type: AuthenticationErrorType.REGISTERED_WITH_SOCIAL,
+          message: `You can't change password while using social provider`,
+        }),
+      };
     }
 
     const authUser = await this.getAuthenticatedUser(
@@ -357,17 +367,25 @@ export class AuthService {
     );
 
     if (password.newPassword === password.oldPassword) {
-      throw new BadRequestException(`New password cannot be same as old`);
+      //   throw new BadRequestException(`New password cannot be same as old`);
+      return {
+        error: new AuthenticationError({
+          type: AuthenticationErrorType.INVALID_CREDENTIALS,
+          message: `New password cannot be same as old`,
+        }),
+      };
     }
 
-    if (authUser) {
+    if ('error' in authUser) {
+      return authUser;
+    } else {
       this.userService.update(user.id, {
         password: await argon2.hash(password.newPassword),
       });
-      return {
+      return new ResponseMessageDto({
         success: true,
         message: 'Password changed',
-      };
+      });
     }
   }
 
@@ -377,21 +395,25 @@ export class AuthService {
       .get(`reset-password:${token}`);
 
     const user = await this.userService.getUserByField('id', accountId);
-
-    if (!accountId) {
-      throw new BadRequestException('Reset password token expired');
-    }
-
     await this.userService.update(user.id, {
       password: await argon2.hash(newPassword),
     });
 
-    await this.redisService.getClient().del(`reset-password:${token}`);
+    if (!accountId) {
+      return {
+        error: new AuthenticationError({
+          message: 'Reset password token expired',
+          type: AuthenticationErrorType.TOKEN_EXPIRED,
+        }),
+      };
+      //   throw new BadRequestException('Reset password token expired');
+    }
 
-    return {
+    await this.redisService.getClient().del(`reset-password:${token}`);
+    return new ResponseMessageDto({
       success: true,
       message: 'Password reseted',
-    };
+    });
   }
 
   public async refreshTokens(refreshTokenCookie: string, req: Request) {
@@ -430,7 +452,7 @@ export class AuthService {
 
     await this.setTokens(req, { accessToken });
     const user = await this.userService.getUserByField('id', verifiedJWt.id);
-    return { user, accessToken, error: null };
+    return { user, accessToken };
   }
 
   public async getUserFromAccessToken(token: string) {

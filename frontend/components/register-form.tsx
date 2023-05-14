@@ -41,7 +41,6 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 	const [isLoading, setIsLoading] = React.useState<boolean>(false);
 	const [isGitHubLoading, setIsGitHubLoading] =
 		React.useState<boolean>(false);
-	const searchParams = useSearchParams();
 
 	async function onSubmit(data: FormData) {
 		setIsLoading(true);
@@ -51,52 +50,53 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 		//   redirect: false,
 		//   callbackUrl: searchParams?.get("from") || "/dashboard",
 		// })
+		try {
+			const registerResult = await registerUser(data);
 
-		const registerResult = await registerUser(data);
-		setIsLoading(false);
+			if (
+				registerResult?.register?.error?.type ==
+				AuthenticationErrorType.EmailExists
+			) {
+				return toast({
+					title: "Email Already Exists",
+					description: "Your email already exists. Please try again.",
+					variant: "destructive",
+				});
+			}
 
-		if (
-			registerResult?.register?.error?.type ==
-			AuthenticationErrorType.EmailExists
-		) {
-			return toast({
-				title: "Email Already Exists",
-				description: "Your email already exists. Please try again.",
-				variant: "destructive",
-			});
-		}
+			if (
+				registerResult?.register?.error?.type ===
+				AuthenticationErrorType.NicknameExists
+			) {
+				return toast({
+					title: "Nickname Already Exists",
+					description:
+						"Your nickname already exists. Please try again.",
+					variant: "destructive",
+				});
+			}
 
-		if (
-			registerResult?.register?.error?.type ===
-			AuthenticationErrorType.NicknameExists
-		) {
-			return toast({
-				title: "Nickname Already Exists",
-				description: "Your nickname already exists. Please try again.",
-				variant: "destructive",
-			});
-		}
-
-		setIsLoading(false);
-
-		if (!registerResult?.register?.user?.email) {
+			if (registerResult?.register?.user?.email) {
+				toast({
+					title: "Success!",
+					description:
+						"Your account has been created. Please check your email to activate you account.",
+				});
+				push(siteConfig.pages.home);
+			} else {
+				setTimeout(() => {
+					push(siteConfig.pages.home);
+				}, 2000);
+			}
+		} catch (e) {
 			return toast({
 				title: "Something went wrong.",
 				description: "Your sign in request failed. Please try again.",
 				variant: "destructive",
 			});
-		} else {
-			toast({
-				title: "Success!",
-				description:
-					"Your account has been created. Please check your email to activate you account.",
-			});
-			setTimeout(() => {
-				push(siteConfig.pages.home);
-			}, 2000);
+		} finally {
+			setIsLoading(false);
 		}
-
-		push(siteConfig.pages.home);
 	}
 
 	return (

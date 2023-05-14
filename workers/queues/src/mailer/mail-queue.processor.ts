@@ -65,7 +65,6 @@ export class MailProcessor {
                 }
             })
 
-            console.log(email)
         } catch (err) {
             console.log(err)
         }

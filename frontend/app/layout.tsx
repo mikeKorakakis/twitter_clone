@@ -1,15 +1,15 @@
 import { Inter as FontSans } from "next/font/google";
 import localFont from "next/font/local";
 
-import "@/styles/globals.css";
-import { siteConfig } from "@/config/site";
-import { absoluteUrl, cn } from "@/lib/utils";
-import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@/components/analytics";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import { siteConfig } from "@/config/site";
 import { AuthProvider } from "@/contexts/AuthContext";
 import me from "@/lib/me";
+import { cn } from "@/lib/utils";
+import "@/styles/globals.css";
 
 const fontSans = FontSans({
 	subsets: ["latin"],
@@ -75,8 +75,7 @@ export const metadata = {
 
 export default async function RootLayout({ children }: RootLayoutProps) {
 	const user = await me();
-    console.log("user", user);
-
+    console.log("user in root layout",user)
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head />

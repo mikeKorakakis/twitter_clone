@@ -12,6 +12,7 @@ export enum AuthenticationErrorType {
   EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND',
   EMAIL_NOT_VERIFIED = 'EMAIL_NOT_VERIFIED',
   REGISTERED_WITH_SOCIAL = 'REGISTERED_WITH_SOCIAL',
+  TOKEN_EXPIRED = 'TOKEN_EXPIRED',
   // Add more error types as needed
 }
 

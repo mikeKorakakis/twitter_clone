@@ -1,4 +1,5 @@
-import { GraphQLClient } from "graphql-request";
+import { toast } from "@/components/ui/use-toast";
+import { GraphQLClient, Variables } from "graphql-request";
 import { cookies } from "next/dist/client/components/headers";
 
 export const gqlClient = (token?: string) => {
@@ -13,9 +14,9 @@ export const gqlClient = (token?: string) => {
 			},
 		}
 	);
-	const withTokenRefresh = async <T = any>(
+	const withTokenRefresh = async <T = any, Y extends Variables = any>(
 		query: any,
-		variables?: any
+		variables?: Y
 	): Promise<T> => {
 		try {
 			return await client.request(query, variables);
@@ -26,7 +27,17 @@ export const gqlClient = (token?: string) => {
 			// 	client.setHeader("Cookie", `access_token=${newToken}`);
 			// 	return client.request(query, variables);
 			// }
-			throw error;
+			// console.log(error);
+            throw error;
+            // toast(
+            //     {
+            //         title: "Error",
+            //         description: "Something went wrong. Please try again later.",
+            //         variant: "destructive",
+            //     }
+            // )
+            // return { error };
+            
 		}
 	};
 

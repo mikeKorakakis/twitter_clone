@@ -1,5 +1,6 @@
 import { RefreshTokenDocument } from "@/gql/graphql";
-import { GraphQLClient } from "graphql-request";
+import { GraphQLClient, Variables } from "graphql-request";
+import { VariablesAndRequestHeadersArgs } from "graphql-request/build/esm/types";
 import { cookies } from "next/dist/client/components/headers";
 function isUnauthorizedError(error: any) {
 	return error.response.errors[0].message === "Unauthorized";
@@ -19,7 +20,7 @@ export const gqlClient = async () => {
 			// ...(token && { Authorization: `Bearer ${token}` }),
 		},
 	});
-	const withTokenRefresh = async <T = any>(query: any, variables: any):Promise<T> => {
+	const withTokenRefresh = async  <T = any, Y extends Variables = any>(query: any, variables?: Y):Promise<T> => {
 		try {
 			return await client.request(query, variables);
 		} catch (error) {

@@ -1,34 +1,31 @@
-import {
-  Resolver,
-  Mutation,
-  Args,
-  GraphQLExecutionContext,
-  Query,
-} from '@nestjs/graphql';
-import { AuthService, IUser } from './auth.service';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { AuthService } from './auth.service';
 // import { SignupDto } from './dtos/signup.dto';
 // import { SigninDto } from './dtos/signin.dto';
 // const { serialize } = require('cookie-session');
 import { Context } from '@nestjs/graphql';
 
-import { Request, Response } from 'express';
-import { Res, Session, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthPayload } from './dtos/auth-payload.dto';
 // import { RefreshTokenInput } from './dtos/refresh-token.input';
-import { CreateAccountDto, LoginDto } from '../common/dtos';
-import { GraphQLString } from 'graphql';
+import { SkipThrottle } from '@nestjs/throttler';
+import { CreateAccountDto, LoginDto, PasswordValuesDto } from '../common/dtos';
+import { ResponseMessageDto } from '../common/dtos/response-message.dto';
+import { User } from '../common/entities';
+import { JwtAuthGuard } from '../common/guards';
 import {
   IGraphQLAuthContext,
   IGraphQLContext,
 } from '../types/context.inteface';
-import { User } from '../common/entities';
-import { SkipThrottle } from '@nestjs/throttler';
-import { JwtAuthGuard } from '../common/guards';
-import { RefreshTokenDto } from '../common/dtos/refresh-token.dto';
-import { AuthenticationError } from '../common/errors/authenticationError';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { SetNewPasswordPayload } from './dtos/set-new-password-payload.dto';
+import { SetNewPasswordDto } from './dtos/set-new-password.dto';
+import { ChangePasswordPayload } from './dtos/change-password-payload.dto';
+import { CurrentUser } from '../common/decorators';
 
 export const GqlSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
@@ -79,6 +76,7 @@ export class AuthResolver {
   @SkipThrottle(true)
   @Query((returns) => User)
   async me(@Context() ctx: IGraphQLAuthContext): Promise<User> {
+    console.log('me');
     return (await this.authService.getProfile(ctx.req)).user;
   }
 
@@ -89,10 +87,61 @@ export class AuthResolver {
   ): Promise<AuthPayload> {
     return await this.authService.refreshTokens(input.refreshToken, ctx.req);
   }
-  // @Mutation(() => AuthPayload)
-  // async refreshToken(
-  //   @Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput
-  // ): Promise<AuthPayload> {
-  //   return await this.authService.refreshToken(refreshTokenInput.refresh_token);
+
+  @Mutation(() => ResetPasswordDto)
+  async resetPassword(@Args('email') email: string): Promise<ResetPasswordDto> {
+    return await this.authService.resetPassword(email);
+  }
+
+  @Mutation(() => SetNewPasswordPayload)
+  async setNewPassword(
+    @Args('input') input: SetNewPasswordDto,
+  ): Promise<SetNewPasswordPayload> {
+    const { token, newPassword } = input;
+    return await this.authService.setNewPassword(newPassword, token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => ChangePasswordPayload)
+  async changePassword(
+    @CurrentUser() user,
+    @Args('input') input: PasswordValuesDto,
+  ): Promise<ChangePasswordPayload> {
+    return await this.authService.changePassword(user, input);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => ResponseMessageDto)
+  async resendConfirmationEmail(
+    @CurrentUser() user,
+  ): Promise<ResponseMessageDto> {
+    return await this.authService.resendConfirmationToken(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => ResponseMessageDto)
+    async confirmEmail(
+        @CurrentUser() user,
+        @Args('token') token: string,
+        // @Context() ctx: IGraphQLAuthContext
+        ): Promise<ResponseMessageDto> {
+        return await this.authService.confirmAccount(user, token);
+    }
+
+  //   @Mutation(() => AuthPayload)
+  //   async refreshToken(
+  //     @Args('refreshTokenInput') refreshTokenInput: RefreshTokenInput
+  //   ): Promise<AuthPayload> {
+  //     return await this.authService.refreshToken(refreshTokenInput.refresh_token);
+  //   }
+
+  // @Patch('password/change')
+  // @Status(AccountStatus.VERIFIED)
+  // @UseGuards(JwtAuthGuard, VerifiedGuard)
+  // changePassword(
+  //     @CurrentUser() user: User,
+  //     @Body() passwordValues: PasswordValuesDto
+  // ) {
+  //     return this.authService.changePassword(user, passwordValues)
   // }
 }
