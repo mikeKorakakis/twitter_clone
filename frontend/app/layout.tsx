@@ -6,8 +6,6 @@ import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { siteConfig } from "@/config/site";
-import { AuthProvider } from "@/contexts/AuthContext";
-import me from "@/lib/me";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 
@@ -74,8 +72,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
-	const user = await me();
-    console.log("user in root layout",user)
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head />
@@ -91,7 +87,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
 					defaultTheme="system"
 					enableSystem
 				>
-					<AuthProvider initialUser={user}>{children}</AuthProvider>
+					{children}
 					<Analytics />
 					<Toaster />
 					<TailwindIndicator />

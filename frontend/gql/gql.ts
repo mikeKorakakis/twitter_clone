@@ -15,14 +15,14 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "mutation ChangePassword($input: PasswordValuesDto!) {\n  changePassword(input: $input) {\n    success\n    message\n    error {\n      message\n      type\n    }\n  }\n}": types.ChangePasswordDocument,
     "mutation ConfirmEmail($token: String!) {\n  confirmEmail(token: $token) {\n    message\n    success\n  }\n}": types.ConfirmEmailDocument,
-    "mutation Login($input: LoginDto!) {\n  login(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n    error {\n      type\n      message\n    }\n  }\n}": types.LoginDocument,
+    "mutation Login($input: LoginDto!) {\n  login(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n      image\n    }\n    error {\n      type\n      message\n    }\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout\n}": types.LogoutDocument,
     "mutation RefreshToken($refreshToken: String!) {\n  refreshToken(input: {refreshToken: $refreshToken}) {\n    accessToken\n  }\n}": types.RefreshTokenDocument,
-    "mutation Register($input: CreateAccountDto!) {\n  register(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n    error {\n      type\n      message\n    }\n  }\n}": types.RegisterDocument,
+    "mutation Register($input: CreateAccountDto!) {\n  register(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n      image\n    }\n    error {\n      type\n      message\n    }\n  }\n}": types.RegisterDocument,
     "mutation ResendConfirmationEmail {\n  resendConfirmationEmail {\n    success\n    message\n  }\n}": types.ResendConfirmationEmailDocument,
     "mutation ResetPassword($email: String!) {\n  resetPassword(email: $email) {\n    email\n    success\n    message\n  }\n}": types.ResetPasswordDocument,
     "mutation SetNewPassword($input: SetNewPasswordDto!) {\n  setNewPassword(input: $input) {\n    success\n    message\n    error {\n      type\n      message\n    }\n  }\n}": types.SetNewPasswordDocument,
-    "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n  }\n}": types.MeDocument,
+    "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}": types.MeDocument,
 };
 
 /**
@@ -50,7 +50,7 @@ export function graphql(source: "mutation ConfirmEmail($token: String!) {\n  con
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation Login($input: LoginDto!) {\n  login(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n    error {\n      type\n      message\n    }\n  }\n}"): (typeof documents)["mutation Login($input: LoginDto!) {\n  login(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n    error {\n      type\n      message\n    }\n  }\n}"];
+export function graphql(source: "mutation Login($input: LoginDto!) {\n  login(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n      image\n    }\n    error {\n      type\n      message\n    }\n  }\n}"): (typeof documents)["mutation Login($input: LoginDto!) {\n  login(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n      image\n    }\n    error {\n      type\n      message\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -62,7 +62,7 @@ export function graphql(source: "mutation RefreshToken($refreshToken: String!) {
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation Register($input: CreateAccountDto!) {\n  register(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n    error {\n      type\n      message\n    }\n  }\n}"): (typeof documents)["mutation Register($input: CreateAccountDto!) {\n  register(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n    }\n    error {\n      type\n      message\n    }\n  }\n}"];
+export function graphql(source: "mutation Register($input: CreateAccountDto!) {\n  register(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n      image\n    }\n    error {\n      type\n      message\n    }\n  }\n}"): (typeof documents)["mutation Register($input: CreateAccountDto!) {\n  register(input: $input) {\n    user {\n      email\n      firstName\n      lastName\n      displayName\n      image\n    }\n    error {\n      type\n      message\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -78,7 +78,7 @@ export function graphql(source: "mutation SetNewPassword($input: SetNewPasswordD
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n  }\n}"): (typeof documents)["query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n  }\n}"];
+export function graphql(source: "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}"): (typeof documents)["query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

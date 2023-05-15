@@ -5,5 +5,6 @@ query Me {
 		lastName
 		displayName
         role
+        image
 	}
 }

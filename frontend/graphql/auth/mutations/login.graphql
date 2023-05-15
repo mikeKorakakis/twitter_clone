@@ -5,6 +5,7 @@ mutation Login($input: LoginDto!) {
 			firstName
 			lastName
 			displayName
+            image
 		}
 		error {
 			type
