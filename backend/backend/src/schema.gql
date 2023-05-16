@@ -33,6 +33,9 @@ enum AuthenticationErrorType {
 }
 
 type User {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   provider: String!
   providerId: String!
   email: String!
@@ -69,9 +72,24 @@ type ChangePasswordPayload {
   error: AuthenticationError
 }
 
+type Post {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  content: JSON
+  published: Boolean!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
 type Query {
   hello: String!
   me: User!
+  post(id: String!): Post!
 }
 
 type Mutation {
@@ -84,6 +102,9 @@ type Mutation {
   changePassword(input: PasswordValuesDto!): ChangePasswordPayload!
   resendConfirmationEmail: ResponseMessageDto!
   confirmEmail(token: String!): ResponseMessageDto!
+  createPost(createPostInput: CreatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  removePost(id: Int!): Post!
 }
 
 input CreateAccountDto {
@@ -111,4 +132,22 @@ input SetNewPasswordDto {
 input PasswordValuesDto {
   oldPassword: String!
   newPassword: String!
+}
+
+input CreatePostInput {
+  title: String
+  content: JSONObject
+  published: Boolean!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+input UpdatePostInput {
+  title: String
+  content: JSONObject
+  published: Boolean
+  id: Int!
 }

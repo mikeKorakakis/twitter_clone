@@ -23,6 +23,8 @@ const documents = {
     "mutation ResetPassword($email: String!) {\n  resetPassword(email: $email) {\n    email\n    success\n    message\n  }\n}": types.ResetPasswordDocument,
     "mutation SetNewPassword($input: SetNewPasswordDto!) {\n  setNewPassword(input: $input) {\n    success\n    message\n    error {\n      type\n      message\n    }\n  }\n}": types.SetNewPasswordDocument,
     "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}": types.MeDocument,
+    "mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    id\n    title\n    content\n    published\n  }\n}": types.CreatePostDocument,
+    "query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}": types.GetPostDocument,
 };
 
 /**
@@ -79,6 +81,14 @@ export function graphql(source: "mutation SetNewPassword($input: SetNewPasswordD
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}"): (typeof documents)["query Me {\n  me {\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    id\n    title\n    content\n    published\n  }\n}"): (typeof documents)["mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    id\n    title\n    content\n    published\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}"): (typeof documents)["query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

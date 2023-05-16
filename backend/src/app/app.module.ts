@@ -1,31 +1,30 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  RequestMethod,
-  ValidationPipe,
-} from '@nestjs/common';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import {
+    Module
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 // import  { join } from 'path';
-import * as path from 'path';
+import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { GraphQLModule } from '@nestjs/graphql';
-import { AuthModule } from '../auth/auth.module';
-import { UserModule } from '../user/user.module';
-import { User } from '../common/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis'
+import * as path from 'path';
+import { AuthModule } from '../auth/auth.module';
+import { User } from '../common/entities/user.entity';
+import { Post } from '../post/entities/post.entity';
+import { UserModule } from '../user/user.module';
 
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { ThrottlerModule } from '@nestjs/throttler';
 
+
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PostModule } from '../post/post.module';
+import GraphQLJSON from 'graphql-type-json';
 // const cookieSession = require('cookie-session');
 
 // import cookieSession from 'cookie-session';
-
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_PIPE } from '@nestjs/core';
 // import { Tweet } from '../tweet/tweet.entity';
 // import { TweetModule } from '../tweet/tweet.module';
 
@@ -96,7 +95,7 @@ console.log(' process.cwd(),', process.cwd());
             configService.get('DB_TYPE') === 'postgres'
               ? (configService.get('DB_NAME') as string)
               : path.resolve(__dirname, '../../../sqlite.db'),
-          entities: [User],
+          entities: [User, Post],
           synchronize: true,
         };
       },
@@ -106,10 +105,12 @@ console.log(' process.cwd(),', process.cwd());
       driver: ApolloDriver,
       autoSchemaFile: path.join(process.cwd(), 'backend', 'src', 'schema.gql'),
         context: ({ req, res }) => ({ req, res }),
-      playground: true, // Enable GraphQL Playground
+      playground: true, // Enable GraphQL Playground,
+      resolvers: { JSON: GraphQLJSON  }
     }),
     UserModule,
     AuthModule,
+    PostModule
     // TweetModule
   ],
   controllers: [AppController],

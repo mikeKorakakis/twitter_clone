@@ -1,0 +1,8 @@
+query GetPost($id: String!) {
+	post(id: $id) {
+		id
+		published
+		title
+		content
+	}
+}
