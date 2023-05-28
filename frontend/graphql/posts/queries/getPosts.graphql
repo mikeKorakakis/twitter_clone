@@ -1,0 +1,9 @@
+query GetPosts {
+	posts {
+		id
+		published
+		title
+		content
+        createdAt
+	}
+}

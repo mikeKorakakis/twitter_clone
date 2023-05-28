@@ -15,6 +15,7 @@ export default async function me() {
 				{}
 			);
 			return {
+                id: res?.me?.id,
 				email: res?.me?.email,
 				firstName: res?.me?.firstName,
 				lastName: res?.me?.lastName,
@@ -36,6 +37,7 @@ export default async function me() {
 				{}
 			);
 			return {
+                id: res?.me?.id,
 				email: res?.me?.email,
 				firstName: res?.me?.firstName,
 				lastName: res?.me?.lastName,

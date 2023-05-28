@@ -4,9 +4,29 @@
 // import { UseGuards } from '@nestjs/common';
 // import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-// @Resolver(() => User)
-// export class UserResolver {
-//   constructor(private userService: UserService) {}
+import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
+import { User } from "../common/entities";
+import { UserService } from "./user.service";
+import { Post } from "../post/entities/post.entity";
+import { PostService } from "../post/post.service";
+
+@Resolver(() => User)
+export class UserResolver {
+  constructor(private userService: UserService) {}
+
+  @Query(() => User)
+  async user(@Args('id') id: string) {
+    return this.userService.findOne(id);
+  }
+
+  // Resolve the posts field for the User type
+  @ResolveField('posts', () => [Post], { nullable: true })
+  async posts(@Parent() user: User): Promise<Post[]> {
+    const { id } = user;
+    // return this.postService.findAll({ userId: id });
+    return this.userService.findPostsByUser(id); // Assumes there's a findPostsByUser method in UserService
+  }
+}
 
 //   @Query(() => [User])
 // //   @UseGuards(JwtAuthGuard)

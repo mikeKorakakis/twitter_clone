@@ -4,6 +4,7 @@ import { UpdatePostInput } from './dtos/update-post.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
 import { Repository } from 'typeorm';
+import { User } from '../common/entities';
 
 @Injectable()
 export class PostService {
@@ -11,19 +12,21 @@ export class PostService {
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
   ) {}
-  create(createPostInput: CreatePostInput) {
+
+  create(createPostInput: CreatePostInput, author: User) {
     const post = this.postRepository.create({
       title: createPostInput.title,
       content: createPostInput.content,
       published: createPostInput.published,
+      author: author,
     });
     console.log('post',post);
     this.postRepository.save(post);
     return post;
   }
 
-  findAll() {
-    return `This action returns all post`;
+  findAll({userId}: {userId: string}) {
+    return this.postRepository.find({ where: { author: { id: userId} } });
   }
 
   findOne(id: string) {

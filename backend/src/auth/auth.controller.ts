@@ -88,7 +88,6 @@ export class AuthController {
         @CurrentUser() user: User,
         @Query('token') token: string
     ) {
-        console.log('confirmAccount', user, token)
         return this.authService.confirmAccount(user, token)
     }
 

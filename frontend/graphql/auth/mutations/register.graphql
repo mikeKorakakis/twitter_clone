@@ -6,6 +6,7 @@ mutation Register(
 		
 	) {
 		user {
+            id
 			email
 			firstName
 			lastName

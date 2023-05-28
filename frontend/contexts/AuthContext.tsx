@@ -19,7 +19,7 @@ import { z } from "zod";
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
-type UserType = Pick<User, "email" | "firstName" | "lastName" | "displayName" | "image">;
+type UserType = Pick<User, "id" | "email" | "firstName" | "lastName" | "displayName" | "image">;
 
 type RegisterSchema = z.infer<typeof registerSchema>;
 

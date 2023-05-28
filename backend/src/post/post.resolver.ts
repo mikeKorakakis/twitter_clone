@@ -3,19 +3,30 @@ import { PostService } from './post.service';
 import { Post } from './entities/post.entity';
 import { CreatePostInput } from './dtos/create-post.input';
 import { UpdatePostInput } from './dtos/update-post.input';
+import { CurrentUser } from '../common/decorators';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../common/guards';
+import { User } from '../common/entities';
 
 @Resolver(() => Post)
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Post)
-  createPost(@Args('createPostInput') createPostInput: CreatePostInput) {
-    return this.postService.create(createPostInput);
+  createPost(
+    @Args('createPostInput') createPostInput: CreatePostInput,
+    @CurrentUser() user,
+  ) {
+    return this.postService.create(createPostInput, user);
   }
 
-  @Query(() => [Post], { name: 'post' })
-  findAll() {
-    return this.postService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Query(() => [Post], { name: 'posts' })
+  findAll(@CurrentUser() user: User) {
+    // return this.postService.findAll({ id: user.id });
+
+    return this.postService.findAll({ userId: user.id });
   }
 
   @Query(() => Post, { name: 'post' })

@@ -89,6 +89,7 @@ scalar JSON
 type Query {
   hello: String!
   me: User!
+  posts: [Post!]!
   post(id: String!): Post!
 }
 
