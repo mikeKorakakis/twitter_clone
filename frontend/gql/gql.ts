@@ -24,6 +24,8 @@ const documents = {
     "mutation SetNewPassword($input: SetNewPasswordDto!) {\n  setNewPassword(input: $input) {\n    success\n    message\n    error {\n      type\n      message\n    }\n  }\n}": types.SetNewPasswordDocument,
     "query Me {\n  me {\n    id\n    email\n    firstName\n    lastName\n    displayName\n    role\n    image\n  }\n}": types.MeDocument,
     "mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    id\n    title\n    content\n    published\n  }\n}": types.CreatePostDocument,
+    "mutation DeletePost($id: String!) {\n  deletePost(id: $id) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.DeletePostDocument,
+    "mutation UpdatePost($updatePostInput: UpdatePostInput!) {\n  updatePost(updatePostInput: $updatePostInput) {\n    id\n    title\n    content\n    published\n  }\n}": types.UpdatePostDocument,
     "query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}": types.GetPostDocument,
     "query GetPosts {\n  posts {\n    id\n    published\n    title\n    content\n    createdAt\n  }\n}": types.GetPostsDocument,
 };
@@ -86,6 +88,14 @@ export function graphql(source: "query Me {\n  me {\n    id\n    email\n    firs
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    id\n    title\n    content\n    published\n  }\n}"): (typeof documents)["mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    id\n    title\n    content\n    published\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation DeletePost($id: String!) {\n  deletePost(id: $id) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"): (typeof documents)["mutation DeletePost($id: String!) {\n  deletePost(id: $id) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdatePost($updatePostInput: UpdatePostInput!) {\n  updatePost(updatePostInput: $updatePostInput) {\n    id\n    title\n    content\n    published\n  }\n}"): (typeof documents)["mutation UpdatePost($updatePostInput: UpdatePostInput!) {\n  updatePost(updatePostInput: $updatePostInput) {\n    id\n    title\n    content\n    published\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

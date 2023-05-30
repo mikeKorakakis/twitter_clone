@@ -7,6 +7,7 @@ import { CurrentUser } from '../common/decorators';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards';
 import { User } from '../common/entities';
+import { RemovePostPayload } from './dtos/remove-post.payload';
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -18,14 +19,13 @@ export class PostResolver {
     @Args('createPostInput') createPostInput: CreatePostInput,
     @CurrentUser() user,
   ) {
+    console.log('user in create post', user);
     return this.postService.create(createPostInput, user);
   }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => [Post], { name: 'posts' })
   findAll(@CurrentUser() user: User) {
-    // return this.postService.findAll({ id: user.id });
-
     return this.postService.findAll({ userId: user.id });
   }
 
@@ -34,13 +34,18 @@ export class PostResolver {
     return this.postService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Post)
-  updatePost(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
-    return this.postService.update(updatePostInput.id, updatePostInput);
+  updatePost(
+    @Args('updatePostInput') updatePostInput: UpdatePostInput,
+    @CurrentUser() user: User,
+  ) {
+    return this.postService.update(updatePostInput.id, updatePostInput, user);
   }
 
-  @Mutation(() => Post)
-  removePost(@Args('id', { type: () => Int }) id: number) {
-    return this.postService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => RemovePostPayload)
+  deletePost(@Args('id', { type: () => String }) id: string, @CurrentUser() user: User) {
+    return this.postService.delete(id, user);
   }
 }

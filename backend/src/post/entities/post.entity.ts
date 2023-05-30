@@ -31,7 +31,7 @@ export class Post extends AbstractEntity<Post> {
   public published: boolean;
 
   @Field()
-  @Column({ name: 'author_id' })
+  @Column()
   public authorId: string;
 
   @Field((type) => User)
@@ -40,6 +40,6 @@ export class Post extends AbstractEntity<Post> {
     nullable: true,
     lazy: true,
   })
-  @JoinColumn({ name: 'author_id' })
+  @JoinColumn()
   public author: User;
 }

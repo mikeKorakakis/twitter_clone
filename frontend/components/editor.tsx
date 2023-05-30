@@ -21,8 +21,11 @@ import {
 	CreatePostDocument,
 	CreatePostInput,
 	CreatePostMutation,
-    CreatePostMutationVariables,
-    Post,
+	CreatePostMutationVariables,
+	Post,
+	UpdatePostDocument,
+	UpdatePostMutation,
+	UpdatePostMutationVariables,
 } from "@/gql/graphql";
 
 interface EditorProps {
@@ -31,15 +34,16 @@ interface EditorProps {
 
 type FormData = z.infer<typeof postPatchSchema>;
 
-async function createPost(data: FormData) {
-    console.log(JSON.stringify(data))
+async function updatePost(data: FormData, id: string) {
+	console.log(JSON.stringify(data));
 	const response = await gqlClient().request<
-		CreatePostMutation,
-		CreatePostMutationVariables
-	>(CreatePostDocument, { createPostInput: {...data, published: false}});
-    return response?.createPost;
+		UpdatePostMutation,
+		UpdatePostMutationVariables
+	>(UpdatePostDocument, { updatePostInput: { ...data, published: false, id } });
+	return response?.updatePost;
 }
 export function Editor({ post }: EditorProps) {
+ 
 	const { register, handleSubmit } = useForm<FormData>({
 		resolver: zodResolver(postPatchSchema),
 	});
@@ -115,10 +119,7 @@ export function Editor({ post }: EditorProps) {
 		// 	}),
 		// });
 
-        const response = await createPost({
-            title: data.title,
-            content: blocks,
-        });
+		const response = await updatePost({title: data.title, content: blocks}, post?.id);
 
 		setIsSaving(false);
 

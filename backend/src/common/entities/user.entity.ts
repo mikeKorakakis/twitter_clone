@@ -106,12 +106,12 @@ export class User extends AbstractEntity<User> {
     type: 'enum',
     enum: AccountStatus,
   })
-
-  @Field((type) => [Post])
-  @OneToMany(() => Post, (post) => post.author, { lazy: true })
-  public posts: Post[];
-
   public accountStatus: AccountStatus;
+  
+  @Field((type) => [Post])
+  @OneToMany(() => Post, (post) => post.author, { nullable: true })
+  public posts?: Post[];
+
 
   // @ManyToMany(() => Room, room => room.users)
   // public rooms: Room[]

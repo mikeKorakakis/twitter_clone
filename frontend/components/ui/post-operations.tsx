@@ -3,7 +3,6 @@
 import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Post } from "@prisma/client"
 
 import {
   AlertDialog,
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/icons"
+import { Post } from "@/gql/graphql"
 
 async function deletePost(postId: string) {
   const response = await fetch(`/api/posts/${postId}`, {

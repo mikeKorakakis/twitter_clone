@@ -1,0 +1,172 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ResponseMessageDto {
+  message: String
+  success: Boolean
+}
+
+type AuthenticationError {
+  message: String!
+  time: DateTime!
+  type: AuthenticationErrorType!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum AuthenticationErrorType {
+  INVALID_CREDENTIALS
+  USER_NOT_FOUND
+  USER_ALREADY_EXISTS
+  UNAUTHORIZED
+  FORBIDDEN
+  NICKNAME_EXISTS
+  EMAIL_EXISTS
+  EMAIL_NOT_FOUND
+  EMAIL_NOT_VERIFIED
+  REGISTERED_WITH_SOCIAL
+  TOKEN_EXPIRED
+}
+
+type Post {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  content: JSON
+  published: Boolean!
+  authorId: String!
+  author: User!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+type User {
+  id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  provider: String!
+  providerId: String!
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  displayName: String!
+  image: String!
+  role: String!
+  accountStatus: String!
+  posts: [Post!]!
+}
+
+type AuthPayload {
+  user: User
+  accessToken: String
+  error: AuthenticationError
+}
+
+type ResetPasswordDto {
+  message: String
+  success: Boolean
+  email: String!
+}
+
+type SetNewPasswordPayload {
+  message: String
+  success: Boolean
+  error: AuthenticationError
+}
+
+type ChangePasswordPayload {
+  message: String
+  success: Boolean
+  error: AuthenticationError
+}
+
+type PostError {
+  message: String!
+  time: DateTime!
+  type: PostErrorType!
+}
+
+enum PostErrorType {
+  NOT_USER_POST
+}
+
+type RemovePostPayload {
+  success: Boolean
+  error: PostError
+}
+
+type Query {
+  hello: String!
+  me: User!
+  posts: [Post!]!
+  post(id: String!): Post!
+}
+
+type Mutation {
+  register(input: CreateAccountDto!): AuthPayload!
+  login(input: LoginDto!): AuthPayload!
+  logout: Boolean!
+  refreshToken(input: RefreshTokenDto!): AuthPayload!
+  resetPassword(email: String!): ResetPasswordDto!
+  setNewPassword(input: SetNewPasswordDto!): SetNewPasswordPayload!
+  changePassword(input: PasswordValuesDto!): ChangePasswordPayload!
+  resendConfirmationEmail: ResponseMessageDto!
+  confirmEmail(token: String!): ResponseMessageDto!
+  createPost(createPostInput: CreatePostInput!): Post!
+  updatePost(updatePostInput: UpdatePostInput!): Post!
+  deletePost(id: String!): RemovePostPayload!
+}
+
+input CreateAccountDto {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  displayName: String!
+}
+
+input LoginDto {
+  email: String!
+  password: String!
+}
+
+input RefreshTokenDto {
+  refreshToken: String!
+}
+
+input SetNewPasswordDto {
+  newPassword: String!
+  token: String!
+}
+
+input PasswordValuesDto {
+  oldPassword: String!
+  newPassword: String!
+}
+
+input CreatePostInput {
+  title: String
+  content: JSONObject
+  published: Boolean!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
+
+input UpdatePostInput {
+  title: String
+  content: JSONObject
+  published: Boolean
+  id: String!
+}

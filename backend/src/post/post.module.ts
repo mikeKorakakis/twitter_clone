@@ -14,19 +14,9 @@ import { JwtAuthGuard } from '../common/guards';
 
 @Module({
   imports: [
-    // AuthModule,
+    AuthModule,
     UserModule,
     TypeOrmModule.forFeature([Post]),
-    // JwtModule.registerAsync({
-    //   imports: [ConfigModule],
-    //   inject: [ConfigService],
-    //   useFactory: async (configService: ConfigService) => ({
-    //     secret: configService.get('JWT_ACCESS_SECRET_KEY'),
-    //     signOptions: {
-    //       expiresIn: configService.get('JWT_ACCESS_EXPIRATION_TIME'),
-    //     },
-    //   }),
-    // }),
   ],
   providers: [PostResolver, PostService],
 })

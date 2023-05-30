@@ -20,8 +20,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err, user, info, context) {
     const req = this.getRequest(context);
     const refreshToken = req.cookies['refresh_token'];
-    // console.log('refreshToken', req.cookies);
-
+    console.log('refreshToken', req.cookies);
+    
     if (info && refreshToken) {
       if (
         info instanceof TokenExpiredError &&
