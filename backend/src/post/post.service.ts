@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostInput } from './dtos/create-post.input';
 import { UpdatePostInput } from './dtos/update-post.input';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -35,38 +35,54 @@ export class PostService {
     return this.postRepository.findOne({ where: { id: id } });
   }
 
-  update(id: string, updatePostInput: UpdatePostInput, author: User) {
-    return this.postRepository
-      .createQueryBuilder()
-      .update(Post)
-      .set({
-        title: updatePostInput.title,
-        published: updatePostInput.published,
-        content: () =>
-          `jsonb_set(content, '{}', '${JSON.stringify(
-            updatePostInput.content,
-          )}')`,
-      })
-      .where('id = :id and authorId = :authorId', {
-        id: id,
-        authorId: author.id,
-      })
-      .execute();
+  async update(id: string, updatePostInput: UpdatePostInput, author: User) {
+    const post = await this.postRepository.findOne({
+      where: { id: id, author: { id: author.id } },
+    });
+
+    if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+    
+      // Update fields
+      post.title = updatePostInput.title;
+      post.content = updatePostInput.content;
+      post.published = updatePostInput.published;
+    
+      // Save the updated post
+      return this.postRepository.save(post);
+
+    // return this.postRepository
+    //   .createQueryBuilder()
+    //   .update(Post)
+    //   .set({
+    //     title: updatePostInput.title,
+    //     published: updatePostInput.published,
+    //     content: () =>
+    //       `jsonb_set(content, '{}', '${JSON.stringify(
+    //         updatePostInput.content,
+    //       )}')`,
+    //   })
+    //   .where('id = :id and authorId = :authorId', {
+    //     id: id,
+    //     authorId: author.id,
+    //   })
+    //   .execute();
   }
 
   delete(id: string, user: User) {
     const post = this.postRepository.findOne({ where: { authorId: user.id } });
     if (!post) {
-        return new PostError({
-            message: 'Post does not belong to user',
-            type: PostErrorType.NOT_USER_POST,
-        });
+      return new PostError({
+        message: 'Post does not belong to user',
+        type: PostErrorType.NOT_USER_POST,
+      });
     }
     this.postRepository.delete({ id: id });
 
     return new RemovePostPayload({
-        success: true,
-        error: null
-    })
+      success: true,
+      error: null,
+    });
   }
 }

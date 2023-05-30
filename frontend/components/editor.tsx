@@ -43,7 +43,7 @@ async function updatePost(data: FormData, id: string) {
 	return response?.updatePost;
 }
 export function Editor({ post }: EditorProps) {
- 
+    console.log('post______', post)
 	const { register, handleSubmit } = useForm<FormData>({
 		resolver: zodResolver(postPatchSchema),
 	});
