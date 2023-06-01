@@ -1,8 +1,9 @@
+// 'use client'
 import { notFound, redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
 import { Editor } from "@/components/editor";
-import { gqlClient } from "@/lib/client";
+import { gqlClient } from "@/lib/gql_client_server";
 import {
 	GetPostDocument,
 	GetPostQuery,
@@ -19,7 +20,8 @@ import {
 // }
 
 async function getPost(id: string) {
-	const response = await gqlClient().request<
+    const client = await gqlClient()
+	const response = await client.request<
 		GetPostQuery,
 		GetPostQueryVariables
 	>(GetPostDocument, { id });
@@ -43,6 +45,7 @@ export default async function EditorPage({ params }: EditorPageProps) {
 	if (!post) {
 		notFound();
 	}
+
 
 	return (
 		<Editor

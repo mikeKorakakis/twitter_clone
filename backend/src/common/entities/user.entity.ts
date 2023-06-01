@@ -107,11 +107,42 @@ export class User extends AbstractEntity<User> {
     enum: AccountStatus,
   })
   public accountStatus: AccountStatus;
-  
+
   @Field((type) => [Post])
   @OneToMany(() => Post, (post) => post.author, { nullable: true })
   public posts?: Post[];
 
+  @Field()
+  @Column({
+    name: 'stripe_customer_id',
+    nullable: true,
+    default: null,
+  })
+  public stripeCustomerId: string;
+
+  @Field()
+  @Column({
+    name: 'stripe_subscription_id',
+    nullable: true,
+    default: null,
+  })
+  public stripeSubscriptionId: string;
+
+  @Field()
+  @Column({
+    name: 'stripe_price_id',
+    nullable: true,
+    default: null,
+  })
+  public stripePriceId: string;
+
+  @Field()
+  @Column({
+    name: 'stripe_current_period_end',
+    nullable: true,
+    default: null,
+  })
+  public stripeCurrentPeriodEnd: Date;
 
   // @ManyToMany(() => Room, room => room.users)
   // public rooms: Room[]

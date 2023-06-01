@@ -12,6 +12,7 @@ import {
 	CreatePostDocument,
 	CreatePostMutation,
 	CreatePostMutationVariables,
+	PostErrorType,
 } from "@/gql/graphql";
 
 interface PostCreateButtonProps extends ButtonProps {}
@@ -51,7 +52,7 @@ export function PostCreateButton({
 
 		setIsLoading(false);
 
-		if (!response?.createPost?.id) {
+		if (!response?.createPost?.success) {
 			// if (response.status === 402) {
 			// 	return toast({
 			// 		title: "Limit of 3 posts reached.",
@@ -59,21 +60,33 @@ export function PostCreateButton({
 			// 		variant: "destructive",
 			// 	});
 			// }
-
-			return toast({
-				title: "Something went wrong.",
-				description: "Your post was not created. Please try again.",
-				variant: "destructive",
-			});
+			if (
+				response?.createPost?.error?.type ===
+				PostErrorType.MaxPostReached
+			) {
+				return toast({
+					title: "Something went wrong.",
+					description:
+						"You have reached the maximum number of posts. Please upgrade to the PRO plan.",
+					variant: "destructive",
+				});
+			} else {
+				return toast({
+					title: "Something went wrong.",
+					description: "Your post was not created. Please try again.",
+					variant: "destructive",
+				});
+			}
 		}
 
-        const post = response.createPost;
+		const post = response.createPost.post;
 		// const post = await response.json();
 
 		// This forces a cache invalidation.
-		router.refresh();
-
-		router.push(`/editor/${post.id}`);
+		if (post) {
+			router.refresh();
+			router.push(`/editor/${post.id}`);
+		}
 	}
 
 	return (

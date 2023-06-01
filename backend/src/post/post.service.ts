@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from '../common/entities';
 import { PostError, PostErrorType } from '../common/errors/postError';
 import { RemovePostPayload } from './dtos/remove-post.payload';
+import { CreatePostPayload } from './dtos/create-post.payload';
 
 @Injectable()
 export class PostService {
@@ -15,19 +16,37 @@ export class PostService {
     private readonly postRepository: Repository<Post>,
   ) {}
 
-  create(createPostInput: CreatePostInput, author: User) {
+  async create(createPostInput: CreatePostInput, author: User) {
+    const userPostCount = await this.findAll({ userId: author.id });
+
+    if (userPostCount.length >= 3) {
+      const postError = new PostError({
+        message: 'User has reached maximum number of posts',
+        type: PostErrorType.MAX_POST_REACHED,
+      });
+
+      return new CreatePostPayload({
+        success: false,
+        error: postError,
+      });
+    }
     const post = this.postRepository.create({
       title: createPostInput.title,
       content: createPostInput.content,
       published: createPostInput.published,
       authorId: author?.id,
     });
-    return this.postRepository.save(post);
-
+    const createdPost = await this.postRepository.save(post);
+    return new CreatePostPayload({
+      success: true,
+      post: createdPost,
+    });
     // return post;
   }
 
   findAll({ userId }: { userId: string }) {
+    const post = this.postRepository.find({ where: { authorId: userId } });
+    console.log(post);
     return this.postRepository.find({ where: { author: { id: userId } } });
   }
 
@@ -41,16 +60,16 @@ export class PostService {
     });
 
     if (!post) {
-        throw new NotFoundException('Post not found');
-      }
-    
-      // Update fields
-      post.title = updatePostInput.title;
-      post.content = updatePostInput.content;
-      post.published = updatePostInput.published;
-    
-      // Save the updated post
-      return this.postRepository.save(post);
+      throw new NotFoundException('Post not found');
+    }
+
+    // Update fields
+    post.title = updatePostInput.title;
+    post.content = updatePostInput.content;
+    post.published = updatePostInput.published;
+
+    // Save the updated post
+    return this.postRepository.save(post);
 
     // return this.postRepository
     //   .createQueryBuilder()

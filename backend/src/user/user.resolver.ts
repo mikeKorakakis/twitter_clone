@@ -19,6 +19,11 @@ export class UserResolver {
     return this.userService.findOne(id);
   }
 
+  @Query(() => User)
+  async getStripe(@Args('id') id: string) {
+    return this.userService.findOne(id);
+  }
+
   // Resolve the posts field for the User type
   @ResolveField('posts', () => [Post], { nullable: true })
   async posts(@Parent() user: User): Promise<Post[]> {

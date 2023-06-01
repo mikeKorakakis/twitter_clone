@@ -63,6 +63,10 @@ type User {
   role: String!
   accountStatus: String!
   posts: [Post!]!
+  stripeCustomerId: String!
+  stripeSubscriptionId: String!
+  stripePriceId: String!
+  stripeCurrentPeriodEnd: DateTime!
 }
 
 type AuthPayload {
@@ -97,6 +101,7 @@ type PostError {
 
 enum PostErrorType {
   NOT_USER_POST
+  MAX_POST_REACHED
 }
 
 type RemovePostPayload {
@@ -104,7 +109,15 @@ type RemovePostPayload {
   error: PostError
 }
 
+type CreatePostPayload {
+  post: Post
+  success: Boolean
+  error: PostError
+}
+
 type Query {
+  user(id: String!): User!
+  getStripe(id: String!): User!
   hello: String!
   me: User!
   posts: [Post!]!
@@ -121,7 +134,7 @@ type Mutation {
   changePassword(input: PasswordValuesDto!): ChangePasswordPayload!
   resendConfirmationEmail: ResponseMessageDto!
   confirmEmail(token: String!): ResponseMessageDto!
-  createPost(createPostInput: CreatePostInput!): Post!
+  createPost(createPostInput: CreatePostInput!): CreatePostPayload!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   deletePost(id: String!): RemovePostPayload!
 }

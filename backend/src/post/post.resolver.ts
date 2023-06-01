@@ -8,18 +8,18 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards';
 import { User } from '../common/entities';
 import { RemovePostPayload } from './dtos/remove-post.payload';
+import { CreatePostPayload } from './dtos/create-post.payload';
 
 @Resolver(() => Post)
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => Post)
+  @Mutation(() => CreatePostPayload)
   createPost(
     @Args('createPostInput') createPostInput: CreatePostInput,
     @CurrentUser() user,
   ) {
-    console.log('user in create post', user);
     return this.postService.create(createPostInput, user);
   }
 

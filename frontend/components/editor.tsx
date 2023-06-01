@@ -43,7 +43,6 @@ async function updatePost(data: FormData, id: string) {
 	return response?.updatePost;
 }
 export function Editor({ post }: EditorProps) {
-    console.log('post______', post)
 	const { register, handleSubmit } = useForm<FormData>({
 		resolver: zodResolver(postPatchSchema),
 	});
@@ -63,6 +62,7 @@ export function Editor({ post }: EditorProps) {
 		const InlineCode = (await import("@editorjs/inline-code")).default;
 
 		const body = postPatchSchema.parse(post);
+
 
 		if (!ref.current) {
 			const editor = new EditorJS({

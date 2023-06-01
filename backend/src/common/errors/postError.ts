@@ -3,6 +3,7 @@ import { registerEnumType } from '@nestjs/graphql';
 
 export enum PostErrorType {
   NOT_USER_POST = 'NOT_USER_POST',
+  MAX_POST_REACHED = 'MAX_POST_REACHED',
   
 }
 
