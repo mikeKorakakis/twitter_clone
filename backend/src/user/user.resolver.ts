@@ -9,6 +9,10 @@ import { User } from "../common/entities";
 import { UserService } from "./user.service";
 import { Post } from "../post/entities/post.entity";
 import { PostService } from "../post/post.service";
+import { StripeInfoPayload } from "../post/dtos/stripe-info.payload";
+import { UseGuards } from "@nestjs/common";
+import { JwtAuthGuard } from "../common/guards";
+import { CurrentUser } from "../common/decorators";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -19,9 +23,10 @@ export class UserResolver {
     return this.userService.findOne(id);
   }
 
-  @Query(() => User)
-  async getStripe(@Args('id') id: string) {
-    return this.userService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @Query(() => StripeInfoPayload)
+  async getStripeInfo(@CurrentUser() user: User) {
+    return this.userService.getStripeInfo(user?.id);
   }
 
   // Resolve the posts field for the User type

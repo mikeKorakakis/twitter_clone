@@ -16,7 +16,6 @@ import { BillingForm } from "@/components/billing-form"
 import { DashboardHeader } from "@/components/header"
 import { Icons } from "@/components/icons"
 import { DashboardShell } from "@/components/shell"
-import { useAuth } from "@/contexts/AuthContext"
 
 export const metadata = {
   title: "Billing",
@@ -24,13 +23,13 @@ export const metadata = {
 }
 
 export default async function BillingPage() {
-  const {user} = await useAuth()
+//   const {user} = await useAuth()
 
-  if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login")
-  }
+//   if (!user) {
+//     redirect(authOptions?.pages?.signIn || "/login")
+//   }
 
-  const subscriptionPlan = await getUserSubscriptionPlan(user.id)
+  const subscriptionPlan = await getUserSubscriptionPlan()
 
   // If user has a pro plan, check cancel status on Stripe.
   let isCanceled = false

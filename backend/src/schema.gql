@@ -69,6 +69,13 @@ type User {
   stripeCurrentPeriodEnd: DateTime!
 }
 
+type StripeInfoPayload {
+  stripeCustomerId: String
+  stripeSubscriptionId: String
+  stripePriceId: String
+  stripeCurrentPeriodEnd: DateTime
+}
+
 type AuthPayload {
   user: User
   accessToken: String
@@ -117,7 +124,7 @@ type CreatePostPayload {
 
 type Query {
   user(id: String!): User!
-  getStripe(id: String!): User!
+  getStripeInfo: StripeInfoPayload!
   hello: String!
   me: User!
   posts: [Post!]!

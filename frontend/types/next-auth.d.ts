@@ -16,3 +16,6 @@ declare module "next-auth" {
     }
   }
 }
+// sk_test_51MT07bDhcfllogi9YQOsCpHOwzHH5yHYEAlIB2oIg2TBjNbtL12YGE5XOWoAysU1TjblrvkjJ9Pv0J3HCMtliOJt00tOwFcPrR
+// 
+// prod_O0UB007OfrzJh6

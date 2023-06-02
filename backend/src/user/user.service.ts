@@ -10,6 +10,12 @@ import { User } from '../common/entities';
 import { AccountStatus, PostgresErrorCode } from '../common/enums';
 import { UniqueViolation } from '../common/exceptions';
 import { Repository } from 'typeorm';
+import { StripeInfoPayload } from '../post/dtos/stripe-info.payload';
+import { stripe } from '../lib/stripe';
+import { absoluteUrl } from '../lib/utils';
+import { freePlan, proPlan } from '../config/subscriptions';
+
+const billingUrl = absoluteUrl('/dashboard/billing');
 
 @Injectable()
 export class UserService {
@@ -47,6 +53,54 @@ export class UserService {
     await this.userRepository.save(user);
 
     return user;
+  }
+
+  public async subscribeToPremium(user: User) {
+    const { id: userId, email } = user;
+    const subscriptionPlan = await this.getStripeInfo(userId);
+
+    const isPro =
+      !!subscriptionPlan.stripePriceId &&
+      subscriptionPlan.stripeCurrentPeriodEnd?.getTime() + 86_400_000 >
+        Date.now();
+
+    // const plan = isPro ? proPlan : freePlan;
+    const stripeSession = await stripe.checkout.sessions.create({
+      success_url: billingUrl,
+      cancel_url: billingUrl,
+      payment_method_types: ['card'],
+      mode: 'subscription',
+      billing_address_collection: 'auto',
+      customer_email: email,
+      line_items: [
+        {
+          price: proPlan.stripePriceId,
+          quantity: 1,
+        },
+      ],
+      metadata: {
+        // userId: session.user.id,
+        userId,
+      },
+    });
+
+    return stripeSession
+
+  }
+
+  public async getStripeInfo(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return new StripeInfoPayload({
+      stripeCurrentPeriodEnd: user.stripeCurrentPeriodEnd,
+      stripePriceId: user.stripePriceId,
+      stripeSubscriptionId: user.stripeSubscriptionId,
+      stripeCustomerId: user.stripeCustomerId,
+    });
   }
 
   public async update(userId: string, values: QueryDeepPartialEntity<User>) {

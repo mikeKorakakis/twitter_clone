@@ -1,0 +1,8 @@
+query GetStripeInfo {
+	getStripeInfo {
+		stripeCustomerId
+		stripeSubscriptionId
+		stripePriceId
+		stripeCurrentPeriodEnd
+	}
+}
