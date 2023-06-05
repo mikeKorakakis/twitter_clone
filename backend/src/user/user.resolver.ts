@@ -4,15 +4,22 @@
 // import { UseGuards } from '@nestjs/common';
 // import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
-import { Args, Parent, Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { User } from "../common/entities";
-import { UserService } from "./user.service";
-import { Post } from "../post/entities/post.entity";
-import { PostService } from "../post/post.service";
-import { StripeInfoPayload } from "../post/dtos/stripe-info.payload";
-import { UseGuards } from "@nestjs/common";
-import { JwtAuthGuard } from "../common/guards";
-import { CurrentUser } from "../common/decorators";
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { User } from '../common/entities';
+import { UserService } from './user.service';
+import { Post } from '../post/entities/post.entity';
+import { PostService } from '../post/post.service';
+import { StripeInfoPayload } from '../post/dtos/stripe-info.payload';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../common/guards';
+import { CurrentUser } from '../common/decorators';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -27,6 +34,12 @@ export class UserResolver {
   @Query(() => StripeInfoPayload)
   async getStripeInfo(@CurrentUser() user: User) {
     return this.userService.getStripeInfo(user?.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => String)
+  async subscribeToPremium(@CurrentUser() user: User) {
+    return this.userService.subscribeToPremium(user);
   }
 
   // Resolve the posts field for the User type

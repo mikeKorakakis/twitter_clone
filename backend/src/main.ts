@@ -28,7 +28,8 @@ console.error('process.env.NODE_ENV', process.env.NODE_ENV);
 export async function bootstrap(): Promise<NestExpressApplication> {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
-    new ExpressAdapter(),
+    // new ExpressAdapter(),
+    // { rawBody: true },
   );
 
   const configService = app.get<ConfigService>(ConfigService);
@@ -42,17 +43,18 @@ export async function bootstrap(): Promise<NestExpressApplication> {
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
 
+  app.use('/stripe-webhook', express.raw({ type: 'application/json' }));
   app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
+  //   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-  
+
   // Configure helmet with a custom CSP
   app.use(
     helmet({
       contentSecurityPolicy: {
         directives: {
           ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-          'script-src': ["'self'", "cdn.jsdelivr.net", "'unsafe-inline'"],
+          'script-src': ["'self'", 'cdn.jsdelivr.net', "'unsafe-inline'"],
         },
       },
     }),
@@ -66,8 +68,8 @@ export async function bootstrap(): Promise<NestExpressApplication> {
 
   //   app.useWebSocketAdapter(redisIoAdapter)
 
-//   const globalPrefix = 'api';
-//   app.setGlobalPrefix(globalPrefix);
+  //   const globalPrefix = 'api';
+  //   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 4000;
 
   //   app.useGlobalPipes(

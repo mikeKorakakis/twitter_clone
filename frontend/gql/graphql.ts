@@ -94,6 +94,7 @@ export type Mutation = {
   resendConfirmationEmail: ResponseMessageDto;
   resetPassword: ResetPasswordDto;
   setNewPassword: SetNewPasswordPayload;
+  subscribeToPremium: Scalars['String'];
   updatePost: Post;
 };
 
@@ -233,10 +234,10 @@ export type SetNewPasswordPayload = {
 
 export type StripeInfoPayload = {
   __typename?: 'StripeInfoPayload';
-  stripeCurrentPeriodEnd: Scalars['DateTime'];
-  stripeCustomerId: Scalars['String'];
-  stripePriceId: Scalars['String'];
-  stripeSubscriptionId: Scalars['String'];
+  stripeCurrentPeriodEnd?: Maybe<Scalars['DateTime']>;
+  stripeCustomerId?: Maybe<Scalars['String']>;
+  stripePriceId?: Maybe<Scalars['String']>;
+  stripeSubscriptionId?: Maybe<Scalars['String']>;
 };
 
 export type UpdatePostInput = {
@@ -365,10 +366,15 @@ export type GetPostsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetPostsQuery = { __typename?: 'Query', posts: Array<{ __typename?: 'Post', id: string, published: boolean, title: string, content?: any | null, createdAt: any }> };
 
+export type SubscribeToPremiumMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SubscribeToPremiumMutation = { __typename?: 'Mutation', subscribeToPremium: string };
+
 export type GetStripeInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetStripeInfoQuery = { __typename?: 'Query', getStripeInfo: { __typename?: 'StripeInfoPayload', stripeCustomerId: string, stripeSubscriptionId: string, stripePriceId: string, stripeCurrentPeriodEnd: any } };
+export type GetStripeInfoQuery = { __typename?: 'Query', getStripeInfo: { __typename?: 'StripeInfoPayload', stripeCustomerId?: string | null, stripeSubscriptionId?: string | null, stripePriceId?: string | null, stripeCurrentPeriodEnd?: any | null } };
 
 
 export const ChangePasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ChangePassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordValuesDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"error"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]} as unknown as DocumentNode<ChangePasswordMutation, ChangePasswordMutationVariables>;
@@ -386,4 +392,5 @@ export const DeletePostDocument = {"kind":"Document","definitions":[{"kind":"Ope
 export const UpdatePostDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdatePost"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updatePostInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdatePostInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePost"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updatePostInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updatePostInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"published"}}]}}]}}]} as unknown as DocumentNode<UpdatePostMutation, UpdatePostMutationVariables>;
 export const GetPostDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPost"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"post"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"published"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]} as unknown as DocumentNode<GetPostQuery, GetPostQueryVariables>;
 export const GetPostsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetPosts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"posts"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"published"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"content"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}}]}}]}}]} as unknown as DocumentNode<GetPostsQuery, GetPostsQueryVariables>;
+export const SubscribeToPremiumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SubscribeToPremium"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscribeToPremium"}}]}}]} as unknown as DocumentNode<SubscribeToPremiumMutation, SubscribeToPremiumMutationVariables>;
 export const GetStripeInfoDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetStripeInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getStripeInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stripeCustomerId"}},{"kind":"Field","name":{"kind":"Name","value":"stripeSubscriptionId"}},{"kind":"Field","name":{"kind":"Name","value":"stripePriceId"}},{"kind":"Field","name":{"kind":"Name","value":"stripeCurrentPeriodEnd"}}]}}]}}]} as unknown as DocumentNode<GetStripeInfoQuery, GetStripeInfoQueryVariables>;

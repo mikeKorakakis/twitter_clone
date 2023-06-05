@@ -15,7 +15,8 @@ import { stripe } from '../lib/stripe';
 import { absoluteUrl } from '../lib/utils';
 import { freePlan, proPlan } from '../config/subscriptions';
 
-const billingUrl = absoluteUrl('/dashboard/billing');
+// const billingUrl = absoluteUrl('/dashboard/billing');
+
 
 @Injectable()
 export class UserService {
@@ -56,16 +57,28 @@ export class UserService {
   }
 
   public async subscribeToPremium(user: User) {
+    const billingUrl = process.env.ORIGIN + '/dashboard/billing';
     const { id: userId, email } = user;
     const subscriptionPlan = await this.getStripeInfo(userId);
 
     const isPro =
       !!subscriptionPlan.stripePriceId &&
-      subscriptionPlan.stripeCurrentPeriodEnd?.getTime() + 86_400_000 >
+      new Date(subscriptionPlan.stripeCurrentPeriodEnd)?.getTime() + 86_400_000 >
         Date.now();
 
+    if (isPro && subscriptionPlan.stripeCustomerId) {
+      const stripeSession = await stripe(process.env.STRIPE_API_KEY).billingPortal.sessions.create({
+        customer: subscriptionPlan.stripeCustomerId,
+        return_url: billingUrl,
+      });
+
+      console.log('stripe session', stripeSession);
+
+      return stripeSession.url;
+    }
+
     // const plan = isPro ? proPlan : freePlan;
-    const stripeSession = await stripe.checkout.sessions.create({
+    const stripeSession = await stripe(process.env.STRIPE_API_KEY).checkout.sessions.create({
       success_url: billingUrl,
       cancel_url: billingUrl,
       payment_method_types: ['card'],
@@ -74,8 +87,9 @@ export class UserService {
       customer_email: email,
       line_items: [
         {
-          price: proPlan.stripePriceId,
-          quantity: 1,
+        //   price: proPlan.stripePriceId,
+        price: process.env.STRIPE_PRO_MONTHLY_PLAN_ID,
+        quantity: 1,
         },
       ],
       metadata: {
@@ -84,8 +98,7 @@ export class UserService {
       },
     });
 
-    return stripeSession
-
+    return stripeSession.url;
   }
 
   public async getStripeInfo(userId: string) {

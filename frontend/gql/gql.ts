@@ -28,6 +28,7 @@ const documents = {
     "mutation UpdatePost($updatePostInput: UpdatePostInput!) {\n  updatePost(updatePostInput: $updatePostInput) {\n    id\n    title\n    content\n    published\n  }\n}": types.UpdatePostDocument,
     "query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}": types.GetPostDocument,
     "query GetPosts {\n  posts {\n    id\n    published\n    title\n    content\n    createdAt\n  }\n}": types.GetPostsDocument,
+    "mutation SubscribeToPremium {\n  subscribeToPremium\n}": types.SubscribeToPremiumDocument,
     "query GetStripeInfo {\n  getStripeInfo {\n    stripeCustomerId\n    stripeSubscriptionId\n    stripePriceId\n    stripeCurrentPeriodEnd\n  }\n}": types.GetStripeInfoDocument,
 };
 
@@ -105,6 +106,10 @@ export function graphql(source: "query GetPost($id: String!) {\n  post(id: $id) 
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query GetPosts {\n  posts {\n    id\n    published\n    title\n    content\n    createdAt\n  }\n}"): (typeof documents)["query GetPosts {\n  posts {\n    id\n    published\n    title\n    content\n    createdAt\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation SubscribeToPremium {\n  subscribeToPremium\n}"): (typeof documents)["mutation SubscribeToPremium {\n  subscribeToPremium\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
