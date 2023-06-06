@@ -30,6 +30,7 @@ const documents = {
     "query GetPosts {\n  posts {\n    id\n    published\n    title\n    content\n    createdAt\n  }\n}": types.GetPostsDocument,
     "mutation SubscribeToPremium {\n  subscribeToPremium\n}": types.SubscribeToPremiumDocument,
     "query GetStripeInfo {\n  getStripeInfo {\n    stripeCustomerId\n    stripeSubscriptionId\n    stripePriceId\n    stripeCurrentPeriodEnd\n  }\n}": types.GetStripeInfoDocument,
+    "query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}": types.SubscriptionIsCancelledDocument,
 };
 
 /**
@@ -114,6 +115,10 @@ export function graphql(source: "mutation SubscribeToPremium {\n  subscribeToPre
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query GetStripeInfo {\n  getStripeInfo {\n    stripeCustomerId\n    stripeSubscriptionId\n    stripePriceId\n    stripeCurrentPeriodEnd\n  }\n}"): (typeof documents)["query GetStripeInfo {\n  getStripeInfo {\n    stripeCustomerId\n    stripeSubscriptionId\n    stripePriceId\n    stripeCurrentPeriodEnd\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}"): (typeof documents)["query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

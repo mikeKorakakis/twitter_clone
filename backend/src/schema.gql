@@ -125,6 +125,7 @@ type CreatePostPayload {
 type Query {
   user(id: String!): User!
   getStripeInfo: StripeInfoPayload!
+  subscriptionIsCancelled: Boolean!
   hello: String!
   me: User!
   posts: [Post!]!

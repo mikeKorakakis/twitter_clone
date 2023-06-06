@@ -1,76 +1,93 @@
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation";
 
-import { authOptions } from "@/lib/auth"
+import { authOptions } from "@/lib/auth";
 // import { getCurrentUser } from "@/lib/session"
-import { stripe } from "@/lib/stripe"
-import { getUserSubscriptionPlan } from "@/lib/subscription"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { stripe } from "@/lib/stripe";
+import { getUserSubscriptionPlan } from "@/lib/subscription";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { BillingForm } from "@/components/billing-form"
-import { DashboardHeader } from "@/components/header"
-import { Icons } from "@/components/icons"
-import { DashboardShell } from "@/components/shell"
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { BillingForm } from "@/components/billing-form";
+import { DashboardHeader } from "@/components/header";
+import { Icons } from "@/components/icons";
+import { DashboardShell } from "@/components/shell";
+import { gqlClient } from "@/lib/gql_client_server";
+import {
+	SubscriptionIsCancelledDocument,
+	SubscriptionIsCancelledQuery,
+	SubscriptionIsCancelledQueryVariables,
+} from "@/gql/graphql";
 
 export const metadata = {
-  title: "Billing",
-  description: "Manage billing and your subscription plan.",
-}
+	title: "Billing",
+	description: "Manage billing and your subscription plan.",
+};
+
+const subscriptionIsCancelled = async () => {
+	const client = await gqlClient();
+	const res = await client.request<
+		SubscriptionIsCancelledQuery,
+		SubscriptionIsCancelledQueryVariables
+	>(SubscriptionIsCancelledDocument);
+	return res.subscriptionIsCancelled;
+};
 
 export default async function BillingPage() {
-//   const {user} = await useAuth()
+	//   const {user} = await useAuth()
 
-//   if (!user) {
-//     redirect(authOptions?.pages?.signIn || "/login")
-//   }
+	//   if (!user) {
+	//     redirect(authOptions?.pages?.signIn || "/login")
+	//   }
 
-  const subscriptionPlan = await getUserSubscriptionPlan()
+	const subscriptionPlan = await getUserSubscriptionPlan();
 
-  // If user has a pro plan, check cancel status on Stripe.
-  let isCanceled = false
-  if (subscriptionPlan.isPro && subscriptionPlan.stripeSubscriptionId) {
-    const stripePlan = await stripe.subscriptions.retrieve(
-      subscriptionPlan.stripeSubscriptionId
-    )
-    isCanceled = stripePlan.cancel_at_period_end
-  }
+	// If user has a pro plan, check cancel status on Stripe.
+	let isCanceled = false;
+	if (subscriptionPlan.isPro && subscriptionPlan.stripeSubscriptionId) {
+		// const stripePlan = await stripe.subscriptions.retrieve(
+		// 	subscriptionPlan.stripeSubscriptionId
+		// );
+		// isCanceled = stripePlan.cancel_at_period_end;
+		isCanceled = await subscriptionIsCancelled();
+	}
 
-  return (
-    <DashboardShell>
-      <DashboardHeader
-        heading="Billing"
-        text="Manage billing and your subscription plan."
-      />
-      <div className="grid gap-8">
-        <Alert className="!pl-14">
-          <Icons.warning />
-          <AlertTitle>This is a demo app.</AlertTitle>
-          <AlertDescription>
-            Taxonomy app is a demo app using a Stripe test environment. You can
-            find a list of test card numbers on the{" "}
-            <a
-              href="https://stripe.com/docs/testing#cards"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium underline underline-offset-8"
-            >
-              Stripe docs
-            </a>
-            .
-          </AlertDescription>
-        </Alert>
-        <BillingForm
-          subscriptionPlan={{
-            ...subscriptionPlan,
-            isCanceled,
-          }}
-        />
-      </div>
-    </DashboardShell>
-  )
+	return (
+		<DashboardShell>
+			<DashboardHeader
+				heading="Billing"
+				text="Manage billing and your subscription plan."
+			/>
+			<div className="grid gap-8">
+				<Alert className="!pl-14">
+					<Icons.warning />
+					<AlertTitle>This is a demo app.</AlertTitle>
+					<AlertDescription>
+						Taxonomy app is a demo app using a Stripe test
+						environment. You can find a list of test card numbers on
+						the{" "}
+						<a
+							href="https://stripe.com/docs/testing#cards"
+							target="_blank"
+							rel="noreferrer"
+							className="font-medium underline underline-offset-8"
+						>
+							Stripe docs
+						</a>
+						.
+					</AlertDescription>
+				</Alert>
+				<BillingForm
+					subscriptionPlan={{
+						...subscriptionPlan,
+						isCanceled,
+					}}
+				/>
+			</div>
+		</DashboardShell>
+	);
 }

@@ -14,9 +14,12 @@ import { StripeInfoPayload } from '../post/dtos/stripe-info.payload';
 import { stripe } from '../lib/stripe';
 import { absoluteUrl } from '../lib/utils';
 import { freePlan, proPlan } from '../config/subscriptions';
+import { UpdateUserDto } from '../common/dtos';
+import { me } from '@/lib/me';
+import { UpdateUserPayload } from './dtos/update-user.payload';
+import { UserError, UserErrorType } from '../common/errors/userError';
 
 // const billingUrl = absoluteUrl('/dashboard/billing');
-
 
 @Injectable()
 export class UserService {
@@ -56,6 +59,41 @@ export class UserService {
     return user;
   }
 
+  public async subscriptionIsCancelled(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    const subscription = await stripe(
+      process.env.STRIPE_API_KEY,
+    ).subscriptions.retrieve(user.stripeSubscriptionId);
+
+    return subscription.cancel_at_period_end;
+  }
+
+  public async update(id: string, user: UpdateUserDto) {
+    try {
+      const updatedUser = await this.userRepository.update(id, user);
+    } catch (err) {
+      if (err.code == PostgresErrorCode.UniqueViolation) {
+        if (err.detail.includes('email')) {
+          return new UpdateUserPayload({
+            success: false,
+            error: new UserError({
+              message: 'Email already exists',
+              type: UserErrorType.EMAIL_ALREADY_EXISTS,
+            }),
+          });
+        }
+
+        if (err.detail.includes('nick_name' || 'nick' || 'nickName')) {
+          throw new UniqueViolation('displayName');
+        }
+      }
+      throw new InternalServerErrorException();
+    }
+  }
+
   public async subscribeToPremium(user: User) {
     const billingUrl = process.env.ORIGIN + '/dashboard/billing';
     const { id: userId, email } = user;
@@ -63,11 +101,14 @@ export class UserService {
 
     const isPro =
       !!subscriptionPlan.stripePriceId &&
-      new Date(subscriptionPlan.stripeCurrentPeriodEnd)?.getTime() + 86_400_000 >
+      new Date(subscriptionPlan.stripeCurrentPeriodEnd)?.getTime() +
+        86_400_000 >
         Date.now();
 
     if (isPro && subscriptionPlan.stripeCustomerId) {
-      const stripeSession = await stripe(process.env.STRIPE_API_KEY).billingPortal.sessions.create({
+      const stripeSession = await stripe(
+        process.env.STRIPE_API_KEY,
+      ).billingPortal.sessions.create({
         customer: subscriptionPlan.stripeCustomerId,
         return_url: billingUrl,
       });
@@ -78,7 +119,9 @@ export class UserService {
     }
 
     // const plan = isPro ? proPlan : freePlan;
-    const stripeSession = await stripe(process.env.STRIPE_API_KEY).checkout.sessions.create({
+    const stripeSession = await stripe(
+      process.env.STRIPE_API_KEY,
+    ).checkout.sessions.create({
       success_url: billingUrl,
       cancel_url: billingUrl,
       payment_method_types: ['card'],
@@ -87,9 +130,9 @@ export class UserService {
       customer_email: email,
       line_items: [
         {
-        //   price: proPlan.stripePriceId,
-        price: process.env.STRIPE_PRO_MONTHLY_PLAN_ID,
-        quantity: 1,
+          //   price: proPlan.stripePriceId,
+          price: process.env.STRIPE_PRO_MONTHLY_PLAN_ID,
+          quantity: 1,
         },
       ],
       metadata: {
@@ -114,15 +157,6 @@ export class UserService {
       stripeSubscriptionId: user.stripeSubscriptionId,
       stripeCustomerId: user.stripeCustomerId,
     });
-  }
-
-  public async update(userId: string, values: QueryDeepPartialEntity<User>) {
-    this.userRepository
-      .createQueryBuilder()
-      .update(User)
-      .set(values)
-      .where('id = :id', { id: userId })
-      .execute();
   }
 
   public async updateProfile(

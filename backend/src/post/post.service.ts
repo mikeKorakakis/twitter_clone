@@ -8,18 +8,27 @@ import { User } from '../common/entities';
 import { PostError, PostErrorType } from '../common/errors/postError';
 import { RemovePostPayload } from './dtos/remove-post.payload';
 import { CreatePostPayload } from './dtos/create-post.payload';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+    private readonly userService: UserService,
   ) {}
 
   async create(createPostInput: CreatePostInput, author: User) {
     const userPostCount = await this.findAll({ userId: author.id });
 
-    if (userPostCount.length >= 3) {
+    const stripeInfo = await this.userService.getStripeInfo(author.id);
+
+    const isPro =
+      stripeInfo?.stripePriceId &&
+      new Date(stripeInfo?.stripeCurrentPeriodEnd).getTime() + 86_400_000 >
+        Date.now();
+
+    if (userPostCount.length >= 3 && !isPro) {
       const postError = new PostError({
         message: 'User has reached maximum number of posts',
         type: PostErrorType.MAX_POST_REACHED,

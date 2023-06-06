@@ -1,4 +1,5 @@
-import { User } from "@prisma/client";
+// import { User } from "@prisma/client";
+import { User } from "@/gql"
 import type { Icon } from "lucide-react";
 
 import { Icons } from "@/components/icons";
@@ -58,7 +59,7 @@ export type DashboardConfig = {
 export type SubscriptionPlan = {
 	name: string;
 	description: string;
-	stripePriceId: string;
+	stripePriceId: string | null;
 };
 
 export type UserSubscriptionPlan = SubscriptionPlan &

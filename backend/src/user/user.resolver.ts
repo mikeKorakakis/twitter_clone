@@ -42,6 +42,12 @@ export class UserResolver {
     return this.userService.subscribeToPremium(user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Query(() => Boolean)
+  async subscriptionIsCancelled(@CurrentUser() user: User) {
+    return this.userService.subscriptionIsCancelled(user?.id);
+  }
+
   // Resolve the posts field for the User type
   @ResolveField('posts', () => [Post], { nullable: true })
   async posts(@Parent() user: User): Promise<Post[]> {
