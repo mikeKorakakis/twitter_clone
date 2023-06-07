@@ -96,6 +96,7 @@ export type Mutation = {
   setNewPassword: SetNewPasswordPayload;
   subscribeToPremium: Scalars['String'];
   updatePost: Post;
+  updateUser: UpdateUserPayload;
 };
 
 
@@ -146,6 +147,11 @@ export type MutationSetNewPasswordArgs = {
 
 export type MutationUpdatePostArgs = {
   updatePostInput: UpdatePostInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  updateUserDto: UpdateUserDto;
 };
 
 export type PasswordValuesDto = {
@@ -248,6 +254,18 @@ export type UpdatePostInput = {
   title?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateUserDto = {
+  displayName: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+};
+
+export type UpdateUserPayload = {
+  __typename?: 'UpdateUserPayload';
+  error?: Maybe<UserError>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
 export type User = {
   __typename?: 'User';
   accountStatus: Scalars['String'];
@@ -269,6 +287,18 @@ export type User = {
   stripeSubscriptionId: Scalars['String'];
   updatedAt: Scalars['DateTime'];
 };
+
+export type UserError = {
+  __typename?: 'UserError';
+  message: Scalars['String'];
+  time: Scalars['DateTime'];
+  type: UserErrorType;
+};
+
+export enum UserErrorType {
+  DisplayNameAlreadyExists = 'DISPLAY_NAME_ALREADY_EXISTS',
+  EmailAlreadyExists = 'EMAIL_ALREADY_EXISTS'
+}
 
 export type ChangePasswordMutationVariables = Exact<{
   input: PasswordValuesDto;
@@ -382,6 +412,13 @@ export type SubscriptionIsCancelledQueryVariables = Exact<{ [key: string]: never
 
 export type SubscriptionIsCancelledQuery = { __typename?: 'Query', subscriptionIsCancelled: boolean };
 
+export type UpdateUserMutationVariables = Exact<{
+  updateUserDto: UpdateUserDto;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'UpdateUserPayload', success?: boolean | null, error?: { __typename?: 'UserError', message: string, type: UserErrorType } | null } };
+
 
 export const ChangePasswordDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ChangePassword"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PasswordValuesDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changePassword"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"error"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]} as unknown as DocumentNode<ChangePasswordMutation, ChangePasswordMutationVariables>;
 export const ConfirmEmailDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ConfirmEmail"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"token"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"confirmEmail"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"token"},"value":{"kind":"Variable","name":{"kind":"Name","value":"token"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"success"}}]}}]}}]} as unknown as DocumentNode<ConfirmEmailMutation, ConfirmEmailMutationVariables>;
@@ -401,3 +438,4 @@ export const GetPostsDocument = {"kind":"Document","definitions":[{"kind":"Opera
 export const SubscribeToPremiumDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SubscribeToPremium"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscribeToPremium"}}]}}]} as unknown as DocumentNode<SubscribeToPremiumMutation, SubscribeToPremiumMutationVariables>;
 export const GetStripeInfoDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetStripeInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"getStripeInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"stripeCustomerId"}},{"kind":"Field","name":{"kind":"Name","value":"stripeSubscriptionId"}},{"kind":"Field","name":{"kind":"Name","value":"stripePriceId"}},{"kind":"Field","name":{"kind":"Name","value":"stripeCurrentPeriodEnd"}}]}}]}}]} as unknown as DocumentNode<GetStripeInfoQuery, GetStripeInfoQueryVariables>;
 export const SubscriptionIsCancelledDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"subscriptionIsCancelled"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"subscriptionIsCancelled"}}]}}]} as unknown as DocumentNode<SubscriptionIsCancelledQuery, SubscriptionIsCancelledQueryVariables>;
+export const UpdateUserDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateUser"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"updateUserDto"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"UpdateUserDto"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateUser"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"updateUserDto"},"value":{"kind":"Variable","name":{"kind":"Name","value":"updateUserDto"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"error"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"message"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateUserMutation, UpdateUserMutationVariables>;

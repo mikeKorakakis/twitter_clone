@@ -76,6 +76,22 @@ type StripeInfoPayload {
   stripeCurrentPeriodEnd: DateTime
 }
 
+type UserError {
+  message: String!
+  time: DateTime!
+  type: UserErrorType!
+}
+
+enum UserErrorType {
+  EMAIL_ALREADY_EXISTS
+  DISPLAY_NAME_ALREADY_EXISTS
+}
+
+type UpdateUserPayload {
+  success: Boolean
+  error: UserError
+}
+
 type AuthPayload {
   user: User
   accessToken: String
@@ -133,6 +149,7 @@ type Query {
 }
 
 type Mutation {
+  updateUser(updateUserDto: UpdateUserDto!): UpdateUserPayload!
   subscribeToPremium: String!
   register(input: CreateAccountDto!): AuthPayload!
   login(input: LoginDto!): AuthPayload!
@@ -146,6 +163,12 @@ type Mutation {
   createPost(createPostInput: CreatePostInput!): CreatePostPayload!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   deletePost(id: String!): RemovePostPayload!
+}
+
+input UpdateUserDto {
+  firstName: String!
+  lastName: String!
+  displayName: String!
 }
 
 input CreateAccountDto {

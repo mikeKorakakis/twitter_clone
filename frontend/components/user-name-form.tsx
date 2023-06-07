@@ -22,13 +22,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
-import { User } from "@/gql/graphql";
+import {
+	UpdateUserDocument,
+	UpdateUserMutation,
+	UpdateUserMutationVariables,
+	User,
+} from "@/gql/graphql";
+import { gqlClient } from "@/lib/client";
 
 interface UserNameFormProps extends React.HTMLAttributes<HTMLFormElement> {
-	user: Pick<User, "id" | "displayName" | "firstName" | "lastName" | 'email'>;
+	user: Pick<User, "id" | "displayName" | "firstName" | "lastName" | "email">;
 }
 
 type FormData = z.infer<typeof userNameSchema>;
+
+export const updateUser = async (data: FormData) => {
+	const client = await gqlClient();
+	const res = client.request<UpdateUserMutation, UpdateUserMutationVariables>(
+		UpdateUserDocument,
+		{
+			updateUserDto: data,
+		}
+	);
+	return res;
+};
 
 export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
 	const router = useRouter();
@@ -39,15 +56,17 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
 	} = useForm<FormData>({
 		resolver: zodResolver(userNameSchema),
 		defaultValues: {
-			displayName: user?.displayName || "", 
-            firstName: user?.firstName || "",
-            lastName: user?.lastName || "",
+			displayName: user?.displayName || "",
+			firstName: user?.firstName || "",
+			lastName: user?.lastName || "",
 		},
 	});
 	const [isSaving, setIsSaving] = React.useState<boolean>(false);
 
 	async function onSubmit(data: FormData) {
 		setIsSaving(true);
+
+		const res = await updateUser(data);
 
 		// const response = await fetch(`/api/users/${user.id}`, {
 		//   method: "PATCH",
@@ -61,6 +80,20 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
 
 		setIsSaving(false);
 
+		if (res?.updateUser?.success) {
+			toast({
+				description: "Your name has been updated.",
+			});
+			router.refresh();
+		} else {
+			toast({
+				title: "Something went wrong.",
+				description:
+					res?.updateUser?.error?.message || "Please try again.",
+				variant: "destructive",
+			});
+		}
+
 		// if (!response?.ok) {
 		//   return toast({
 		//     title: "Something went wrong.",
@@ -68,12 +101,6 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
 		//     variant: "destructive",
 		//   })
 		// }
-
-		toast({
-			description: "Your name has been updated.",
-		});
-
-		router.refresh();
 	}
 
 	return (
@@ -99,7 +126,7 @@ export function UserNameForm({ user, className, ...props }: UserNameFormProps) {
 								id="email"
 								className="w-[400px]"
 								size={32}
-                                value={user?.email}
+								value={user?.email}
 							/>
 						</div>
 						<div className="grid gap-1">

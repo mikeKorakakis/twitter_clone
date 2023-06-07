@@ -1,12 +1,15 @@
 // import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, Length, Matches } from 'class-validator'
+import {Field, InputType} from '@nestjs/graphql'
 
+@InputType()
 export class UpdateUserDto {
 
     // @ApiProperty({
     //     required: true,
     //     example: 'John',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'First name cannot be empty or whitespace'
     })
@@ -20,6 +23,7 @@ export class UpdateUserDto {
     //     required: true,
     //     example: 'Doe',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Last name cannot be empty or whitespace'
     })
@@ -32,6 +36,7 @@ export class UpdateUserDto {
     //     required: true,
     //     example: 'JohnDoe2137',
     // })
+    @Field()
     @IsNotEmpty({
         message: 'Display name cannot be empty or whitespace'
     })

@@ -1,0 +1,9 @@
+mutation UpdateUser($updateUserDto: UpdateUserDto!){
+    updateUser(updateUserDto: $updateUserDto){
+    success
+    error{
+      message
+      type
+    }
+  }
+}

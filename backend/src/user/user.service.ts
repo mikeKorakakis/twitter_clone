@@ -15,7 +15,6 @@ import { stripe } from '../lib/stripe';
 import { absoluteUrl } from '../lib/utils';
 import { freePlan, proPlan } from '../config/subscriptions';
 import { UpdateUserDto } from '../common/dtos';
-import { me } from '@/lib/me';
 import { UpdateUserPayload } from './dtos/update-user.payload';
 import { UserError, UserErrorType } from '../common/errors/userError';
 
@@ -71,9 +70,20 @@ export class UserService {
     return subscription.cancel_at_period_end;
   }
 
-  public async update(id: string, user: UpdateUserDto) {
+  public async updateProfile(id: string, user: UpdateUserDto) {
     try {
-      const updatedUser = await this.userRepository.update(id, user);
+      const foundUser = await this.userRepository.findOne({
+        where: { id },
+      });
+      foundUser.firstName = user.firstName;
+      foundUser.lastName = user.lastName;
+      foundUser.displayName = user.displayName;
+
+      this.userRepository.save(foundUser);
+      return new UpdateUserPayload({
+        success: true,
+      });
+      
     } catch (err) {
       if (err.code == PostgresErrorCode.UniqueViolation) {
         if (err.detail.includes('email')) {
@@ -87,7 +97,14 @@ export class UserService {
         }
 
         if (err.detail.includes('nick_name' || 'nick' || 'nickName')) {
-          throw new UniqueViolation('displayName');
+          //   throw new UniqueViolation('displayName');
+          return new UpdateUserPayload({
+            success: false,
+            error: new UserError({
+              message: 'Display Name already exists',
+              type: UserErrorType.DISPLAY_NAME_ALREADY_EXISTS,
+            }),
+          });
         }
       }
       throw new InternalServerErrorException();
@@ -159,7 +176,7 @@ export class UserService {
     });
   }
 
-  public async updateProfile(
+  public async update(
     userId: string,
     values: QueryDeepPartialEntity<User>,
   ) {

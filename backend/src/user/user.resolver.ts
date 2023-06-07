@@ -20,6 +20,8 @@ import { StripeInfoPayload } from '../post/dtos/stripe-info.payload';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards';
 import { CurrentUser } from '../common/decorators';
+import { UpdateUserPayload } from './dtos/update-user.payload';
+import { UpdateUserDto } from '../common/dtos/';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -28,6 +30,15 @@ export class UserResolver {
   @Query(() => User)
   async user(@Args('id') id: string) {
     return this.userService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => UpdateUserPayload)
+  async updateUser(
+      @Args('updateUserDto') updateUserDto: UpdateUserDto,
+      @CurrentUser() user: User,
+  ) {
+    return this.userService.updateProfile(user?.id, updateUserDto);
   }
 
   @UseGuards(JwtAuthGuard)

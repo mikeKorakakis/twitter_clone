@@ -31,6 +31,7 @@ const documents = {
     "mutation SubscribeToPremium {\n  subscribeToPremium\n}": types.SubscribeToPremiumDocument,
     "query GetStripeInfo {\n  getStripeInfo {\n    stripeCustomerId\n    stripeSubscriptionId\n    stripePriceId\n    stripeCurrentPeriodEnd\n  }\n}": types.GetStripeInfoDocument,
     "query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}": types.SubscriptionIsCancelledDocument,
+    "mutation UpdateUser($updateUserDto: UpdateUserDto!) {\n  updateUser(updateUserDto: $updateUserDto) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.UpdateUserDocument,
 };
 
 /**
@@ -119,6 +120,10 @@ export function graphql(source: "query GetStripeInfo {\n  getStripeInfo {\n    s
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}"): (typeof documents)["query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation UpdateUser($updateUserDto: UpdateUserDto!) {\n  updateUser(updateUserDto: $updateUserDto) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"): (typeof documents)["mutation UpdateUser($updateUserDto: UpdateUserDto!) {\n  updateUser(updateUserDto: $updateUserDto) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
