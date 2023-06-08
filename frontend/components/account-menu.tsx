@@ -34,9 +34,12 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { truncate } from "fs";
+import { useRouter } from "next/navigation";
+import { siteConfig } from "@/config/site";
 
 export function AccountMenu() {
 	const { user, logOut } = useAuth();
+    const router = useRouter();
     console.log('user',user);
 	return (
 		<DropdownMenu>
@@ -59,7 +62,7 @@ export function AccountMenu() {
 				<DropdownMenuItem className="truncate text-ellipsis text-xs -mt-2">{user?.email}</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem className="cursor-pointer">
+					<DropdownMenuItem className="cursor-pointer" onClick={()=> router.push(siteConfig.pages.profile)}>
 						<User className="mr-2 h-4 w-4" />
 						<span>Profile</span>
 						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>

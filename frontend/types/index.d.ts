@@ -34,7 +34,6 @@ export type SiteConfig = {
 	url: string;
 	ogImage: string;
 	links: {
-		twitter: string;
 		github: string;
 	};
 	pages: {
@@ -47,8 +46,9 @@ export type DocsConfig = {
 	sidebarNav: SidebarNavItem[];
 };
 
-export type MarketingConfig = {
+export type HomeConfig = {
 	mainNav: MainNavItem[];
+    authNav: MainNavItem[];
 };
 
 export type DashboardConfig = {

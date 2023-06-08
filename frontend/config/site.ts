@@ -7,8 +7,7 @@ export const siteConfig: SiteConfig = {
 	url: "https://tx.shadcn.com",
 	ogImage: "https://tx.shadcn.com/og.jpg",
 	links: {
-		twitter: "https://twitter.com/shadcn",
-		github: "https://github.com/shadcn/taxonomy",
+		github: "https://github.com/mikeKorakakis/twitter_clone",
 	},
 	pages: {
 		home: "/",
@@ -16,5 +15,7 @@ export const siteConfig: SiteConfig = {
 		register: "/register",
         forgotPassword: "/account/forgot-password",
         resetPassword: "/account/reset-password",
+        dashboard: "/dashboard",
+        profile: "/dashboard/settings",
 	},
 };
