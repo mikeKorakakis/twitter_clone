@@ -1,11 +1,11 @@
-'use client'
+"use client";
 import Link from "next/link";
 
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PostOperations } from "@/components/post-operations";
 import { Post } from "@/gql/graphql";
-import { Editor } from './ui/editor';
+import { Editor } from "./ui/editor";
 import {
 	Card,
 	CardHeader,
@@ -14,68 +14,80 @@ import {
 	CardContent,
 	CardFooter,
 } from "./ui/card";
-import Blocks from 'editorjs-blocks-react-renderer';
-
-
-
+import Blocks from "editorjs-blocks-react-renderer";
 
 interface PostItemProps {
 	post: Pick<Post, "id" | "title" | "published" | "createdAt" | "content">;
 }
 
-
-export const Article = (dataFromEditor:any) => <Blocks data={dataFromEditor} />;
-
+export const Article = (dataFromEditor: any) => (
+	<Blocks data={dataFromEditor} />
+);
 
 export function PostItemPublic({ post }: PostItemProps) {
-    console.log('post', post.content)
+	console.log("post", post.content);
 	return (
 		<div className="flex items-center justify-between p-4">
-			<div className="grid gap-1">           
-				{/* <Card> */}
-                    <div className="prose pb-4"><h1>{post.title}</h1></div>
-                    <Blocks 
-                    data={post.content}
-                    config={{
-                        code: {
-                          className: "language-js"
-                        },
-                        delimiter: {
-                          className: "border border-2 w-16 mx-auto"
-                        },
-                        embed: {
-                          className: "border-0"
-                        },
-                        header: {
-                          className: "font-bold"
-                        },
-                        image: {
-                          className: "w-full max-w-screen-md",
-                          actionsClassNames: {
-                            stretched: "w-full h-80 object-cover",
-                            withBorder: "border border-2",
-                            withBackground: "p-2",
-                          }
-                        },
-                        list: {
-                          className: "list-disc list-inside"
-                        },
-                        paragraph: {
-                          className: "text-base text-opacity-75",
-                          actionsClassNames: {
-                            alignment: "text-{alignment}", // This is a substitution placeholder: left or center.
-                          }
-                        },
-                        quote: {
-                          className: "py-3 px-5 italic font-serif"
-                        },
-                        table: {
-                          className: "table-auto ",
-                        }
-
-                      }} 
-                />
-					{/* <CardHeader>
+			<div className="grid gap-1 w-full">
+				<Card className="p-4">
+					<CardTitle>
+                        <div className=" flex justify-between h-10">
+						<Link
+							href={`/editor/${post.id}`}
+							className="font-semibold hover:underline text-2xl pb-16"
+						>
+							{post.title}
+						</Link>
+                        <PostOperations post={{ id: post.id, title: post.title }} /> 
+                        </div>
+					</CardTitle>
+					<CardDescription>
+						{formatDate(post.createdAt)}
+					</CardDescription>
+					<div className="pt-4">
+						<Blocks
+							data={post.content}
+							config={{
+								code: {
+									className: "language-js",
+								},
+								delimiter: {
+									className: "border border-2 w-16 mx-auto",
+								},
+								embed: {
+									className: "border-0",
+								},
+								header: {
+									className: "font-bold",
+								},
+								image: {
+									className: "w-full max-w-screen-md",
+									actionsClassNames: {
+										stretched: "w-full h-80 object-cover",
+										withBorder: "border border-2",
+										withBackground: "p-2",
+									},
+								},
+								list: {
+									className: "list-disc list-inside",
+								},
+								paragraph: {
+									className: "text-base text-opacity-75",
+									actionsClassNames: {
+										alignment: "text-{alignment}", // This is a substitution placeholder: left or center.
+									},
+								},
+								quote: {
+									className: "py-3 px-5 italic font-serif",
+								},
+								table: {
+									className: "table-auto ",
+								},
+							}}
+						/>
+					</div>
+				</Card>
+				{/* <CardHeader>
 						<CardTitle>
 							<Link
 								href={`/editor/${post.id}`}
@@ -95,17 +107,6 @@ export function PostItemPublic({ post }: PostItemProps) {
 						<p>Card Footer</p>
 					</CardFooter>
 				</Card> */}
-				{/* <Link
-					href={`/editor/${post.id}`}
-					className="font-semibold hover:underline"
-				>
-					{post.title}
-				</Link>
-				<div>
-					<p className="text-sm text-muted-foreground">
-						{formatDate(post.createdAt)}
-					</p>
-				</div> */}
 			</div>
 			{/* <PostOperations post={{ id: post.id, title: post.title }} /> */}
 		</div>
