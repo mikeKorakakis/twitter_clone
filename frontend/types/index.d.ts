@@ -39,6 +39,7 @@ export type SiteConfig = {
 	pages: {
 		[key: string]: string;
 	};
+    defaultPageSize: number
 };
 
 export type DocsConfig = {

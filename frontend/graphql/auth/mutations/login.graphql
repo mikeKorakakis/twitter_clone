@@ -1,12 +1,7 @@
 mutation Login($input: LoginDto!) {
 	login(input: $input) {
 		user {
-            id
-			email
-			firstName
-			lastName
-			displayName
-            image
+            ...UserInfo
 		}
 		error {
 			type

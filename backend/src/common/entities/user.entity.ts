@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   Index,
+  JoinTable,
   ManyToMany,
   OneToMany,
 } from 'typeorm';
@@ -143,6 +144,16 @@ export class User extends AbstractEntity<User> {
     default: null,
   })
   public stripeCurrentPeriodEnd: Date;
+
+  @Field(type => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.following, { nullable: true })
+  @JoinTable()
+  followers: User[];
+
+  @Field(type => [User], { nullable: true })
+  @ManyToMany(() => User, (user) => user.followers, { nullable: true })
+  @JoinTable()
+  following: User[];
 
   // @ManyToMany(() => Room, room => room.users)
   // public rooms: Room[]

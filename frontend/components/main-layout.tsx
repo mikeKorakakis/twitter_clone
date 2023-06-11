@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { MainNav } from "@/components/main-nav";
 import { homeConfig } from "@/config/home";
 import { AccountMenu } from "@/components/account-menu";
+import { UserSearch } from "@/components/user-search";
 // import { useRouter } from "next/navigation";
 
 interface MarketingLayoutProps {
@@ -29,6 +30,7 @@ export default function MainLayout({ children }: MarketingLayoutProps) {
 							{user?.displayName}
 						</div>
 					)} */}
+                    {/* <UserSearch/> */}
 					<nav>
 						{!user ? (
 							<Link

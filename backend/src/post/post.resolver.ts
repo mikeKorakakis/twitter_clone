@@ -9,6 +9,9 @@ import { JwtAuthGuard } from '../common/guards';
 import { User } from '../common/entities';
 import { RemovePostPayload } from './dtos/remove-post.payload';
 import { CreatePostPayload } from './dtos/create-post.payload';
+import { AllPostsArgs } from './dtos/find-all-posts.input';
+import { PageOptionsDto } from '../common/dtos/page-options.dto';
+import { PaginatedPosts } from './dtos/all-posts.payload';
 
 @Resolver(() => Post)
 export class PostResolver {
@@ -24,9 +27,9 @@ export class PostResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => [Post], { name: 'posts' })
-  findAll(@CurrentUser() user: User) {
-    return this.postService.findAll({ userId: user.id });
+  @Query(() => PaginatedPosts, { name: 'posts' })
+  findAll( @CurrentUser() user, @Args('args') pageOptions: PageOptionsDto) {
+    return this.postService.findAllPaginated({ userId: user?.id, pageOptions });
   }
 
   @Query(() => Post, { name: 'post' })
@@ -45,7 +48,10 @@ export class PostResolver {
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => RemovePostPayload)
-  deletePost(@Args('id', { type: () => String }) id: string, @CurrentUser() user: User) {
+  deletePost(
+    @Args('id', { type: () => String }) id: string,
+    @CurrentUser() user: User,
+  ) {
     return this.postService.delete(id, user);
   }
 }

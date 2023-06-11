@@ -9,7 +9,7 @@ import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity
 import { User } from '../common/entities';
 import { AccountStatus, PostgresErrorCode } from '../common/enums';
 import { UniqueViolation } from '../common/exceptions';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { StripeInfoPayload } from '../post/dtos/stripe-info.payload';
 import { stripe } from '../lib/stripe';
 import { absoluteUrl } from '../lib/utils';
@@ -17,6 +17,7 @@ import { freePlan, proPlan } from '../config/subscriptions';
 import { UpdateUserDto } from '../common/dtos';
 import { UpdateUserPayload } from './dtos/update-user.payload';
 import { UserError, UserErrorType } from '../common/errors/userError';
+import { FollowUserPayload } from './dtos/follow-user.payload';
 
 // const billingUrl = absoluteUrl('/dashboard/billing');
 
@@ -83,7 +84,6 @@ export class UserService {
       return new UpdateUserPayload({
         success: true,
       });
-      
     } catch (err) {
       if (err.code == PostgresErrorCode.UniqueViolation) {
         if (err.detail.includes('email')) {
@@ -176,10 +176,7 @@ export class UserService {
     });
   }
 
-  public async update(
-    userId: string,
-    values: QueryDeepPartialEntity<User>,
-  ) {
+  public async update(userId: string, values: QueryDeepPartialEntity<User>) {
     try {
       await this.userRepository
         .createQueryBuilder()
@@ -248,5 +245,70 @@ export class UserService {
     }
 
     return user;
+  }
+
+  public async followUser(currentUser: User, userId: string) {
+    const userToFollow = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!userToFollow) {
+      return new FollowUserPayload({
+        success: false,
+        error: new UserError({
+          message: 'User not found',
+          type: UserErrorType.USER_NOT_FOUND,
+        }),
+      });
+    }
+    if (currentUser.id === userId) {
+      return new FollowUserPayload({
+        success: false,
+        error: new UserError({
+          message: 'Users Cannot follow themselves',
+          type: UserErrorType.CANNOT_FOLLOW_YOUSELT,
+        }),
+      });
+    }
+    currentUser.following.push(userToFollow);
+    await this.userRepository.save(currentUser);
+  }
+
+  public async unfollowUser(currentUser: User, userId: string) {
+    const userToUnfollow = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    if (!userToUnfollow) {
+      return new FollowUserPayload({
+        success: false,
+        error: new UserError({
+          message: 'User not found',
+          type: UserErrorType.USER_NOT_FOUND,
+        }),
+      });
+    }
+    if (currentUser.id === userId) {
+      return new FollowUserPayload({
+        success: false,
+        error: new UserError({
+          message: 'Users Cannot unfollow themselves',
+          type: UserErrorType.CANNOT_FOLLOW_YOUSELT,
+        }),
+      });
+    }
+    currentUser.following = currentUser.following.filter(
+      (user) => user.id !== userId,
+    );
+    await this.userRepository.save(currentUser);
+  }
+
+  public async searchUsers(searchString: string) {
+    return this.userRepository.find({
+      where: [
+        { firstName: ILike(`%${searchString}%`) },
+        { lastName: ILike(`%${searchString}%`) },
+        { displayName: ILike(`%${searchString}%`) },
+        { email: ILike(`%${searchString}%`) },
+      ],
+    });
   }
 }

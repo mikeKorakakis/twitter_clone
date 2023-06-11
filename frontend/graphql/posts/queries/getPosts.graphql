@@ -1,9 +1,17 @@
-query GetPosts {
-	posts {
-		id
-		published
-		title
-		content
-        createdAt
+query GetPosts($args: PageOptionsDto!) {
+	posts(args: $args) {
+		data {
+			id
+			published
+			title
+			content
+			createdAt
+		}
+		meta {
+            take
+			pageCount
+			hasNextPage
+			hasPreviousPage
+		}
 	}
 }

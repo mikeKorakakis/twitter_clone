@@ -9,6 +9,12 @@ import { PostError, PostErrorType } from '../common/errors/postError';
 import { RemovePostPayload } from './dtos/remove-post.payload';
 import { CreatePostPayload } from './dtos/create-post.payload';
 import { UserService } from '../user/user.service';
+import { AllPostsArgs } from './dtos/find-all-posts.input';
+import { Page } from './../../../frontend/contentlayer.config';
+import { PageOptionsDto } from '../common/dtos/page-options.dto';
+import { PageMetaDto } from '../common/dtos/page-meta.dto';
+import { PaginatedResult } from '../common/dtos/paginated-result.dto';
+import { PaginatedPosts } from './dtos/all-posts.payload';
 
 @Injectable()
 export class PostService {
@@ -53,10 +59,31 @@ export class PostService {
     // return post;
   }
 
-  findAll({ userId }: { userId: string }) {
-    const post = this.postRepository.find({ where: { authorId: userId } });
-    console.log(post);
+  async findAll({ userId }: { userId: string }) {
     return this.postRepository.find({ where: { author: { id: userId } } });
+  }
+
+  async findAllPaginated({
+    userId,
+    pageOptions,
+  }: {
+    userId: string;
+    pageOptions: PageOptionsDto;
+  }) {
+    console.log('pageoptions',(pageOptions.page - 1) * pageOptions.take)
+    const queryBuilder = this.postRepository.createQueryBuilder('post');
+    queryBuilder
+      .orderBy('post.createdAt', pageOptions.order)
+      .take(pageOptions.take)
+      .skip((pageOptions.page - 1) * pageOptions.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: pageOptions,
+    });
+    return new (PaginatedResult(Post))(entities, pageMetaDto);
   }
 
   findOne(id: string) {

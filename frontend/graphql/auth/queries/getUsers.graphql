@@ -1,11 +1,5 @@
 query Me {
 	me {
-        id
-		email
-		firstName
-		lastName
-		displayName
-        role
-        image
+		...UserInfo
 	}
 }

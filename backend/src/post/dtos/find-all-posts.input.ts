@@ -1,5 +1,5 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { PaginationArgs } from '../../common/dtos/list-query-options';
+import { PaginationArgs } from '../../common/dtos/list-query-options.dto';
 
 @ArgsType()
-export class UserPostsArgs extends PaginationArgs {}
+export class AllPostsArgs extends PaginationArgs {}

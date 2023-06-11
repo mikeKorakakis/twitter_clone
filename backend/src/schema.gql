@@ -67,6 +67,8 @@ type User {
   stripeSubscriptionId: String!
   stripePriceId: String!
   stripeCurrentPeriodEnd: DateTime!
+  followers: [User!]
+  following: [User!]
 }
 
 type StripeInfoPayload {
@@ -85,9 +87,17 @@ type UserError {
 enum UserErrorType {
   EMAIL_ALREADY_EXISTS
   DISPLAY_NAME_ALREADY_EXISTS
+  CANNOT_FOLLOW_YOUSELT
+  CANNOT_UNFOLLOW_YOUSELT
+  USER_NOT_FOUND
 }
 
 type UpdateUserPayload {
+  success: Boolean
+  error: UserError
+}
+
+type FollowUserPayload {
   success: Boolean
   error: UserError
 }
@@ -138,19 +148,48 @@ type CreatePostPayload {
   error: PostError
 }
 
+type PageMetaDto {
+  page: Float!
+  take: Float!
+  itemCount: Float!
+  pageCount: Float!
+  hasPreviousPage: Boolean!
+  hasNextPage: Boolean!
+}
+
+type PaginatedPosts {
+  data: [Post!]
+  meta: PageMetaDto
+}
+
 type Query {
   user(id: String!): User!
   getStripeInfo: StripeInfoPayload!
   subscriptionIsCancelled: Boolean!
+  searchUsers(searchTerm: String!): [User!]!
   hello: String!
   me: User!
-  posts: [Post!]!
+  posts(args: PageOptionsDto!): PaginatedPosts!
   post(id: String!): Post!
+}
+
+input PageOptionsDto {
+  order: Order = ASC
+  page: Float = 1
+  take: Float! = 10
+  skip: Float! = 0
+}
+
+enum Order {
+  ASC
+  DESC
 }
 
 type Mutation {
   updateUser(updateUserDto: UpdateUserDto!): UpdateUserPayload!
   subscribeToPremium: String!
+  followUser(userId: String!): FollowUserPayload!
+  unfollowUser(userId: String!): FollowUserPayload!
   register(input: CreateAccountDto!): AuthPayload!
   login(input: LoginDto!): AuthPayload!
   logout: Boolean!

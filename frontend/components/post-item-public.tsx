@@ -25,7 +25,6 @@ export const Article = (dataFromEditor: any) => (
 );
 
 export function PostItemPublic({ post }: PostItemProps) {
-	console.log("post", post.content);
 	return (
 		<div className="flex items-center justify-between p-4">
 			<div className="grid gap-1 w-full">

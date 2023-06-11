@@ -1,4 +1,5 @@
-import { redirect } from "next/navigation";
+"use client";
+import { redirect, useSearchParams } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
@@ -7,7 +8,7 @@ import { PostCreateButton } from "@/components/post-create-button";
 import { PostItemPublic } from "@/components/post-item-public";
 import { DashboardShell } from "@/components/shell";
 import { useAuth } from "@/contexts/AuthContext";
-import { gqlClient } from "@/lib/gql_client_server";
+import { gqlClient } from "@/lib/client";
 import {
 	GetPostsDocument,
 	GetPostsQuery,
@@ -17,30 +18,41 @@ import { useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { siteConfig } from "@/config/site";
 
-
 export const metadata = {
 	title: "Posts",
 };
 
-export default async function PostsPage() {
+interface PostsPageParams {
+	params: {
+		page: string;
+	};
+}
+
+export default async function PostsPage({ params }: PostsPageParams) {
 	//   const { user } = useAuth()
 
 	//   if (!user) {
 	//     redirect(authOptions?.pages?.signIn || "/login")
 	//   }
+	const searchParams = useSearchParams();
+	let pageSize = siteConfig.defaultPageSize;
+	const pageS = searchParams.get("pageSize");
+	if (pageS && !isNaN(parseInt(pageS))) pageSize = parseInt(pageS);
+
+	// const pageSize = searchParams?.pageSize ? parseInt(searchParams.pageSize) : 4
+	const pageNum = params?.page ? parseInt(params.page) : 1;
 	const client = await gqlClient();
 	const postsRes = await client.request<
 		GetPostsQuery,
 		GetPostsQueryVariables
 	>(GetPostsDocument, {
 		args: {
-			take: 4,
-			page: 1,
+			take: pageSize,
+			page: pageNum,
 		},
 	});
 	const posts = postsRes.posts.data;
 	const meta = postsRes.posts.meta;
-    console.log('meta', meta)
 	//   const posts = [{id: "1", title: "test", published: true, createdAt: new Date("2021-08-01")}]
 
 	//   const post = gqlClient.request<>(getPostQuery)
@@ -66,11 +78,11 @@ export default async function PostsPage() {
 				<PostCreateButton />
 			</DashboardHeader>
 			<Pagination
-				pageIndex={1}
+				pageIndex={pageNum}
 				totalPages={meta?.pageCount}
-				pageSize={meta?.take}
-                hasNextPage={meta?.hasNextPage}
-                hasPreviousPage={meta?.hasPreviousPage}
+				pageSize={pageSize}
+				hasNextPage={meta?.hasNextPage}
+				hasPreviousPage={meta?.hasPreviousPage}
 			/>
 			<div>
 				{posts?.length ? (

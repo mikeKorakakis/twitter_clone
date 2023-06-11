@@ -22,6 +22,7 @@ import { JwtAuthGuard } from '../common/guards';
 import { CurrentUser } from '../common/decorators';
 import { UpdateUserPayload } from './dtos/update-user.payload';
 import { UpdateUserDto } from '../common/dtos/';
+import { FollowUserPayload } from './dtos/follow-user.payload';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -35,8 +36,8 @@ export class UserResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => UpdateUserPayload)
   async updateUser(
-      @Args('updateUserDto') updateUserDto: UpdateUserDto,
-      @CurrentUser() user: User,
+    @Args('updateUserDto') updateUserDto: UpdateUserDto,
+    @CurrentUser() user: User,
   ) {
     return this.userService.updateProfile(user?.id, updateUserDto);
   }
@@ -57,6 +58,26 @@ export class UserResolver {
   @Query(() => Boolean)
   async subscriptionIsCancelled(@CurrentUser() user: User) {
     return this.userService.subscriptionIsCancelled(user?.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => FollowUserPayload)
+  async followUser(@Args('userId') userId: string, @CurrentUser() user: User) {
+    return this.userService.followUser(user, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => FollowUserPayload)
+  async unfollowUser(
+    @Args('userId') userId: string,
+    @CurrentUser() user: User,
+  ) {
+    return this.userService.unfollowUser(user, userId);
+  }
+
+  @Query(() => [User])
+  async searchUsers(@Args('searchTerm') searchTerm: string) {
+    return this.userService.searchUsers(searchTerm);
   }
 
   // Resolve the posts field for the User type
