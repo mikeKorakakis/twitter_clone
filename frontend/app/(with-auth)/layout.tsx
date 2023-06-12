@@ -10,6 +10,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import me from "@/lib/me";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
+import { MeQuery, MeQueryVariables, MeDocument } from "@/gql/graphql";
+import { gqlClient } from "@/lib/gql_client_server";
 
 const fontSans = FontSans({
 	subsets: ["latin"],
@@ -74,6 +76,7 @@ export const metadata = {
 };
 export default async function Layout({ children }: RootLayoutProps) {
 	const user = await me();
+
 	console.log("user in root layout", user);
 	return <AuthProvider initialUser={user}>{children}</AuthProvider>;
 }

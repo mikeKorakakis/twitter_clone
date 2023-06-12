@@ -302,12 +302,15 @@ export class UserService {
   }
 
   public async searchUsers(searchString: string) {
+    if (!searchString) {
+      return [];
+    }
     return this.userRepository.find({
       where: [
-        { firstName: ILike(`%${searchString}%`) },
-        { lastName: ILike(`%${searchString}%`) },
+        // { firstName: ILike(`%${searchString}%`) },
+        // { lastName: ILike(`%${searchString}%`) },
         { displayName: ILike(`%${searchString}%`) },
-        { email: ILike(`%${searchString}%`) },
+        // { email: ILike(`%${searchString}%`) },
       ],
     });
   }

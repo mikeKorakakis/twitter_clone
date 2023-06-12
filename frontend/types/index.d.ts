@@ -1,5 +1,5 @@
 // import { User } from "@prisma/client";
-import { User } from "@/gql"
+import { User } from "@/gql";
 import type { Icon } from "lucide-react";
 
 import { Icons } from "@/components/icons";
@@ -11,6 +11,11 @@ export type NavItem = {
 };
 
 export type MainNavItem = NavItem;
+
+export type UserType = Pick<
+	User,
+	"id" | "email" | "firstName" | "lastName" | "role" | "displayName" | "image"
+>;
 
 export type SidebarNavItem = {
 	title: string;
@@ -39,7 +44,7 @@ export type SiteConfig = {
 	pages: {
 		[key: string]: string;
 	};
-    defaultPageSize: number
+	defaultPageSize: number;
 };
 
 export type DocsConfig = {
@@ -49,7 +54,7 @@ export type DocsConfig = {
 
 export type HomeConfig = {
 	mainNav: MainNavItem[];
-    authNav: MainNavItem[];
+	authNav: MainNavItem[];
 };
 
 export type DashboardConfig = {

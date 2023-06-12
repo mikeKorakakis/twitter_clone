@@ -1,3 +1,4 @@
+"use server";
 import { RefreshTokenDocument } from "@/gql/graphql";
 import { GraphQLClient, Variables } from "graphql-request";
 import { VariablesAndRequestHeadersArgs } from "graphql-request/build/esm/types";
@@ -8,7 +9,6 @@ function isUnauthorizedError(error: any) {
 
 
 export const gqlClient = async () => {
-	"use server";
 	const cookieStore = await cookies();
 	const token = cookieStore.get("access_token");
     const refreshToken = cookieStore.get("refresh_token");

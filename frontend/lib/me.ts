@@ -26,27 +26,28 @@ export default async function me() {
 		} catch (e: any) {
 			return null;
 		}
-	} else {
-        console.log("client")
+    }
+	// } else {
+    //     console.log("client")
 
-		const client = await gqlClient();
-		// return res;
-        try {
-			const res = await client.request<MeQuery, MeQueryVariables>(
-				MeDocument,
-				{}
-			);
-			return {
-                id: res?.me?.id,
-				email: res?.me?.email,
-				firstName: res?.me?.firstName,
-				lastName: res?.me?.lastName,
-				role: res?.me?.role,
-				displayName: res?.me?.displayName,
-				image: res?.me?.image,
-			};
-		} catch (e: any) {
-			return null;
-		}
-	}
+	// 	const client = await gqlClient();
+	// 	// return res;
+    //     try {
+	// 		const res = await client.request<MeQuery, MeQueryVariables>(
+	// 			MeDocument,
+	// 			{}
+	// 		);
+	// 		return {
+    //             id: res?.me?.id,
+	// 			email: res?.me?.email,
+	// 			firstName: res?.me?.firstName,
+	// 			lastName: res?.me?.lastName,
+	// 			role: res?.me?.role,
+	// 			displayName: res?.me?.displayName,
+	// 			image: res?.me?.image,
+	// 		};
+	// 	} catch (e: any) {
+	// 		return null;
+	// 	}
+	// }
 }
