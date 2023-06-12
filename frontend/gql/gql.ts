@@ -23,15 +23,15 @@ const documents = {
     "mutation ResetPassword($email: String!) {\n  resetPassword(email: $email) {\n    email\n    success\n    message\n  }\n}": types.ResetPasswordDocument,
     "mutation SetNewPassword($input: SetNewPasswordDto!) {\n  setNewPassword(input: $input) {\n    success\n    message\n    error {\n      type\n      message\n    }\n  }\n}": types.SetNewPasswordDocument,
     "query Me {\n  me {\n    ...UserInfo\n  }\n}": types.MeDocument,
-    "fragment UserInfo on User {\n  id\n  email\n  firstName\n  lastName\n  displayName\n  role\n  image\n}": types.UserInfoFragmentDoc,
+    "fragment UserInfo on User {\n  id\n  email\n  firstName\n  lastName\n  displayName\n  role\n  image\n  isFollowed\n}": types.UserInfoFragmentDoc,
     "mutation CreatePost($createPostInput: CreatePostInput!) {\n  createPost(createPostInput: $createPostInput) {\n    success\n    error {\n      message\n      type\n    }\n    post {\n      id\n      title\n      content\n      published\n    }\n  }\n}": types.CreatePostDocument,
     "mutation DeletePost($id: String!) {\n  deletePost(id: $id) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.DeletePostDocument,
     "mutation UpdatePost($updatePostInput: UpdatePostInput!) {\n  updatePost(updatePostInput: $updatePostInput) {\n    id\n    title\n    content\n    published\n  }\n}": types.UpdatePostDocument,
     "query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}": types.GetPostDocument,
-    "query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}": types.GetPostsDocument,
+    "query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}": types.GetPostsDocument,
     "mutation FollowUser($userId: String!) {\n  followUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.FollowUserDocument,
     "mutation SubscribeToPremium {\n  subscribeToPremium\n}": types.SubscribeToPremiumDocument,
-    "mutation unFollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.UnFollowUserDocument,
+    "mutation unfollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.UnfollowUserDocument,
     "query GetStripeInfo {\n  getStripeInfo {\n    stripeCustomerId\n    stripeSubscriptionId\n    stripePriceId\n    stripeCurrentPeriodEnd\n  }\n}": types.GetStripeInfoDocument,
     "query SearchUsers($searchTerm: String!) {\n  searchUsers(searchTerm: $searchTerm) {\n    ...UserInfo\n  }\n}": types.SearchUsersDocument,
     "query subscriptionIsCancelled {\n  subscriptionIsCancelled\n}": types.SubscriptionIsCancelledDocument,
@@ -95,7 +95,7 @@ export function graphql(source: "query Me {\n  me {\n    ...UserInfo\n  }\n}"): 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "fragment UserInfo on User {\n  id\n  email\n  firstName\n  lastName\n  displayName\n  role\n  image\n}"): (typeof documents)["fragment UserInfo on User {\n  id\n  email\n  firstName\n  lastName\n  displayName\n  role\n  image\n}"];
+export function graphql(source: "fragment UserInfo on User {\n  id\n  email\n  firstName\n  lastName\n  displayName\n  role\n  image\n  isFollowed\n}"): (typeof documents)["fragment UserInfo on User {\n  id\n  email\n  firstName\n  lastName\n  displayName\n  role\n  image\n  isFollowed\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -115,7 +115,7 @@ export function graphql(source: "query GetPost($id: String!) {\n  post(id: $id) 
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}"): (typeof documents)["query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}"];
+export function graphql(source: "query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}"): (typeof documents)["query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -127,7 +127,7 @@ export function graphql(source: "mutation SubscribeToPremium {\n  subscribeToPre
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation unFollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"): (typeof documents)["mutation unFollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"];
+export function graphql(source: "mutation unfollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"): (typeof documents)["mutation unfollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

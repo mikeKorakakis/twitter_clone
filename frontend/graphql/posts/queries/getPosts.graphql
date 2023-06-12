@@ -6,9 +6,13 @@ query GetPosts($args: PageOptionsDto!) {
 			title
 			content
 			createdAt
+			author {
+				id
+				displayName
+			}
 		}
 		meta {
-            take
+			take
 			pageCount
 			hasNextPage
 			hasPreviousPage

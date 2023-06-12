@@ -4,6 +4,9 @@ import type { Icon } from "lucide-react";
 
 import { Icons } from "@/components/icons";
 
+type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
+
+
 export type NavItem = {
 	title: string;
 	href: string;
@@ -12,9 +15,9 @@ export type NavItem = {
 
 export type MainNavItem = NavItem;
 
-export type UserType = Pick<
+export type UserType = OptionalExceptFor<
 	User,
-	"id" | "email" | "firstName" | "lastName" | "role" | "displayName" | "image"
+	"id" | "email" | "firstName" | "lastName" | "role" | "displayName" | "image" 
 >;
 
 export type SidebarNavItem = {

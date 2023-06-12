@@ -69,6 +69,7 @@ type User {
   stripeCurrentPeriodEnd: DateTime!
   followers: [User!]
   following: [User!]
+  isFollowed: Boolean
 }
 
 type StripeInfoPayload {

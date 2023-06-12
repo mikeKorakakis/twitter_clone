@@ -63,7 +63,7 @@ export class UserResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => FollowUserPayload)
   async followUser(@Args('userId') userId: string, @CurrentUser() user: User) {
-    return this.userService.followUser(user, userId);
+    return this.userService.followUser(user?.id, userId);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -72,12 +72,13 @@ export class UserResolver {
     @Args('userId') userId: string,
     @CurrentUser() user: User,
   ) {
-    return this.userService.unfollowUser(user, userId);
+    return this.userService.unfollowUser(user?.id, userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [User])
-  async searchUsers(@Args('searchTerm') searchTerm: string) {
-    return this.userService.searchUsers(searchTerm);
+  async searchUsers(@Args('searchTerm') searchTerm: string, @CurrentUser() user: User) {
+    return this.userService.searchUsers(searchTerm, user);
   }
 
   // Resolve the posts field for the User type

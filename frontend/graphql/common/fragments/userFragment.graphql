@@ -6,4 +6,5 @@ fragment UserInfo on User {
 		displayName
         role
         image
+        isFollowed
 }

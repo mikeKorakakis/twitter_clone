@@ -247,7 +247,11 @@ export class UserService {
     return user;
   }
 
-  public async followUser(currentUser: User, userId: string) {
+  public async followUser(currentUserId: string, userId: string) {
+    const currentUser = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ['following'],
+    });
     const userToFollow = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -271,9 +275,17 @@ export class UserService {
     }
     currentUser.following.push(userToFollow);
     await this.userRepository.save(currentUser);
+    return new FollowUserPayload({
+      success: true,
+      error: null,
+    });
   }
 
-  public async unfollowUser(currentUser: User, userId: string) {
+  public async unfollowUser(currentUserId: string, userId: string) {
+    const currentUser = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ['following'],
+    });
     const userToUnfollow = await this.userRepository.findOne({
       where: { id: userId },
     });
@@ -299,19 +311,49 @@ export class UserService {
       (user) => user.id !== userId,
     );
     await this.userRepository.save(currentUser);
+    return new FollowUserPayload({
+      success: true,
+      error: null,
+    });
   }
 
-  public async searchUsers(searchString: string) {
+  public async searchUsers(searchString: string, currentUser: User) {
     if (!searchString) {
       return [];
     }
-    return this.userRepository.find({
+    const users = await this.userRepository.find({
       where: [
         // { firstName: ILike(`%${searchString}%`) },
         // { lastName: ILike(`%${searchString}%`) },
         { displayName: ILike(`%${searchString}%`) },
         // { email: ILike(`%${searchString}%`) },
       ],
+    });
+
+    for (let user of users) {
+      console.log(await this.isFollowing(currentUser, user));
+      user.isFollowed = await this.isFollowing(currentUser, user);
+    }
+
+    return users;
+  }
+
+  async isFollowing(currentUser: User, targetUser: User): Promise<boolean> {
+    if (!currentUser || !targetUser) {
+      return false;
+    }
+
+    // Load followers for target user if they are not already loaded
+    if (!currentUser.following) {
+      currentUser = await this.userRepository.findOne({
+        where: { id: currentUser.id },
+        relations: ['following'],
+      });
+    }
+
+    return currentUser.following.some((user) => {
+      console.log(user.id, currentUser.id);
+      return user.id === targetUser.id;
     });
   }
 }

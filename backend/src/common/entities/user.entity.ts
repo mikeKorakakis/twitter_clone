@@ -155,6 +155,9 @@ export class User extends AbstractEntity<User> {
   @JoinTable()
   following: User[];
 
+  @Field(() => Boolean, { nullable: true })
+  isFollowed?: boolean;
+
   // @ManyToMany(() => Room, room => room.users)
   // public rooms: Room[]
 

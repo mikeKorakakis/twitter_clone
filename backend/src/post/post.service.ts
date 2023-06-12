@@ -70,9 +70,10 @@ export class PostService {
     userId: string;
     pageOptions: PageOptionsDto;
   }) {
-    console.log('pageoptions',(pageOptions.page - 1) * pageOptions.take)
+    console.log('pageoptions', (pageOptions.page - 1) * pageOptions.take);
     const queryBuilder = this.postRepository.createQueryBuilder('post');
     queryBuilder
+      .leftJoinAndSelect('post.author', 'author')
       .orderBy('post.createdAt', pageOptions.order)
       .take(pageOptions.take)
       .skip((pageOptions.page - 1) * pageOptions.take);
