@@ -38,7 +38,6 @@ export class Post extends AbstractEntity<Post> {
   @ManyToOne(() => User, (user) => user.posts, {
     onDelete: 'CASCADE',
     nullable: true,
-    lazy: true,
   })
   @JoinColumn()
   public author: User;

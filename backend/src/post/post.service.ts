@@ -71,9 +71,20 @@ export class PostService {
     pageOptions: PageOptionsDto;
   }) {
     console.log('pageoptions', (pageOptions.page - 1) * pageOptions.take);
+    const following = await this.userService.getFollowing(userId);
+    const followingIds = following.map((user) => user.id);
+    console.log('followingIds', followingIds);
     const queryBuilder = this.postRepository.createQueryBuilder('post');
+    queryBuilder.leftJoinAndSelect('post.author', 'author');
+
+    if (followingIds.length > 0) {
+      queryBuilder.where('author.id IN (:...followingIds)', {
+        followingIds: followingIds,
+      });
+    }
+
     queryBuilder
-      .leftJoinAndSelect('post.author', 'author')
+      .orWhere('author.id = :userId', { userId: userId })
       .orderBy('post.createdAt', pageOptions.order)
       .take(pageOptions.take)
       .skip((pageOptions.page - 1) * pageOptions.take);
@@ -84,6 +95,7 @@ export class PostService {
       itemCount,
       pageOptionsDto: pageOptions,
     });
+
     return new (PaginatedResult(Post))(entities, pageMetaDto);
   }
 

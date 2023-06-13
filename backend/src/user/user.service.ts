@@ -356,4 +356,13 @@ export class UserService {
       return user.id === targetUser.id;
     });
   }
+
+  async getFollowing(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+
+    return user.following;
+  }
 }

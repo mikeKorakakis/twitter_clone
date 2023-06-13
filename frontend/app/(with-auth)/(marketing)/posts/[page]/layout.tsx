@@ -16,25 +16,26 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
 	children,
 }: DashboardLayoutProps) {
-	const { user } = await useAuth();
+	// const { user } = await useAuth();
 
-	if (!user) {
-		return notFound();
-	}
+	// if (!user) {
+	// 	return notFound();
+	// }
 
 	return (
-		<div className="flex min-h-screen flex-col space-y-6">
-			<div className="container grid flex-1 gap-12 ">
-				{/* <aside className="hidden w-[200px] flex-col md:flex">
-					<DashboardNav items={dashboardConfig.sidebarNav} />
-				</aside> */}
-				<section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
-					<main className="flex w-full flex-1 flex-col overflow-hidden">
-						{children}
-					</main>
-				</section>
-			</div>
-			<SiteFooter className="border-t" />
-		</div>
+        <div>{children}</div>
+		// <div className="flex min-h-screen flex-col space-y-6">
+		// 	<div className="container grid flex-1 gap-12 ">
+		// 		{/* <aside className="hidden w-[200px] flex-col md:flex">
+		// 			<DashboardNav items={dashboardConfig.sidebarNav} />
+		// 		</aside> */}
+		// 		<section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
+		// 			<main className="flex w-full flex-1 flex-col overflow-hidden">
+		// 				{children}
+		// 			</main>
+		// 		</section>
+		// 	</div>
+		// 	<SiteFooter className="border-t" />
+		// </div>
 	);
 }

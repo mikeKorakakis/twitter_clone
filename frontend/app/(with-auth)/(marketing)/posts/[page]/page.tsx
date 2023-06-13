@@ -29,17 +29,12 @@ interface PostsPageParams {
 }
 
 export default async function PostsPage({ params }: PostsPageParams) {
-	//   const { user } = useAuth()
-
-	//   if (!user) {
-	//     redirect(authOptions?.pages?.signIn || "/login")
-	//   }
+	
 	const searchParams = useSearchParams();
 	let pageSize = siteConfig.defaultPageSize;
 	const pageS = searchParams.get("pageSize");
 	if (pageS && !isNaN(parseInt(pageS))) pageSize = parseInt(pageS);
 
-	// const pageSize = searchParams?.pageSize ? parseInt(searchParams.pageSize) : 4
 	const pageNum = params?.page ? parseInt(params.page) : 1;
 	const client = await gqlClient();
 	const postsRes = await client.request<
@@ -53,26 +48,10 @@ export default async function PostsPage({ params }: PostsPageParams) {
 	});
 	const posts = postsRes.posts.data;
 	const meta = postsRes.posts.meta;
-	//   const posts = [{id: "1", title: "test", published: true, createdAt: new Date("2021-08-01")}]
-
-	//   const post = gqlClient.request<>(getPostQuery)
-
-	//   const posts = await db.post.findMany({
-	//     where: {
-	//       authorId: user.id,
-	//     },
-	//     select: {
-	//       id: true,
-	//       title: true,
-	//       published: true,
-	//       createdAt: true,
-	//     },
-	//     orderBy: {
-	//       updatedAt: "desc",
-	//     },
-	//   })
+	
 
 	return (
+       
 		<DashboardShell>
 			<DashboardHeader heading="Posts" text="Create and manage posts.">
 				<PostCreateButton />

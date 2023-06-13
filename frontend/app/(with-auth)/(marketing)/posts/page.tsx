@@ -40,7 +40,6 @@ export default async function PostsPage() {
 	});
 	const posts = postsRes.posts.data;
 	const meta = postsRes.posts.meta;
-    console.log('meta', meta)
 	//   const posts = [{id: "1", title: "test", published: true, createdAt: new Date("2021-08-01")}]
 
 	//   const post = gqlClient.request<>(getPostQuery)

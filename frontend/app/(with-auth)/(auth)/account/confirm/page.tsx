@@ -56,7 +56,7 @@ export default async function ConfirmAccountPage({
 		<>
 			{/* @ts-expect-error Server Component */}
 			<PrivatePage>
-				<section className="space-y-6 pb-8 -mt-32 md:pb-12 ">
+				<section className="space-y-6 mt-32">
 					<div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center ">
 						{!res ? (
 							<p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">

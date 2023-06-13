@@ -17,7 +17,7 @@ import {
 import Blocks from "editorjs-blocks-react-renderer";
 
 interface PostItemProps {
-	post: Pick<Post, "id" | "title" | "published" | "createdAt" | "content">;
+	post: Pick<Post, "id" | "title" | "published" | "createdAt" | "content" | "author">;
 }
 
 export const Article = (dataFromEditor: any) => (
@@ -41,7 +41,7 @@ export function PostItemPublic({ post }: PostItemProps) {
                         </div>
 					</CardTitle>
 					<CardDescription>
-						{formatDate(post.createdAt)}
+                    Posted by {post.author.displayName} on {formatDate(post.createdAt) } 
 					</CardDescription>
 					<div className="pt-4">
 						<Blocks
