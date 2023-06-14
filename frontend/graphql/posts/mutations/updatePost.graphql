@@ -1,8 +1,15 @@
 mutation UpdatePost($updatePostInput: UpdatePostInput!) {
 	updatePost(updatePostInput: $updatePostInput) {
-		id
-		title
-		content
-		published
+		success
+		error {
+			message
+			type
+		}
+		post {
+			id
+			title
+			content
+			published
+		}
 	}
 }

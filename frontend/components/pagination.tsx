@@ -23,6 +23,7 @@ interface PaginationProps {
 	pageIndex?: number;
 	hasNextPage?: boolean;
 	hasPreviousPage?: boolean;
+    rootPage: string;
 }
 
 export function Pagination({
@@ -31,6 +32,7 @@ export function Pagination({
 	pageIndex = 1,
 	hasNextPage,
 	hasPreviousPage,
+    rootPage
 }: PaginationProps) {
     const router = useRouter()
 	return (
@@ -47,7 +49,7 @@ export function Pagination({
 						value={pageSize.toString()}
 						onValueChange={(value) =>
 							router.push(
-								siteConfig.pages.posts + `/${pageIndex}?pageSize=${value}`
+								rootPage + `/${pageIndex}?pageSize=${value}`
 							)
 						}
 					>
@@ -75,7 +77,7 @@ export function Pagination({
 						className="hidden h-8 w-8 p-0 lg:flex"
 						onClick={() =>
 							router.push(
-								siteConfig.pages.posts + `/1`
+								rootPage + `/1`
 							)
 						}
 						disabled={!hasPreviousPage}
@@ -90,7 +92,7 @@ export function Pagination({
 						className="h-8 w-8 p-0"
 						onClick={() =>
 							router.push(
-								siteConfig.pages.posts + `/${pageIndex - 1}`
+								rootPage + `/${pageIndex - 1}`
 							)
 						}
 						disabled={!hasPreviousPage}
@@ -103,7 +105,7 @@ export function Pagination({
 						className="h-8 w-8 p-0"
 						onClick={() =>
 							router.push(
-								siteConfig.pages.posts + `/${pageIndex + 1}`
+								rootPage + `/${pageIndex + 1}`
 							)
 						}
 						disabled={!hasNextPage}
@@ -118,7 +120,7 @@ export function Pagination({
 						className="hidden h-8 w-8 p-0 lg:flex"
 						onClick={() =>
 							router.push(
-								siteConfig.pages.posts + `/${totalPages}`
+								rootPage + `/${totalPages}`
 							)
 						}
 						disabled={!hasNextPage}

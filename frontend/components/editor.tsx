@@ -28,8 +28,11 @@ import {
 	UpdatePostMutationVariables,
 } from "@/gql/graphql";
 
+import { v4 as uuid } from "uuid";
+import { siteConfig } from "@/config/site";
+
 interface EditorProps {
-	post: Pick<Post, "id" | "title" | "content" | "published">;
+	post?: Pick<Post, "id" | "title" | "content" | "published">;
 }
 
 type FormData = z.infer<typeof postPatchSchema>;
@@ -39,13 +42,41 @@ async function updatePost(data: FormData, id: string) {
 	const response = await gqlClient().request<
 		UpdatePostMutation,
 		UpdatePostMutationVariables
-	>(UpdatePostDocument, { updatePostInput: { ...data, published: false, id } });
+	>(UpdatePostDocument, {
+		updatePostInput: { ...data, published: false, id },
+	});
 	return response?.updatePost;
 }
+
+async function createPost(data: FormData) {
+	const client = await gqlClient();
+	// return res;
+	const response = await client.request<
+		CreatePostMutation,
+		CreatePostMutationVariables
+	>(CreatePostDocument, {
+		createPostInput: {
+			title: data.title,
+			content: data.content,
+			published: false,
+		},
+	});
+	return response?.createPost;
+}
+
 export function Editor({ post }: EditorProps) {
+	let withInitialPost = !!post;
 	const { register, handleSubmit } = useForm<FormData>({
 		resolver: zodResolver(postPatchSchema),
 	});
+	if (!post) {
+		post = {
+			id: uuid(),
+			title: "Post title",
+			content: "",
+			published: false,
+		};
+	}
 	const ref = React.useRef<EditorJS>();
 	const router = useRouter();
 	const [isSaving, setIsSaving] = React.useState<boolean>(false);
@@ -62,7 +93,6 @@ export function Editor({ post }: EditorProps) {
 		const InlineCode = (await import("@editorjs/inline-code")).default;
 
 		const body = postPatchSchema.parse(post);
-
 
 		if (!ref.current) {
 			const editor = new EditorJS({
@@ -118,12 +148,24 @@ export function Editor({ post }: EditorProps) {
 		// 		content: blocks,
 		// 	}),
 		// });
-
-		const response = await updatePost({title: data.title, content: blocks}, post?.id);
+		let response: any;
+		if (withInitialPost) {
+			if (post?.id) {
+				response = await updatePost(
+					{ title: data.title, content: blocks },
+					post?.id
+				);
+			}
+		} else {
+			response = await createPost({
+				title: data.title,
+				content: blocks,
+			});
+		}
 
 		setIsSaving(false);
 
-		if (!response?.id) {
+		if (!response?.success) {
 			return toast({
 				title: "Something went wrong.",
 				description: "Your post was not saved. Please try again.",
@@ -131,9 +173,10 @@ export function Editor({ post }: EditorProps) {
 			});
 		}
 
-		router.refresh();
-
-		return toast({
+        router.push(siteConfig.pages.dashboardPosts);
+		// router.refresh();
+        
+		toast({
 			description: "Your post has been saved.",
 		});
 	}

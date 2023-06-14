@@ -5,7 +5,7 @@ import { PostError } from '../../common/errors/postError';
 import { Post } from '../entities/post.entity';
 
 @ObjectType()
-export class CreatePostPayload {
+export class CreateUpdatePostPayload {
   @Field((type) => Post, { nullable: true })
   post?: Post;
 

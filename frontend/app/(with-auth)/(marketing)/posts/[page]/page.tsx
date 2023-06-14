@@ -35,7 +35,7 @@ export default async function PostsPage({ params }: PostsPageParams) {
 	const pageS = searchParams.get("pageSize");
 	if (pageS && !isNaN(parseInt(pageS))) pageSize = parseInt(pageS);
 
-	const pageNum = params?.page ? parseInt(params.page) : 1;
+	const pageIndex = params?.page ? parseInt(params.page) : 1;
 	const client = await gqlClient();
 	const postsRes = await client.request<
 		GetPostsQuery,
@@ -43,7 +43,7 @@ export default async function PostsPage({ params }: PostsPageParams) {
 	>(GetPostsDocument, {
 		args: {
 			take: pageSize,
-			page: pageNum,
+			page: pageIndex,
 		},
 	});
 	const posts = postsRes.posts.data;
@@ -57,11 +57,12 @@ export default async function PostsPage({ params }: PostsPageParams) {
 				<PostCreateButton />
 			</DashboardHeader>
 			<Pagination
-				pageIndex={pageNum}
+				pageIndex={pageIndex}
 				totalPages={meta?.pageCount}
 				pageSize={pageSize}
 				hasNextPage={meta?.hasNextPage}
 				hasPreviousPage={meta?.hasPreviousPage}
+                rootPage={siteConfig.pages.posts}
 			/>
 			<div>
 				{posts?.length ? (

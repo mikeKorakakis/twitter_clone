@@ -8,7 +8,7 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../common/guards';
 import { User } from '../common/entities';
 import { RemovePostPayload } from './dtos/remove-post.payload';
-import { CreatePostPayload } from './dtos/create-post.payload';
+import { CreateUpdatePostPayload } from './dtos/create-update-post.payload';
 import { AllPostsArgs } from './dtos/find-all-posts.input';
 import { PageOptionsDto } from '../common/dtos/page-options.dto';
 import { PaginatedPosts } from './dtos/all-posts.payload';
@@ -18,7 +18,26 @@ export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => CreatePostPayload)
+  
+  @UseGuards(JwtAuthGuard)
+  @Query(() => PaginatedPosts, { name: 'posts' })
+  findAll(@CurrentUser() user, @Args('args') pageOptions: PageOptionsDto) {
+    return this.postService.findAllPaginated({ userId: user?.id, pageOptions });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => PaginatedPosts, { name: 'userPosts' })
+  findUserPosts(@CurrentUser() user, @Args('args') pageOptions: PageOptionsDto) {
+    return this.postService.findUserPostsPaginated({ userId: user?.id, pageOptions});
+  }
+
+  @Query(() => Post, { name: 'post' })
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.postService.findOne(id);
+  }
+  
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => CreateUpdatePostPayload)
   createPost(
     @Args('createPostInput') createPostInput: CreatePostInput,
     @CurrentUser() user,
@@ -27,18 +46,7 @@ export class PostResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => PaginatedPosts, { name: 'posts' })
-  findAll( @CurrentUser() user, @Args('args') pageOptions: PageOptionsDto) {
-    return this.postService.findAllPaginated({ userId: user?.id, pageOptions });
-  }
-
-  @Query(() => Post, { name: 'post' })
-  findOne(@Args('id', { type: () => String }) id: string) {
-    return this.postService.findOne(id);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Mutation(() => Post)
+  @Mutation(() => CreateUpdatePostPayload)
   updatePost(
     @Args('updatePostInput') updatePostInput: UpdatePostInput,
     @CurrentUser() user: User,

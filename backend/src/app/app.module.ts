@@ -106,7 +106,8 @@ console.log(' process.cwd(),', process.cwd());
       autoSchemaFile: path.join(process.cwd(),  'src', 'schema.gql'),
         context: ({ req, res }) => ({ req, res }),
       playground: true, // Enable GraphQL Playground,
-      resolvers: { JSON: GraphQLJSON  }
+      resolvers: { JSON: GraphQLJSON  },
+      installSubscriptionHandlers: true
     }),
     UserModule,
     AuthModule,

@@ -1,4 +1,3 @@
-
 import { redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
@@ -18,10 +17,10 @@ import { Pagination } from "@/components/pagination";
 import { siteConfig } from "@/config/site"
 
 export const metadata = {
-	title: "Dashboard Posts",
+	title: "Dashboard",
 };
 
-export default async function DashboardPage() {
+export default async function DashboardPostsPage() {
 	//   const { user } = useAuth()
 
 	//   if (!user) {
@@ -71,7 +70,7 @@ export default async function DashboardPage() {
 					pageSize={meta?.take}
 					hasNextPage={meta?.hasNextPage}
 					hasPreviousPage={meta?.hasPreviousPage}
-                    rootPage={siteConfig.pages.dashboardPosts}
+                    rootPage={siteConfig?.pages?.dashboardPosts}
 				/>
                 </div>
 				{posts?.length ? (

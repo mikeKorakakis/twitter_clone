@@ -70,6 +70,7 @@ export default async function PostsPage() {
 				pageSize={meta?.take}
                 hasNextPage={meta?.hasNextPage}
                 hasPreviousPage={meta?.hasPreviousPage}
+                rootPage={siteConfig.pages.posts}
 			/>
 			<div>
 				{posts?.length ? (

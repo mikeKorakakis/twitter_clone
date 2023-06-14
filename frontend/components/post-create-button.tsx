@@ -9,10 +9,9 @@ import { toast } from "@/components/ui/use-toast";
 import { Icons } from "@/components/icons";
 import { gqlClient } from "@/lib/client";
 import {
-	CreatePostDocument,
-	CreatePostMutation,
-	CreatePostMutationVariables,
-	PostErrorType,
+	GetUserPostsDocument,
+	GetUserPostsQuery,
+	GetUserPostsQueryVariables,
 } from "@/gql/graphql";
 
 interface PostCreateButtonProps extends ButtonProps {}
@@ -31,14 +30,14 @@ export function PostCreateButton({
 		const client = await gqlClient();
 		// return res;
 		const response = await client.request<
-			CreatePostMutation,
-			CreatePostMutationVariables
-		>(CreatePostDocument, {
-			createPostInput: {
-				title: "Untitled Post",
-				published: false,
-			},
-		});
+			GetUserPostsQuery,
+			GetUserPostsQueryVariables
+		>(GetUserPostsDocument,{
+            args: {
+                take: 4,
+                page: 1,
+            }
+        });
 
 		// const response = await fetch("/api/posts", {
 		//   method: "POST",
@@ -52,7 +51,7 @@ export function PostCreateButton({
 
 		setIsLoading(false);
 
-		if (!response?.createPost?.success) {
+		if (!response?.userPosts) {
 			// if (response.status === 402) {
 			// 	return toast({
 			// 		title: "Limit of 3 posts reached.",
@@ -60,10 +59,7 @@ export function PostCreateButton({
 			// 		variant: "destructive",
 			// 	});
 			// }
-			if (
-				response?.createPost?.error?.type ===
-				PostErrorType.MaxPostReached
-			) {
+			if (response?.userPosts?.meta?.itemCount && response?.userPosts?.meta?.itemCount > 3) {
 				return toast({
 					title: "Something went wrong.",
 					description:
@@ -71,22 +67,14 @@ export function PostCreateButton({
 					variant: "destructive",
 				});
 			} else {
-				return toast({
-					title: "Something went wrong.",
-					description: "Your post was not created. Please try again.",
-					variant: "destructive",
-				});
 			}
 		}
 
-		const post = response.createPost.post;
 		// const post = await response.json();
 
 		// This forces a cache invalidation.
-		if (post) {
-			router.refresh();
-			router.push(`/editor/${post.id}`);
-		}
+		router.refresh();
+		router.push("/editor");
 	}
 
 	return (

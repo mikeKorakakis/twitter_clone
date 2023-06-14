@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { User } from '../common/entities';
 import { PostError, PostErrorType } from '../common/errors/postError';
 import { RemovePostPayload } from './dtos/remove-post.payload';
-import { CreatePostPayload } from './dtos/create-post.payload';
+import { CreateUpdatePostPayload } from './dtos/create-update-post.payload';
 import { UserService } from '../user/user.service';
 import { AllPostsArgs } from './dtos/find-all-posts.input';
 import { Page } from './../../../frontend/contentlayer.config';
@@ -25,7 +25,7 @@ export class PostService {
   ) {}
 
   async create(createPostInput: CreatePostInput, author: User) {
-    const userPostCount = await this.findAll({ userId: author.id });
+    const userPostCount = await this.findUserPosts({ userId: author.id });
 
     const stripeInfo = await this.userService.getStripeInfo(author.id);
 
@@ -33,14 +33,13 @@ export class PostService {
       stripeInfo?.stripePriceId &&
       new Date(stripeInfo?.stripeCurrentPeriodEnd).getTime() + 86_400_000 >
         Date.now();
-
     if (userPostCount.length >= 3 && !isPro) {
       const postError = new PostError({
         message: 'User has reached maximum number of posts',
         type: PostErrorType.MAX_POST_REACHED,
       });
 
-      return new CreatePostPayload({
+      return new CreateUpdatePostPayload({
         success: false,
         error: postError,
       });
@@ -52,15 +51,44 @@ export class PostService {
       authorId: author?.id,
     });
     const createdPost = await this.postRepository.save(post);
-    return new CreatePostPayload({
+    return new CreateUpdatePostPayload({
       success: true,
       post: createdPost,
     });
     // return post;
   }
 
-  async findAll({ userId }: { userId: string }) {
-    return this.postRepository.find({ where: { author: { id: userId } } });
+  async findUserPosts({ userId }: { userId: string }) {
+    return this.postRepository.find({
+      where: { author: { id: userId } },
+      relations: ['author'],
+    });
+  }
+
+  async findUserPostsPaginated({
+    userId,
+    pageOptions,
+  }: {
+    userId: string;
+    pageOptions: PageOptionsDto;
+  }) {
+   
+    const queryBuilder = this.postRepository.createQueryBuilder('post');
+    queryBuilder.leftJoinAndSelect('post.author', 'author');
+    queryBuilder
+      .orWhere('author.id = :userId', { userId: userId })
+      .orderBy('post.createdAt', pageOptions.order)
+      .take(pageOptions.take)
+      .skip((pageOptions.page - 1) * pageOptions.take);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: pageOptions,
+    });
+
+    return new (PaginatedResult(Post))(entities, pageMetaDto);
   }
 
   async findAllPaginated({
@@ -70,10 +98,8 @@ export class PostService {
     userId: string;
     pageOptions: PageOptionsDto;
   }) {
-    console.log('pageoptions', (pageOptions.page - 1) * pageOptions.take);
     const following = await this.userService.getFollowing(userId);
     const followingIds = following.map((user) => user.id);
-    console.log('followingIds', followingIds);
     const queryBuilder = this.postRepository.createQueryBuilder('post');
     queryBuilder.leftJoinAndSelect('post.author', 'author');
 
@@ -118,8 +144,12 @@ export class PostService {
     post.published = updatePostInput.published;
 
     // Save the updated post
-    return this.postRepository.save(post);
+    this.postRepository.save(post);
 
+    return new CreateUpdatePostPayload({
+      success: true,
+      post: post,
+    });
     // return this.postRepository
     //   .createQueryBuilder()
     //   .update(Post)

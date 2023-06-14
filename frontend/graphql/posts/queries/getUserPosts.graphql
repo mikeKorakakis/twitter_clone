@@ -1,0 +1,22 @@
+query getUserPosts($args: PageOptionsDto!) {
+	userPosts(args: $args) {
+		data {
+			id
+			published
+			title
+			content
+			createdAt
+			author {
+				id
+				displayName
+			}
+		}
+		meta {
+			take
+			pageCount
+			hasNextPage
+			hasPreviousPage
+            itemCount
+		}
+	}
+}

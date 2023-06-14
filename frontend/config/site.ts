@@ -17,7 +17,8 @@ export const siteConfig: SiteConfig = {
         resetPassword: "/account/reset-password",
         dashboard: "/dashboard",
         profile: "/dashboard/settings",
-        posts: "/posts"
+        posts: "/posts",
+        dashboardPosts: "/dashboard/posts"
 	},
     defaultPageSize: 4,
 };
