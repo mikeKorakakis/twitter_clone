@@ -34,12 +34,13 @@ export class TweetService {
     });
   }
 
-  async findAllTweets({ userId }: { userId: string }) {
-    return this.tweetRepository.find({
+   findAllTweets({ userId }: { userId: string }) {
+    const tweets =  this.tweetRepository.find({
       where: { author: { id: userId } },
       order: { createdAt: 'DESC' },
       relations: ['author'],
     });
+    return tweets;
   }
 
   async findUserTweetsPaginated({
@@ -93,6 +94,7 @@ export class TweetService {
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
+    console.log(entities);
     const pageMetaDto = new PageMetaDto({
       itemCount,
       pageOptionsDto: pageOptions,
