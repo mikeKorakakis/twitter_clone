@@ -18,8 +18,6 @@ export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
   @UseGuards(JwtAuthGuard)
-  
-  @UseGuards(JwtAuthGuard)
   @Query(() => PaginatedPosts, { name: 'posts' })
   findAll(@CurrentUser() user, @Args('args') pageOptions: PageOptionsDto) {
     return this.postService.findAllPaginated({ userId: user?.id, pageOptions });

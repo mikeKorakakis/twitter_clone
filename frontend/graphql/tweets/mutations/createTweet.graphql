@@ -1,0 +1,7 @@
+mutation CreateTweet($tweet: CreateTweetInput!) {
+  createTweet(tweet: $tweet) {
+    id
+    content
+    createdAt
+  }
+}

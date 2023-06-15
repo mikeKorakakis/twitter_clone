@@ -1,7 +1,5 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import {
-    Module
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
@@ -18,10 +16,11 @@ import { UserModule } from '../user/user.module';
 
 import { ThrottlerModule } from '@nestjs/throttler';
 
-
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PostModule } from '../post/post.module';
 import GraphQLJSON from 'graphql-type-json';
+import { TweetModule } from '../tweet/tweet.module';
+import { Tweet } from '../tweet/entities/tweet.entity';
 // const cookieSession = require('cookie-session');
 
 // import cookieSession from 'cookie-session';
@@ -34,10 +33,7 @@ console.log(' process.cwd(),', process.cwd());
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: path.join(
-        process.cwd(),       
-        `.env.${process.env.NODE_ENV}`,
-      ),
+      envFilePath: path.join(process.cwd(), `.env.${process.env.NODE_ENV}`),
     }),
     JwtModule.registerAsync({
       global: true,
@@ -49,23 +45,25 @@ console.log(' process.cwd(),', process.cwd());
       inject: [ConfigService],
     }),
     ConfigModule.forRoot({
-        isGlobal: true
+      isGlobal: true,
     }),
     ThrottlerModule.forRoot({
-        ttl: 60,
-        limit: 10,
+      ttl: 60,
+      limit: 10,
     }),
     RedisModule.forRootAsync({
-        imports: [ConfigModule],
-        inject: [ConfigService],
-        useFactory: async (configService: ConfigService): Promise<RedisModuleOptions> => {
-            return {
-                config: {
-                    host: configService.get('REDIS_HOST') || 'localhost',
-                    port: configService.get('REDIS_PORT') || 6379,
-                }
-            }
-        }
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (
+        configService: ConfigService,
+      ): Promise<RedisModuleOptions> => {
+        return {
+          config: {
+            host: configService.get('REDIS_HOST') || 'localhost',
+            port: configService.get('REDIS_PORT') || 6379,
+          },
+        };
+      },
     }),
 
     // TypeOrmModule.forRoot({
@@ -84,7 +82,6 @@ console.log(' process.cwd(),', process.cwd());
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => {
-        console.log('DB_TYPE', configService.get('DB_TYPE'));
         return {
           type: configService.get('DB_TYPE') as any,
           host: configService.get('DB_HOST'),
@@ -95,7 +92,7 @@ console.log(' process.cwd(),', process.cwd());
             configService.get('DB_TYPE') === 'postgres'
               ? (configService.get('DB_NAME') as string)
               : path.resolve(__dirname, '../../../sqlite.db'),
-          entities: [User, Post],
+          entities: [User, Post, Tweet],
           synchronize: true,
         };
       },
@@ -103,16 +100,25 @@ console.log(' process.cwd(),', process.cwd());
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: path.join(process.cwd(),  'src', 'schema.gql'),
-        context: ({ req, res }) => ({ req, res }),
+      autoSchemaFile: path.join(process.cwd(), 'src', 'schema.gql'),
+      context: ({ req, res }) => ({ req, res }),
       playground: true, // Enable GraphQL Playground,
-      resolvers: { JSON: GraphQLJSON  },
-      installSubscriptionHandlers: true
+      resolvers: { JSON: GraphQLJSON },
+      installSubscriptionHandlers: true,
+    //   subscriptions: {
+    //     'subscriptions-transport-ws': {
+    //       onConnect: (connectionParams, websocket, context) => {
+    //         const authToken = connectionParams.authToken;            
+    //         // validate the authToken here. If it's invalid, throw an error.
+    //         // If it's valid, you could return an object containing user's data
+    //       },
+    //     },
+    //   },
     }),
     UserModule,
     AuthModule,
-    PostModule
-    // TweetModule
+    PostModule,
+    TweetModule,
   ],
   controllers: [AppController],
   providers: [

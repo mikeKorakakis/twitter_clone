@@ -1,0 +1,18 @@
+query GetTweets($args: PageOptionsDto!) {
+	tweets(args: $args) {
+		data {
+            id
+			content
+			createdAt
+            author{
+                ...UserInfo
+            }
+		}
+		meta {
+			take
+			pageCount
+			hasNextPage
+			hasPreviousPage
+		}
+	}
+}

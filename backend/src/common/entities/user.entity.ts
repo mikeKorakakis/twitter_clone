@@ -14,6 +14,7 @@ import { AbstractEntity } from './';
 import { Providers, AccountStatus, Role } from '../enums';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Post } from '../../post/entities/post.entity';
+import { Tweet } from '../../tweet/entities/tweet.entity';
 // import { Invitation, Room } from '../../modules/v1/room/entities'
 // import { Message } from '../../modules/v1/message/message.entity'
 @ObjectType()
@@ -113,6 +114,10 @@ export class User extends AbstractEntity<User> {
   @OneToMany(() => Post, (post) => post.author, { nullable: true })
   public posts?: Post[];
 
+  @Field((type) => [Tweet])
+  @OneToMany(() => Tweet, (tweet) => tweet.author, { nullable: true })
+  public tweets?: Tweet[];
+
   @Field()
   @Column({
     name: 'stripe_customer_id',
@@ -145,15 +150,17 @@ export class User extends AbstractEntity<User> {
   })
   public stripeCurrentPeriodEnd: Date;
 
-  @Field(type => [User], { nullable: true })
+  @Field((type) => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.following, { nullable: true })
   @JoinTable()
   followers: User[];
 
-  @Field(type => [User], { nullable: true })
+  @Field((type) => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.followers, { nullable: true })
   @JoinTable()
   following: User[];
+
+
 
   @Field(() => Boolean, { nullable: true })
   isFollowed?: boolean;

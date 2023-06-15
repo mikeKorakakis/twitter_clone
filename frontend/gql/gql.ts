@@ -30,6 +30,8 @@ const documents = {
     "query GetPost($id: String!) {\n  post(id: $id) {\n    id\n    published\n    title\n    content\n  }\n}": types.GetPostDocument,
     "query GetPosts($args: PageOptionsDto!) {\n  posts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}": types.GetPostsDocument,
     "query getUserPosts($args: PageOptionsDto!) {\n  userPosts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n      itemCount\n    }\n  }\n}": types.GetUserPostsDocument,
+    "mutation CreateTweet($tweet: CreateTweetInput!) {\n  createTweet(tweet: $tweet) {\n    id\n    content\n    createdAt\n  }\n}": types.CreateTweetDocument,
+    "query GetTweets($args: PageOptionsDto!) {\n  tweets(args: $args) {\n    data {\n      id\n      content\n      createdAt\n      author {\n        ...UserInfo\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}": types.GetTweetsDocument,
     "mutation FollowUser($userId: String!) {\n  followUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.FollowUserDocument,
     "mutation SubscribeToPremium {\n  subscribeToPremium\n}": types.SubscribeToPremiumDocument,
     "mutation unfollowUser($userId: String!) {\n  unfollowUser(userId: $userId) {\n    success\n    error {\n      message\n      type\n    }\n  }\n}": types.UnfollowUserDocument,
@@ -121,6 +123,14 @@ export function graphql(source: "query GetPosts($args: PageOptionsDto!) {\n  pos
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query getUserPosts($args: PageOptionsDto!) {\n  userPosts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n      itemCount\n    }\n  }\n}"): (typeof documents)["query getUserPosts($args: PageOptionsDto!) {\n  userPosts(args: $args) {\n    data {\n      id\n      published\n      title\n      content\n      createdAt\n      author {\n        id\n        displayName\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n      itemCount\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation CreateTweet($tweet: CreateTweetInput!) {\n  createTweet(tweet: $tweet) {\n    id\n    content\n    createdAt\n  }\n}"): (typeof documents)["mutation CreateTweet($tweet: CreateTweetInput!) {\n  createTweet(tweet: $tweet) {\n    id\n    content\n    createdAt\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetTweets($args: PageOptionsDto!) {\n  tweets(args: $args) {\n    data {\n      id\n      content\n      createdAt\n      author {\n        ...UserInfo\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}"): (typeof documents)["query GetTweets($args: PageOptionsDto!) {\n  tweets(args: $args) {\n    data {\n      id\n      content\n      createdAt\n      author {\n        ...UserInfo\n      }\n    }\n    meta {\n      take\n      pageCount\n      hasNextPage\n      hasPreviousPage\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

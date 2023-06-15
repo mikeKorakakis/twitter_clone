@@ -48,6 +48,15 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
+type Tweet {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  content: String!
+  author: User!
+  authorId: String!
+}
+
 type User {
   id: String!
   createdAt: DateTime!
@@ -63,6 +72,7 @@ type User {
   role: String!
   accountStatus: String!
   posts: [Post!]!
+  tweets: [Tweet!]!
   stripeCustomerId: String!
   stripeSubscriptionId: String!
   stripePriceId: String!
@@ -163,6 +173,11 @@ type PaginatedPosts {
   meta: PageMetaDto
 }
 
+type PaginatedTweets {
+  data: [Tweet!]
+  meta: PageMetaDto
+}
+
 type Query {
   user(id: String!): User!
   getStripeInfo: StripeInfoPayload!
@@ -173,6 +188,8 @@ type Query {
   posts(args: PageOptionsDto!): PaginatedPosts!
   userPosts(args: PageOptionsDto!): PaginatedPosts!
   post(id: String!): Post!
+  tweets(args: PageOptionsDto!): PaginatedTweets!
+  userTweets(args: PageOptionsDto!): PaginatedTweets!
 }
 
 input PageOptionsDto {
@@ -204,6 +221,7 @@ type Mutation {
   createPost(createPostInput: CreatePostInput!): CreateUpdatePostPayload!
   updatePost(updatePostInput: UpdatePostInput!): CreateUpdatePostPayload!
   deletePost(id: String!): RemovePostPayload!
+  createTweet(tweet: CreateTweetInput!): Tweet!
 }
 
 input UpdateUserDto {
@@ -255,4 +273,12 @@ input UpdatePostInput {
   content: JSONObject
   published: Boolean
   id: String!
+}
+
+input CreateTweetInput {
+  content: String!
+}
+
+type Subscription {
+  newTweet: Tweet!
 }
