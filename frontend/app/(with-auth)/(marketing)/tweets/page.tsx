@@ -13,6 +13,8 @@ import {
 } from "@/gql/graphql";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { timeSince } from "@/lib/time";
+import { ws_client } from "@/lib/gql_client_ws";
+import { gql } from "graphql-tag";
 
 async function getTweets() {
 	const client = await gqlClient();
@@ -50,6 +52,42 @@ export default function TweetsPage() {
 	const [meta, setMeta] = useState<MetaType>();
 
 	useEffect(() => {
+		async function subscribeToTweets() {
+			const client = await ws_client();
+			const subscription = client.subscribe(
+				gql`
+					subscription {
+						newTweet {
+							id
+							content
+							createdAt
+							author {
+								id
+								email
+								firstName
+								lastName
+								displayName
+								role
+								image
+								isFollowed
+							}
+						}
+					}
+				`,
+				{
+					next: (data) => {
+						console.log(data);
+						setTweets((prev) => [data.newTweet, ...(prev ?? [])]);
+					},
+					complete: () => {
+						console.log("done");
+					},
+				}
+			);
+			return subscription;
+		}
+		subscribeToTweets();
+
 		async function getTweetsFunc() {
 			const res = await getTweets();
 			setTweets(res?.tweets.data);
@@ -68,20 +106,23 @@ export default function TweetsPage() {
 				<Textarea
 					placeholder="What is happening?!"
 					value={value}
-					onChange={(e) => setValue(e.target.value)}
+					onChange={(e) => {setValue(e.target.value)}}
 				/>
 				<Button
 					className="ml-4"
-					onClick={async () => await createTweet(value)}
+					onClick={async () => {
+                        await createTweet(value);
+                        setValue("");
+                    }}
 				>
 					Tweet
 				</Button>
 			</div>
 			{/* <div className="space-y-8"> */}
-			<div className="flex space-x-4 sm:w-[38rem] m-auto w-full px-4 mt-10">
+			<div className="flex-col space-y-8 sm:w-[38rem] m-auto w-full px-4 mt-10 ">
 				{tweets?.map((tweet) => (
-					<div key={tweet.id}>
-						<div className="space-y-8">
+					<div key={tweet.id} className="ease-in transition duration-500">
+						<div className="space-y-8 ">
 							<div className="flex ">
 								<Avatar className="h-9 w-9">
 									<AvatarImage
@@ -90,8 +131,8 @@ export default function TweetsPage() {
 									/>
 									<AvatarFallback>OM</AvatarFallback>
 								</Avatar>
-								<div className="ml-4 space-y-1">
-									<span className="text-sm font-medium leading-none">
+								<div className="ml-4 space-y-1 ">
+									<span className="text-sm font-medium leading-none ease-in transition-all duration-500 animate-slide-fade-in">
 										<span className="font-bold">
 											{tweet.author.displayName}
 										</span>{" "}

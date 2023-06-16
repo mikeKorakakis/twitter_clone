@@ -1,5 +1,4 @@
 import { Field, InputType, registerEnumType } from '@nestjs/graphql';
-import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 
 export enum Order {

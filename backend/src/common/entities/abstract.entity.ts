@@ -30,7 +30,7 @@ export abstract class AbstractEntity<T> {
     })
     public updatedAt: Date
 
-    toJSON() {
-        return instanceToPlain(this)
-    }
+    // toJSON() {
+    //     return instanceToPlain(this)
+    // }
 }

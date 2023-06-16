@@ -85,7 +85,7 @@ export class AuthResolver {
     @Args('input') input: RefreshTokenDto,
     @Context() ctx: IGraphQLAuthContext,
   ): Promise<AuthPayload> {
-    return await this.authService.refreshTokens(input.refreshToken, ctx.req);
+    return await this.authService.refreshTokensForMutation(input.refreshToken, ctx.req);
   }
 
   @Mutation(() => ResetPasswordDto)

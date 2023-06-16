@@ -24,7 +24,9 @@ export const gqlClient = async () => {
 		try {
 			return await client.request(query, variables);
 		} catch (error) {
+            console.log("error", error)
             if (isUnauthorizedError(error) && refreshToken) {
+                console.log("Unauthorized");
                 // You'll need to implement isUnauthorizedError
 				const newToken = await client.request(RefreshTokenDocument, {
                    refreshToken: refreshToken?.value

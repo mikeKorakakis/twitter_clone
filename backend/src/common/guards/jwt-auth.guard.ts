@@ -27,6 +27,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         info instanceof TokenExpiredError &&
         req.cookies['refresh_token']
       ) {
+        console.log('expiered token')
         return this.authService.refreshTokens(refreshToken,req);
       }
       if (
@@ -35,6 +36,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         req.cookies['refresh_token'] &&
         !req.cookies['access_token']
       ) {
+        console.log('no auth token')
         return this.authService.refreshTokens(refreshToken, req);
       }
     }

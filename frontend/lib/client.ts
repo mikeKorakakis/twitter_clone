@@ -1,6 +1,11 @@
 import { toast } from "@/components/ui/use-toast";
 import { GraphQLClient, Variables } from "graphql-request";
 import { cookies } from "next/dist/client/components/headers";
+import { RefreshTokenDocument } from "@/gql/graphql";
+
+ function isUnauthorizedError(error: any) {
+	return error.response.errors[0].message === "Unauthorized";
+}
 
 export const gqlClient = (token?: string) => {
 	const client: GraphQLClient = new GraphQLClient(
@@ -21,22 +26,18 @@ export const gqlClient = (token?: string) => {
 		try {
 			return await client.request(query, variables);
 		} catch (error) {
+            console.log("error", error);
 			// if (isUnauthorizedError(error)) {
-			// 	// You'll need to implement isUnauthorizedError
-			// 	const newToken = await refreshToken(); // refreshToken is a function that gets a new access token
-			// 	client.setHeader("Cookie", `access_token=${newToken}`);
+            //     console.log("Unauthorized");
+            //     // You'll need to implement isUnauthorizedError
+			// 	const newToken = await client.request(RefreshTokenDocument, {
+            //        refreshToken: refreshToken?.value
+            //     }); // refreshToken is a function that gets a new access token
+			// 	const accessToken = newToken.refreshToken.accessToken;
+            //     if(accessToken) client.setHeader("Cookie", `access_token=${accessToken}`);
 			// 	return client.request(query, variables);
 			// }
-			// console.log(error);
             throw error;
-            // toast(
-            //     {
-            //         title: "Error",
-            //         description: "Something went wrong. Please try again later.",
-            //         variant: "destructive",
-            //     }
-            // )
-            // return { error };
             
 		}
 	};

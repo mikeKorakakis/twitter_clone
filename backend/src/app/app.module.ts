@@ -21,6 +21,11 @@ import { PostModule } from '../post/post.module';
 import GraphQLJSON from 'graphql-type-json';
 import { TweetModule } from '../tweet/tweet.module';
 import { Tweet } from '../tweet/entities/tweet.entity';
+
+import { useServer } from 'graphql-ws/lib/use/ws';
+import { Server } from 'ws';
+import { createServer } from 'http';
+import { execute, subscribe } from 'graphql';
 // const cookieSession = require('cookie-session');
 
 // import cookieSession from 'cookie-session';
@@ -104,16 +109,19 @@ console.log(' process.cwd(),', process.cwd());
       context: ({ req, res }) => ({ req, res }),
       playground: true, // Enable GraphQL Playground,
       resolvers: { JSON: GraphQLJSON },
-      installSubscriptionHandlers: true,
-    //   subscriptions: {
-    //     'subscriptions-transport-ws': {
-    //       onConnect: (connectionParams, websocket, context) => {
-    //         const authToken = connectionParams.authToken;            
-    //         // validate the authToken here. If it's invalid, throw an error.
-    //         // If it's valid, you could return an object containing user's data
-    //       },
-    //     },
-    //   },
+    //   installSubscriptionHandlers: true,
+        subscriptions: {
+          'graphql-ws': true,
+        },
+      //   subscriptions: {
+      //     'subscriptions-transport-ws': {
+      //       onConnect: (connectionParams, websocket, context) => {
+      //         const authToken = connectionParams.authToken;
+      //         // validate the authToken here. If it's invalid, throw an error.
+      //         // If it's valid, you could return an object containing user's data
+      //       },
+      //     },
+      //   },
     }),
     UserModule,
     AuthModule,

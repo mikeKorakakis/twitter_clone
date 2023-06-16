@@ -61,7 +61,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   );
   app.use(compression());
 
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+//   app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
 
   //   const redisIoAdapter = new RedisIoAdapter(app)
   //   await redisIoAdapter.connectToRedis()

@@ -39,8 +39,8 @@ export class TweetResolver {
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => Tweet)
-  createTweet(@CurrentUser() user, @Args('tweet') tweet: CreateTweetInput) {
-    const tweetPayload = this.tweetService.createTweet(tweet, user);
+  async createTweet(@CurrentUser() user, @Args('tweet') tweet: CreateTweetInput) {
+    const tweetPayload = await this.tweetService.createTweet(tweet, user);
     pubSub.publish('newTweet', { newTweet: tweetPayload });
     return tweetPayload;
   }

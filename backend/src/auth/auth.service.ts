@@ -416,7 +416,7 @@ export class AuthService {
     });
   }
 
-  public async refreshTokens(refreshTokenCookie: string, req: Request) {
+  public async refreshTokensForMutation(refreshTokenCookie: string, req: Request) {
     // const refreshTokenCookie = req.cookies['refresh_token'];
     if (!refreshTokenCookie) {
       throw new UnauthorizedException('Invalid cookie');
@@ -453,6 +453,45 @@ export class AuthService {
     await this.setTokens(req, { accessToken });
     const user = await this.userService.getUserByField('id', verifiedJWt.id);
     return { user, accessToken };
+  }
+
+  public async refreshTokens(refreshTokenCookie: string, req: Request) {
+    // const refreshTokenCookie = req.cookies['refresh_token'];
+    if (!refreshTokenCookie) {
+      throw new UnauthorizedException('Invalid cookie');
+    }
+
+    const verifiedJWt = await this.jwtService.verifyAsync(refreshTokenCookie, {
+      secret: this.configService.get('JWT_REFRESH_SECRET_KEY'),
+    });
+
+    if (!verifiedJWt) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+
+    const refreshTokenRedis = await this.redisService
+      .getClient()
+      .get(`refresh-token:${verifiedJWt.id}:${verifiedJWt.jti}`);
+
+    if (!refreshTokenRedis) {
+      throw new UnauthorizedException('Refresh token not found');
+    }
+
+    const accessToken = await this.jwtService.signAsync(
+      {
+        displayName: verifiedJWt.displayName,
+        id: verifiedJWt.id,
+      },
+      {
+        issuer: 'PoProstuWitold',
+        secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
+        expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME'),
+      },
+    );
+
+    await this.setTokens(req, { accessToken });
+    const user = await this.userService.getUserByField('id', verifiedJWt.id);
+    return user;
   }
 
   public async getUserFromAccessToken(token: string) {
