@@ -1,11 +1,11 @@
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { InjectQueue } from '@nestjs/bull';
 import {
-    BadRequestException,
-    HttpException,
-    Injectable,
-    InternalServerErrorException,
-    UnauthorizedException,
+  BadRequestException,
+  HttpException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -20,8 +20,8 @@ import { ResponseMessageDto } from '../common/dtos/response-message.dto';
 import { User } from '../common/entities';
 import { AccountStatus, PostgresErrorCode, Providers } from '../common/enums';
 import {
-    AuthenticationError,
-    AuthenticationErrorType,
+  AuthenticationError,
+  AuthenticationErrorType,
 } from '../common/errors/authenticationError';
 import { UserService } from '../user/user.service';
 
@@ -96,7 +96,7 @@ export class AuthService {
       } else {
         const [accessToken, refreshToken] = await this.generateTokens(user);
         await this.setTokens(req, { accessToken, refreshToken });
-
+        await this.setWSToken(req, { wsToken: await this.generateWSToken(user) });
         return {
           user,
           accessToken,
@@ -124,6 +124,23 @@ export class AuthService {
     req.res.clearCookie('refresh_token');
   }
 
+  private async generateWSToken(user: User) {
+    const wsToken = await this.jwtService.signAsync(
+      {
+        firstName: user.firstName,
+        displayName: user.displayName,
+        id: user.id,
+      },
+      {
+        issuer: 'mikeKorakakis',
+        secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
+        expiresIn: "360d",
+      },
+    );
+
+    return wsToken;
+  }
+
   private async generateTokens(user: User) {
     // const jwtid = "asdfdsfsfdfdfdf"
     const jwtid = nanoid();
@@ -134,7 +151,7 @@ export class AuthService {
         id: user.id,
       },
       {
-        issuer: 'PoProstuWitold',
+        issuer: 'mikeKorakakis',
         secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
         expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME'),
       },
@@ -147,7 +164,7 @@ export class AuthService {
       },
       {
         jwtid,
-        issuer: 'PoProstuWitold',
+        issuer: 'mikeKorakakis',
         secret: this.configService.get('JWT_REFRESH_SECRET_KEY'),
         expiresIn: this.configService.get('JWT_REFRESH_EXPIRATION_TIME'),
       },
@@ -163,6 +180,17 @@ export class AuthService {
       );
 
     return [accessToken, refreshToken];
+  }
+
+  private async setWSToken(
+    req: Request,
+    { wsToken }: { wsToken: string;  },
+  ) {
+    req.res.cookie('ws_token', wsToken, {
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+      httpOnly: false,
+      sameSite: 'lax',
+    });
   }
 
   private async setTokens(
@@ -416,7 +444,10 @@ export class AuthService {
     });
   }
 
-  public async refreshTokensForMutation(refreshTokenCookie: string, req: Request) {
+  public async refreshTokensForMutation(
+    refreshTokenCookie: string,
+    req: Request,
+  ) {
     // const refreshTokenCookie = req.cookies['refresh_token'];
     if (!refreshTokenCookie) {
       throw new UnauthorizedException('Invalid cookie');
@@ -444,7 +475,7 @@ export class AuthService {
         id: verifiedJWt.id,
       },
       {
-        issuer: 'PoProstuWitold',
+        issuer: 'mikeKorakakis',
         secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
         expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME'),
       },
@@ -483,7 +514,7 @@ export class AuthService {
         id: verifiedJWt.id,
       },
       {
-        issuer: 'PoProstuWitold',
+        issuer: 'mikeKorakakis',
         secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
         expiresIn: this.configService.get('JWT_ACCESS_EXPIRATION_TIME'),
       },

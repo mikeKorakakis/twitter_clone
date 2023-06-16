@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { gqlClient } from "@/lib/client";
 import {
-	CreateTweetDocument,
+    CreateTweetDocument,
 	CreateTweetMutation,
 	CreateTweetMutationVariables,
 	GetTweetsDocument,
@@ -13,8 +13,11 @@ import {
 } from "@/gql/graphql";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { timeSince } from "@/lib/time";
-import { ws_client } from "@/lib/gql_client_ws";
+import { ws_client } from "@/lib/gql_client_ws_";
 import { gql } from "graphql-tag";
+import Cookies from 'js-cookie';
+import { toast } from "@/components/ui/use-toast";
+
 
 async function getTweets() {
 	const client = await gqlClient();
@@ -46,16 +49,24 @@ async function createTweet(value: string) {
 	return res;
 }
 
+
+
+
 export default function TweetsPage() {
 	const [value, setValue] = useState("");
 	const [tweets, setTweets] = useState<TweetsType>([]);
 	const [meta, setMeta] = useState<MetaType>();
+    const nextCookies = Cookies.get(); // Get cookies object
+
+    const token = nextCookies
+    console.log('token', token)
+
 
 	useEffect(() => {
 		async function subscribeToTweets() {
-			const client = await ws_client();
-			const subscription = client.subscribe(
-				gql`
+			// const client = ws_client();
+			const subscription = ws_client.subscribe(
+				{query: `
 					subscription {
 						newTweet {
 							id
@@ -73,15 +84,22 @@ export default function TweetsPage() {
 							}
 						}
 					}
-				`,
+				`},
 				{
-					next: (data) => {
+					next: (data: any) => {
 						console.log(data);
-						setTweets((prev) => [data.newTweet, ...(prev ?? [])]);
+						setTweets((prev) => [data.data.newTweet, ...(prev ?? [])]);
 					},
 					complete: () => {
 						console.log("done");
 					},
+                    error: (err) => {
+                        toast({
+                            title: "Error",
+                            description: "Error in subscription",
+                            variant: "destructive",
+                        });
+                    }
 				}
 			);
 			return subscription;

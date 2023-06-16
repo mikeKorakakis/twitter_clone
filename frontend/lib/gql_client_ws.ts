@@ -6,10 +6,13 @@ import { boolean } from "zod"
 
 export const ws_client = async () => {
     return new Promise<GraphQLWebSocketClient>((resolve) => {
-      const socket = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string, GRAPHQL_TRANSPORT_WS_PROTOCOL) as unknown as WebSocket
+      const socket = new WebSocket(process.env.NEXT_PUBLIC_WS_URL as string, GRAPHQL_TRANSPORT_WS_PROTOCOL ) as unknown as WebSocket
       const client: GraphQLWebSocketClient = new GraphQLWebSocketClient(socket, {
-        onAcknowledged: (_p) => Promise.resolve(resolve(client))
+        onAcknowledged: (_p) => Promise.resolve(resolve(client)),
+        // set auth token        
+        
       })
+    
     })
   }
   

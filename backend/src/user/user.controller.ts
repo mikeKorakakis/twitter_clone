@@ -50,7 +50,6 @@ export class UserController {
     // const signature = headers().get('Stripe-Signature') as string;
     const body = req.body;
     let event: Stripe.Event;
-    console.log('body', body)
 
     try {
       event = stripe(process.env.STRIPE_API_KEY).webhooks.constructEvent(
@@ -63,11 +62,9 @@ export class UserController {
       return new Response(`Webhook Error: ${error.message}`, { status: 400 });
     }
 
-    console.log('event', event)
     const session = event.data.object as Stripe.Checkout.Session;
 
     if (event.type === 'checkout.session.completed') {
-        console.log('session', session?.metadata?.userId)
         const user = await this.userRepository.findOne({
         where: { id: session?.metadata?.userId },
       });

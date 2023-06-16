@@ -95,6 +95,8 @@ export class TweetService {
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities();
+    console.log(entities[0]);
+
     const pageMetaDto = new PageMetaDto({
       itemCount,
       pageOptionsDto: pageOptions,

@@ -76,7 +76,6 @@ export class AuthResolver {
   @SkipThrottle(true)
   @Query((returns) => User)
   async me(@Context() ctx: IGraphQLAuthContext): Promise<User> {
-    console.log('me');
     return (await this.authService.getProfile(ctx.req)).user;
   }
 

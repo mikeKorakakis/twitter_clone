@@ -254,6 +254,7 @@ export class UserService {
     });
     const userToFollow = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['followers'],
     });
     if (!userToFollow) {
       return new FollowUserPayload({
@@ -274,7 +275,9 @@ export class UserService {
       });
     }
     currentUser.following.push(userToFollow);
+    userToFollow.followers.push(currentUser);
     await this.userRepository.save(currentUser);
+    await this.userRepository.save(userToFollow);
     return new FollowUserPayload({
       success: true,
       error: null,
@@ -288,6 +291,7 @@ export class UserService {
     });
     const userToUnfollow = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['followers'],
     });
     if (!userToUnfollow) {
       return new FollowUserPayload({
@@ -310,7 +314,11 @@ export class UserService {
     currentUser.following = currentUser.following.filter(
       (user) => user.id !== userId,
     );
+    userToUnfollow.followers = userToUnfollow.followers.filter(
+      (user) => user.id !== currentUserId,
+    );
     await this.userRepository.save(currentUser);
+    await this.userRepository.save(userToUnfollow);
     return new FollowUserPayload({
       success: true,
       error: null,
@@ -364,5 +372,14 @@ export class UserService {
     });
 
     return user.following;
+  }
+
+  async getFollowers(userId: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['followers'],
+    });
+
+    return user.followers;
   }
 }

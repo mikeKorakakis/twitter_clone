@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 // import  { join } from 'path';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { GraphQLModule } from '@nestjs/graphql';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import * as path from 'path';
 import { AuthModule } from '../auth/auth.module';
 import { User } from '../common/entities/user.entity';
@@ -40,11 +40,12 @@ console.log(' process.cwd(),', process.cwd());
       isGlobal: true,
       envFilePath: path.join(process.cwd(), `.env.${process.env.NODE_ENV}`),
     }),
+
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: configService.get<string>('JWT_ACCESS_SECRET_KEY'),
         signOptions: { expiresIn: '60s' },
       }),
       inject: [ConfigService],
@@ -103,16 +104,40 @@ console.log(' process.cwd(),', process.cwd());
       },
       inject: [ConfigService],
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
+      imports: [JwtModule, ConfigModule],
+      inject: [JwtService, ConfigService],
       driver: ApolloDriver,
-      autoSchemaFile: path.join(process.cwd(), 'src', 'schema.gql'),
-      context: ({ req, res }) => ({ req, res }),
-      playground: true, // Enable GraphQL Playground,
-      resolvers: { JSON: GraphQLJSON },
-    //   installSubscriptionHandlers: true,
+      useFactory: (jwtService: JwtService, configService: ConfigService) => ({
+        autoSchemaFile: path.join(process.cwd(), 'src', 'schema.gql'),
+        context: ({ req, res }) => ({ req, res }),
+        playground: true, // Enable GraphQL Playground,
+        resolvers: { JSON: GraphQLJSON },
+        //   installSubscriptionHandlers: true,
         subscriptions: {
-          'graphql-ws': true,
+          'graphql-ws': {
+            onConnect: async (context: any) => {
+              const { connectionParams, extra } = context;
+              const authToken = connectionParams.token as string;
+              try {
+                const userData = await jwtService.verifyAsync(authToken, {
+                  secret: configService.get('JWT_ACCESS_SECRET_KEY'),
+                });
+                extra.user = userData;
+                return { user: userData };
+              } catch (err) {
+                console.error('Error verifying token', err);
+                throw new Error('Unauthorized');
+              }
+            },
         },
+        context: async ({ extra }) => {
+          return {
+            user: extra.user
+          };
+        },
+    },
+      }),
       //   subscriptions: {
       //     'subscriptions-transport-ws': {
       //       onConnect: (connectionParams, websocket, context) => {
