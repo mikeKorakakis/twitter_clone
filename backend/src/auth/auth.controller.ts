@@ -35,18 +35,18 @@ export class AuthController {
     // }
 
       
-    // @Get('google')
-    // @UseGuards(GoogleOauthGuard)
-    // async googleAuth(@Req() _req: Request) {
-    //     // Guard redirects
-    // }
+    @Get('google')
+    @UseGuards(GoogleOauthGuard)
+    async googleAuth(@Req() _req: Request) {
+        // Guard redirects
+    }
 
     
-    // @Get('google/redirect')
-    // @UseGuards(GoogleOauthGuard)
-    // async googleAuthRedirect(@Req() req: AuthRequest, @Res() _res: Response) {
-    //     return this.authService.socialProviderLogin(req, Providers.Google)
-    // }
+    @Get('google/redirect')
+    @UseGuards(GoogleOauthGuard)
+    async googleAuthRedirect(@Req() req: AuthRequest, @Res() _res: Response) {
+        return this.authService.socialProviderLogin(req, Providers.Google)
+    }
 
   
     // @Get('facebook')

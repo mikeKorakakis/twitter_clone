@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -18,6 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { siteConfig } from "@/config/site";
 import { gqlClient } from "@/lib/client";
 import { AuthenticationErrorType, MeDocument } from "@/gql/graphql";
+import { GoogleButton } from "@/components/google-button"
 import { PasswordInput } from "@/components/ui/password-input";
 
 interface LoginFormProps extends React.HTMLAttributes<HTMLDivElement> {}
@@ -141,22 +141,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
 					</span>
 				</div>
 			</div>
-			<button
-				type="button"
-				className={cn(buttonVariants({ variant: "outline" }))}
-				onClick={() => {
-					setIsGitHubLoading(true);
-					signIn("github");
-				}}
-				disabled={isLoading || isGitHubLoading}
-			>
-				{isGitHubLoading ? (
-					<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-				) : (
-					<Icons.gitHub className="mr-2 h-4 w-4" />
-				)}{" "}
-				Github
-			</button>
+			<GoogleButton/>
 		</div>
 	);
 }

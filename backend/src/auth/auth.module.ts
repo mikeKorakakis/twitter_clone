@@ -42,7 +42,7 @@ import {
   providers: [
     AuthService,
     AuthResolver,
-    // GoogleOauthStrategy,
+    GoogleOauthStrategy,
     // FacebookOauthStrategy,
     JwtAuthStrategy,
   ],

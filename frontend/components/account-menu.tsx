@@ -64,7 +64,7 @@ export function AccountMenu() {
 				<DropdownMenuGroup>
 					<DropdownMenuItem className="cursor-pointer" onClick={()=> router.push(siteConfig.pages.profile)}>
 						<User className="mr-2 h-4 w-4" />
-						<span>Profile</span>
+						<span>Settings</span>
 						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
 					</DropdownMenuItem>
 					{/* <DropdownMenuItem>

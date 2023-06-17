@@ -51,6 +51,7 @@ export default function TweetsPage() {
 	const [tweets, setTweets] = useState<TweetsType>([]);
 	const [meta, setMeta] = useState<MetaType>();
 	const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		async function subscribeToTweets() {
@@ -104,9 +105,11 @@ export default function TweetsPage() {
 
 	useEffect(() => {
 		async function getTweetsFunc() {
+            setLoading(true)
 			const res = await getTweets(page);
 			setTweets(prev => [...prev ?? [], ...res?.tweets.data ?? []]);
 			setMeta(res?.tweets.meta);
+            setLoading(false)
 		}
 		getTweetsFunc();
 	}, [page]);
@@ -171,9 +174,9 @@ export default function TweetsPage() {
 						</div>
 					</div>
 				))}
-				<Button disabled={!meta?.hasNextPage} onClick={() => setPage((prev) => prev + 1)}>
+				{meta?.hasNextPage && <Button loading={loading} disabled={!meta?.hasNextPage || loading} onClick={() => setPage((prev) => prev + 1)}>
 					Load More...
-				</Button>
+				</Button>}
 			</div>
 		</div>
 	);

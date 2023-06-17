@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { LoginForm } from "@/components/login-form";
-import { useAuth } from "@/contexts/AuthContext";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -13,7 +12,8 @@ export const metadata: Metadata = {
 	description: "Login to your account",
 };
 
-export default function LoginPage() {
+export default async function LoginPage() {
+
 	return (
 		<div className="container flex h-screen w-screen flex-col items-center justify-center">
 			<Link

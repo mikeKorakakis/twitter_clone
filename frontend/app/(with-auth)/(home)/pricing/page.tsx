@@ -29,20 +29,20 @@ export default function PricingPage() {
               <Icons.check className="mr-2 h-4 w-4" /> Unlimited Posts
             </li>
             <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Unlimited Users
+              <Icons.check className="mr-2 h-4 w-4" /> Dummy Text
             </li>
 
             <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Custom domain
+              <Icons.check className="mr-2 h-4 w-4" /> Dummy Text
             </li>
             <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Dashboard Analytics
+              <Icons.check className="mr-2 h-4 w-4" /> Dummy Text
             </li>
             <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Access to Discord
+              <Icons.check className="mr-2 h-4 w-4" /> Dummy Text
             </li>
             <li className="flex items-center">
-              <Icons.check className="mr-2 h-4 w-4" /> Premium Support
+              <Icons.check className="mr-2 h-4 w-4" /> Dummy Text
             </li>
           </ul>
         </div>
@@ -60,7 +60,7 @@ export default function PricingPage() {
       </div>
       <div className="mx-auto flex w-full max-w-[58rem] flex-col gap-4">
         <p className="max-w-[85%] leading-normal text-muted-foreground sm:leading-7">
-          Taxonomy is a demo app.{" "}
+          Twitter Clone is a demo app.{" "}
           <strong>You can test the upgrade and won&apos;t be charged.</strong>
         </p>
       </div>

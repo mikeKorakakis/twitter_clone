@@ -54,8 +54,8 @@ export class AuthService {
       await this.sendConfirmationToken(user);
 
       const [accessToken, refreshToken] = await this.generateTokens(user);
-
-      await this.setTokens(req, { accessToken, refreshToken });
+        await this.setTokens(req, { accessToken, refreshToken });
+        await this.setWSToken(req, { wsToken: await this.generateWSToken(user) });
 
       return {
         user,
@@ -122,6 +122,7 @@ export class AuthService {
     }
     req.res.clearCookie('access_token');
     req.res.clearCookie('refresh_token');
+    req.res.clearCookie('ws_token')
   }
 
   private async generateWSToken(user: User) {
@@ -267,9 +268,10 @@ export class AuthService {
       const user = await this.userService.continueWithProvider(req);
       const [accessToken, refreshToken] = await this.generateTokens(user);
       await this.setTokens(req, { accessToken, refreshToken });
+      await this.setWSToken(req, { wsToken: await this.generateWSToken(user) });
 
       // req.res.redirect('/api/v1/auth/me')
-      req.res.redirect(`${process.env.ORIGIN}/me`);
+      req.res.redirect(`${process.env.ORIGIN}/`);
 
       return {
         user,

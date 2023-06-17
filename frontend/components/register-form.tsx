@@ -3,7 +3,6 @@
 import * as React from "react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -23,6 +22,7 @@ import {
 import { siteConfig } from "@/config/site";
 import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/contexts/AuthContext";
+import { GoogleButton } from "@/components/google-button"
 
 interface RegisterFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -224,22 +224,7 @@ export function RegisterForm({ className, ...props }: RegisterFormProps) {
 					</span>
 				</div>
 			</div>
-			<button
-				type="button"
-				className={cn(buttonVariants({ variant: "outline" }))}
-				onClick={() => {
-					setIsGitHubLoading(true);
-					signIn("github");
-				}}
-				disabled={isLoading || isGitHubLoading}
-			>
-				{isGitHubLoading ? (
-					<Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-				) : (
-					<Icons.gitHub className="mr-2 h-4 w-4" />
-				)}{" "}
-				Github
-			</button>
+			<GoogleButton/>
 		</div>
 	);
 }
