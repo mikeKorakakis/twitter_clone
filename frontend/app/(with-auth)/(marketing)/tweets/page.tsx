@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { gqlClient } from "@/lib/client";
 import {
-    CreateTweetDocument,
+	CreateTweetDocument,
 	CreateTweetMutation,
 	CreateTweetMutationVariables,
 	GetTweetsDocument,
@@ -14,19 +14,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { timeSince } from "@/lib/time";
 import { ws_client } from "@/lib/gql_client_ws_";
-import { gql } from "graphql-tag";
-import Cookies from 'js-cookie';
 import { toast } from "@/components/ui/use-toast";
 
-
-async function getTweets() {
+async function getTweets(page: number = 1) {
 	const client = await gqlClient();
 	const res = client.request<GetTweetsQuery, GetTweetsQueryVariables>(
 		GetTweetsDocument,
 		{
 			args: {
 				take: 10,
-				page: 1,
+				page,
 			},
 		}
 	);
@@ -49,24 +46,18 @@ async function createTweet(value: string) {
 	return res;
 }
 
-
-
-
 export default function TweetsPage() {
 	const [value, setValue] = useState("");
 	const [tweets, setTweets] = useState<TweetsType>([]);
 	const [meta, setMeta] = useState<MetaType>();
-    const nextCookies = Cookies.get(); // Get cookies object
-
-    const token = nextCookies
-    console.log('token', token)
-
+	const [page, setPage] = useState(1);
 
 	useEffect(() => {
 		async function subscribeToTweets() {
 			// const client = ws_client();
 			const subscription = ws_client.subscribe(
-				{query: `
+				{
+					query: `
 					subscription {
 						newTweet {
 							id
@@ -84,35 +75,41 @@ export default function TweetsPage() {
 							}
 						}
 					}
-				`},
+				`,
+				},
 				{
 					next: (data: any) => {
 						console.log(data);
-						setTweets((prev) => [data.data.newTweet, ...(prev ?? [])]);
+						setTweets((prev) => [
+							data.data.newTweet,
+							...(prev ?? []),
+						]);
 					},
 					complete: () => {
 						console.log("done");
 					},
-                    error: (err) => {
-                        toast({
-                            title: "Error",
-                            description: "Error in subscription",
-                            variant: "destructive",
-                        });
-                    }
+					error: (err) => {
+						toast({
+							title: "Error",
+							description: "Error in subscription",
+							variant: "destructive",
+						});
+					},
 				}
 			);
 			return subscription;
 		}
 		subscribeToTweets();
+	}, []);
 
+	useEffect(() => {
 		async function getTweetsFunc() {
-			const res = await getTweets();
-			setTweets(res?.tweets.data);
+			const res = await getTweets(page);
+			setTweets(prev => [...prev ?? [], ...res?.tweets.data ?? []]);
 			setMeta(res?.tweets.meta);
 		}
 		getTweetsFunc();
-	}, []);
+	}, [page]);
 
 	// const res = await getTweets();
 	// const tweets = res?.tweets.data;
@@ -124,14 +121,16 @@ export default function TweetsPage() {
 				<Textarea
 					placeholder="What is happening?!"
 					value={value}
-					onChange={(e) => {setValue(e.target.value)}}
+					onChange={(e) => {
+						setValue(e.target.value);
+					}}
 				/>
 				<Button
 					className="ml-4"
 					onClick={async () => {
-                        await createTweet(value);
-                        setValue("");
-                    }}
+						await createTweet(value);
+						setValue("");
+					}}
 				>
 					Tweet
 				</Button>
@@ -139,7 +138,10 @@ export default function TweetsPage() {
 			{/* <div className="space-y-8"> */}
 			<div className="flex-col space-y-8 sm:w-[38rem] m-auto w-full px-4 mt-10 ">
 				{tweets?.map((tweet) => (
-					<div key={tweet.id} className="ease-in transition duration-500">
+					<div
+						key={tweet.id}
+						className="ease-in transition duration-500"
+					>
 						<div className="space-y-8 ">
 							<div className="flex ">
 								<Avatar className="h-9 w-9">
@@ -169,6 +171,9 @@ export default function TweetsPage() {
 						</div>
 					</div>
 				))}
+				<Button disabled={!meta?.hasNextPage} onClick={() => setPage((prev) => prev + 1)}>
+					Load More...
+				</Button>
 			</div>
 		</div>
 	);
