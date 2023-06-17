@@ -31,6 +31,6 @@ export const homeConfig: HomeConfig = {
         {
             title: "Dashboard",
             href: "/dashboard",
-        },
+        }    
     ]
 };

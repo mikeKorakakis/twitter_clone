@@ -31,7 +31,7 @@ export default function MainLayout({ children }: MarketingLayoutProps) {
 						</div>
 					)} */}
 					<nav className="flex  items-center gap-4">
-                    <UserSearch/>
+                    {user && <UserSearch/>}
 						{!user ? (
 							<Link
 								href="/login"

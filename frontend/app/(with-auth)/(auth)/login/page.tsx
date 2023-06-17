@@ -6,6 +6,9 @@ import { Icons } from "@/components/icons";
 import { buttonVariants } from "@/components/ui/button";
 import { LoginForm } from "@/components/login-form";
 import { siteConfig } from "@/config/site";
+import me from "@/lib/me";
+import { redirect } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
 	title: "Login",
@@ -13,6 +16,8 @@ export const metadata: Metadata = {
 };
 
 export default async function LoginPage() {
+	const user = await me();
+	if (user) redirect(siteConfig.pages.home);
 
 	return (
 		<div className="container flex h-screen w-screen flex-col items-center justify-center">
@@ -48,14 +53,14 @@ export default async function LoginPage() {
 					</Link>
 				</p>
 			</div>
-                <p className="pt-2 px-8 text-center text-sm text-slate-500 dark:text-slate-400">
-					<Link
-						href={siteConfig.pages.forgotPassword}
-						className="hover:text-brand underline underline-offset-4"
-					>
-						Forgot your password?
-					</Link>
-				</p>
+			<p className="pt-2 px-8 text-center text-sm text-slate-500 dark:text-slate-400">
+				<Link
+					href={siteConfig.pages.forgotPassword}
+					className="hover:text-brand underline underline-offset-4"
+				>
+					Forgot your password?
+				</Link>
+			</p>
 		</div>
 	);
 }

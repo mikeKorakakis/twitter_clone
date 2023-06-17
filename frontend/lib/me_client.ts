@@ -1,21 +1,15 @@
 import { MeDocument, MeQuery, MeQueryVariables } from "@/gql/graphql";
 import { gqlClient } from "./client";
-import { gqlClient as gqlClientServer } from "./gql_client_server";
-import { type } from "os";
-
 export default async function me() {
-	let res: MeQuery;
-	if (typeof window === "undefined") {
-		console.log("server");
-		const client = await gqlClientServer();
-
-		try {
-			res = await client.request<MeQuery, MeQueryVariables>(
+		const client = await gqlClient();
+		// return res;
+        try {
+			const res = await client.request<MeQuery, MeQueryVariables>(
 				MeDocument,
 				{}
 			);
 			return {
-				id: res?.me?.id,
+                id: res?.me?.id,
 				email: res?.me?.email,
 				firstName: res?.me?.firstName,
 				lastName: res?.me?.lastName,
@@ -26,5 +20,5 @@ export default async function me() {
 		} catch (e: any) {
 			return null;
 		}
-	}
+    
 }
