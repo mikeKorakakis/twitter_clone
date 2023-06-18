@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { Post } from "@prisma/client"
 
 import { formatDate } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PostOperations } from "@/components/post-operations"
+import { Post } from "@/gql/graphql"
 
 interface PostItemProps {
   post: Pick<Post, "id" | "title" | "published" | "createdAt">

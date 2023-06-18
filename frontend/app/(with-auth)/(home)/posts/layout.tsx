@@ -8,7 +8,6 @@ import { DashboardNav } from "@/components/nav";
 import { SiteFooter } from "@/components/site-footer";
 import { UserAccountNav } from "@/components/user-account-nav";
 import { useAuth } from "@/contexts/AuthContext";
-import ProtectedPage from "@/components/protected-page-client";
 import { siteConfig } from "@/config/site";
 
 interface DashboardLayoutProps {

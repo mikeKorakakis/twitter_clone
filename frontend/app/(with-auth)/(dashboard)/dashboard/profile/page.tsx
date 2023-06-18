@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 
-import { authOptions } from "@/lib/auth";
 import { DashboardHeader } from "@/components/header";
 import { DashboardShell } from "@/components/shell";
 import { ProfileForm } from "@/components/profile-form";
 import { useAuth } from "@/contexts/AuthContext";
 import me from "@/lib/me";
 import { Separator } from "@/components/ui/separator";
+import { siteConfig } from "@/config/site";
 
 export const metadata = {
 	title: "Settings",
@@ -19,7 +19,7 @@ export default async function SettingsPage() {
 
 	const user = await me();
 	if (!user) {
-		redirect(authOptions?.pages?.signIn || "/login");
+		redirect(siteConfig?.pages?.login || "/login");
 	}
 
 	return (

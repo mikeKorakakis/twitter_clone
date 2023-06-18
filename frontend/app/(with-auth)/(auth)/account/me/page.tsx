@@ -10,7 +10,6 @@ import { gqlClient } from "@/lib/gql_client_server";
 import { MeDocument } from "@/gql/graphql";
 import { use, useEffect, useState } from "react";
 import { cookies, headers } from "next/dist/client/components/headers";
-import { RequestCookie } from "next/dist/server/web/spec-extension/cookies";
 
 // async function me(token?: string) {
 //     const res =  gqlClient(token).request(MeDocument, {});

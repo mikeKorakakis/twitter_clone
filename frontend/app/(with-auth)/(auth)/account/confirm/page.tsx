@@ -1,6 +1,6 @@
 // "use client";
 
-import PrivatePage from "@/components/private-page";
+import ProtectedPage from "@/components/protected-page";
 import Spinner from "@/components/ui/spinner";
 import {
     ConfirmEmailDocument,
@@ -55,7 +55,7 @@ export default async function ConfirmAccountPage({
 	return (
 		<>
 			{/* @ts-expect-error Server Component */}
-			<PrivatePage>
+			<ProtectedPage>
 				<section className="space-y-6 mt-32">
 					<div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center ">
 						{!res ? (
@@ -70,7 +70,7 @@ export default async function ConfirmAccountPage({
 					</div>
 					<ResendConfirmationLink />
 				</section>
-			</PrivatePage>
+			</ProtectedPage>
 		</>
 	);
 }

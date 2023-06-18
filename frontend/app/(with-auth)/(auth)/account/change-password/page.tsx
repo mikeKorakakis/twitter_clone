@@ -29,10 +29,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export const metadata: Metadata = {
-	title: "Change Password",
-	description: "Change password for your account",
-};
+// export const metadata: Metadata = {
+// 	title: "Change Password",
+// 	description: "Change password for your account",
+// };
 
 type FormData = z.infer<typeof changePasswordSchema>;
 

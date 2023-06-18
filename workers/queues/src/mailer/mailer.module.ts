@@ -23,7 +23,7 @@ import { MailProcessor } from './mail-queue.processor';
                     }
                 },
                 defaults: {
-                    from: '"PoProstuWitold" <no-reply@poprostuwitold.com>', // outgoing email ID
+                    from: '"Mike Korakakis" <no-reply@mike.korakakis@gmail.com>', // outgoing email ID
                 },
                 template: {
                     dir: path.join(__dirname, 'templates/pages'),

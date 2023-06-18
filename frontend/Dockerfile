@@ -2,13 +2,15 @@ FROM node:alpine
 
 WORKDIR /twitter_clone/frontend
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json  ./
 
-RUN npm install -g pnpm
-RUN pnpm install
+RUN npm install
 
 COPY . .
 
+RUN npm run build
+
+
 EXPOSE 3000
 
-CMD ["pnpm", "run", "dev"]
+CMD ["npm", "run", "start"]

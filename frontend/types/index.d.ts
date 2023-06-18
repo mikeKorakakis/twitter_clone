@@ -4,8 +4,8 @@ import type { Icon } from "lucide-react";
 
 import { Icons } from "@/components/icons";
 
-type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> & Pick<T, TRequired>
-
+type OptionalExceptFor<T, TRequired extends keyof T> = Partial<T> &
+	Pick<T, TRequired>;
 
 export type NavItem = {
 	title: string;
@@ -17,7 +17,7 @@ export type MainNavItem = NavItem;
 
 export type UserType = OptionalExceptFor<
 	User,
-	"id" | "email" | "firstName" | "lastName" | "role" | "displayName" | "image" 
+	"id" | "email" | "firstName" | "lastName" | "role" | "displayName" | "image"
 >;
 
 export type SidebarNavItem = {
@@ -70,8 +70,9 @@ export type SubscriptionPlan = {
 	stripePriceId: string | null;
 };
 
-export type UserSubscriptionPlan = SubscriptionPlan &
-	Pick<User, "stripeCustomerId" | "stripeSubscriptionId"> & {
-		stripeCurrentPeriodEnd: number;
-		isPro: boolean;
-	};
+export type UserSubscriptionPlan = SubscriptionPlan & {
+	stripeCurrentPeriodEnd: number;
+	isPro: boolean;
+	stripeCustomerId?: string | null | undefined; 
+    stripeSubscriptionId?: string | null | undefined; 
+};

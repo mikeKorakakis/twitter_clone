@@ -20,10 +20,10 @@ import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const metadata: Metadata = {
-	title: "Forgot Password",
-	description: "Did you forget your password",
-};
+// export const metadata: Metadata = {
+// 	title: "Forgot Password",
+// 	description: "Did you forget your password",
+// };
 
 type FormData = z.infer<typeof forgetPasswordSchema>;
 

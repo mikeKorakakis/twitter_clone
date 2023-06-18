@@ -1,7 +1,7 @@
 // 'use client'
 import { notFound, redirect } from "next/navigation";
 
-import { authOptions } from "@/lib/auth";
+
 import { Editor } from "@/components/editor";
 import { gqlClient } from "@/lib/gql_client_server";
 import {

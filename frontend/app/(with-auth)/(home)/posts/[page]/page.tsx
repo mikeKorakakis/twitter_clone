@@ -1,7 +1,7 @@
 "use client";
 import { redirect, useSearchParams } from "next/navigation";
 
-import { authOptions } from "@/lib/auth";
+
 import { EmptyPlaceholder } from "@/components/empty-placeholder";
 import { DashboardHeader } from "@/components/header";
 import { PostCreateButton } from "@/components/post-create-button";
@@ -18,9 +18,9 @@ import { useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { siteConfig } from "@/config/site";
 
-export const metadata = {
-	title: "Posts",
-};
+// export const metadata = {
+// 	title: "Posts",
+// };
 
 interface PostsPageParams {
 	params: {

@@ -23,10 +23,10 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { siteConfig } from "@/config/site";
 
-export const metadata: Metadata = {
-	title: "New Password",
-	description: "Set a new password for your account",
-};
+// export const metadata: Metadata = {
+// 	title: "New Password",
+// 	description: "Set a new password for your account",
+// };
 
 type FormData = z.infer<typeof resetPasswordSchema>;
 

@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import TextareaAutosize from "react-textarea-autosize"
 import * as z from "zod"
-import { Post } from "@gql"
 
 import "@/styles/editor.css"
 import { cn } from "@/lib/utils"
@@ -16,6 +15,7 @@ import { postPatchSchema } from "@/lib/validations/post"
 import { buttonVariants } from "@/components/ui/button"
 import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/icons"
+import { Post } from "@/gql/graphql"
 
 interface EditorProps {
   post: Pick<Post, "id" | "title" | "content" | "published">
