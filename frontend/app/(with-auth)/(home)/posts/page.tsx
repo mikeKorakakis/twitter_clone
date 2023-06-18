@@ -17,7 +17,6 @@ import { useState } from "react";
 import { Pagination } from "@/components/pagination";
 import { siteConfig } from "@/config/site";
 
-
 export const metadata = {
 	title: "Posts",
 };
@@ -40,24 +39,6 @@ export default async function PostsPage() {
 	});
 	const posts = postsRes.posts.data;
 	const meta = postsRes.posts.meta;
-	//   const posts = [{id: "1", title: "test", published: true, createdAt: new Date("2021-08-01")}]
-
-	//   const post = gqlClient.request<>(getPostQuery)
-
-	//   const posts = await db.post.findMany({
-	//     where: {
-	//       authorId: user.id,
-	//     },
-	//     select: {
-	//       id: true,
-	//       title: true,
-	//       published: true,
-	//       createdAt: true,
-	//     },
-	//     orderBy: {
-	//       updatedAt: "desc",
-	//     },
-	//   })
 
 	return (
 		<DashboardShell>
@@ -68,9 +49,9 @@ export default async function PostsPage() {
 				pageIndex={1}
 				totalPages={meta?.pageCount}
 				pageSize={meta?.take}
-                hasNextPage={meta?.hasNextPage}
-                hasPreviousPage={meta?.hasPreviousPage}
-                rootPage={siteConfig.pages.posts}
+				hasNextPage={meta?.hasNextPage}
+				hasPreviousPage={meta?.hasPreviousPage}
+				rootPage={siteConfig.pages.posts}
 			/>
 			<div>
 				{posts?.length ? (

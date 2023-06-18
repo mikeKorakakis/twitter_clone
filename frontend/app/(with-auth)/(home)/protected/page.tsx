@@ -1,8 +1,8 @@
 import me from "@/lib/me";
-import PrivatePage from "@/components/private-page"
+import ProtectedPage from "@/components/protected-page"
 
 export default async function Protected() {
 	const user = await me();
     {/* @ts-expect-error Server Component */}
-	return <PrivatePage><div>{user?.email}</div></PrivatePage>;
+	return <ProtectedPage><div>{user?.email}</div></ProtectedPage>;
 }

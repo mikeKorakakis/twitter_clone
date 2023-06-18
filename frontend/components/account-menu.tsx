@@ -39,8 +39,7 @@ import { siteConfig } from "@/config/site";
 
 export function AccountMenu() {
 	const { user, logOut } = useAuth();
-    const router = useRouter();
-    console.log('user',user);
+	const router = useRouter();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -59,10 +58,15 @@ export function AccountMenu() {
 			<DropdownMenuContent className="w-56">
 				<DropdownMenuLabel>{user?.displayName}</DropdownMenuLabel>
 				{/* <DropdownMenuItem>{user?.displayName}</DropdownMenuItem> */}
-				<DropdownMenuItem className="truncate text-ellipsis text-xs -mt-2">{user?.email}</DropdownMenuItem>
+				<DropdownMenuItem className="truncate text-ellipsis text-xs -mt-2">
+					{user?.email}
+				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem className="cursor-pointer" onClick={()=> router.push(siteConfig.pages.profile)}>
+					<DropdownMenuItem
+						className="cursor-pointer"
+						onClick={() => router.push(siteConfig.pages.profile)}
+					>
 						<User className="mr-2 h-4 w-4" />
 						<span>Settings</span>
 						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
@@ -132,7 +136,13 @@ export function AccountMenu() {
 					<span>API</span>
 				</DropdownMenuItem> */}
 				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={logOut} className="cursor-pointer">
+				<DropdownMenuItem
+					onClick={() => {
+						logOut();
+						router.push(siteConfig.pages.home);
+					}}
+					className="cursor-pointer"
+				>
 					<LogOut className="mr-2 h-4 w-4" />
 					<span>Log out</span>
 					<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>

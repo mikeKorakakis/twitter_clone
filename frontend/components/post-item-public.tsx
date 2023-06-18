@@ -4,7 +4,7 @@ import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PostOperations } from "@/components/post-operations";
-import { Post } from "@/gql/graphql";
+import { GetPostQuery, GetPostsQuery, Post, User } from "@/gql/graphql";
 import { Editor } from "./ui/editor";
 import {
 	Card,
@@ -16,8 +16,12 @@ import {
 } from "./ui/card";
 import Blocks from "editorjs-blocks-react-renderer";
 
+type AuthorType = Pick<User, "displayName" | "id">;
+
 interface PostItemProps {
-	post: Pick<Post, "id" | "title" | "published" | "createdAt" | "content" | "author">;
+	post: Pick<Post, "id" | "title" | "published" | "createdAt" | "content"> & {
+		author: AuthorType;
+	};
 }
 
 export const Article = (dataFromEditor: any) => (
@@ -30,18 +34,21 @@ export function PostItemPublic({ post }: PostItemProps) {
 			<div className="grid gap-1 w-full">
 				<Card className="p-4">
 					<CardTitle>
-                        <div className=" flex justify-between h-10">
-						<Link
-							href={`/editor/${post.id}`}
-							className="font-semibold hover:underline text-2xl pb-16"
-						>
-							{post.title}
-						</Link>
-                        <PostOperations post={{ id: post.id, title: post.title }} /> 
-                        </div>
+						<div className=" flex justify-between h-10">
+							<Link
+								href={`/editor/${post.id}`}
+								className="font-semibold hover:underline text-2xl pb-16"
+							>
+								{post.title}
+							</Link>
+							<PostOperations
+								post={{ id: post.id, title: post.title }}
+							/>
+						</div>
 					</CardTitle>
 					<CardDescription>
-                    Posted by {post.author.displayName} on {formatDate(post.createdAt) } 
+						Posted by {post.author.displayName} on{" "}
+						{formatDate(post.createdAt)}
 					</CardDescription>
 					<div className="pt-4">
 						<Blocks

@@ -336,6 +336,7 @@ export class UserService {
         { displayName: ILike(`%${searchString}%`) },
         // { email: ILike(`%${searchString}%`) },
       ],
+      take: 10,
     });
 
     for (let user of users) {

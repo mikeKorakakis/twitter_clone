@@ -26,7 +26,6 @@ async function getPostFromParams(params: any) {
   if (!post) {
     null
   }
-
   return post
 }
 

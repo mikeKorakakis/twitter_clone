@@ -2,7 +2,7 @@ import React from "react";
 import { redirect } from "next/navigation";
 import me from "@/lib/me";
 
-export default async function PrivatePage({
+export default async function ProtectedPage({
 	children,
     role
 }: {

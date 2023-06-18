@@ -3,7 +3,7 @@
 #################
 FROM node:alpine AS development
 
-WORKDIR /poprostuwitold/workers/queues
+WORKDIR /twitter_clone/workers/queues
 
 COPY package.json pnpm-lock.yaml ./
 
@@ -22,8 +22,8 @@ FROM node:alpine AS production
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
-WORKDIR /poprostuwitold/workers/queues
+WORKDIR /twitter_clone/workers/queues
 
-COPY --from=development /poprostuwitold/workers/queues .
+COPY --from=development /twitter_clone/workers/queues .
 
 CMD [ "node", "dist/main" ]

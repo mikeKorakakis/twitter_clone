@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { timeSince } from "@/lib/time";
 import { ws_client } from "@/lib/gql_client_ws_";
 import { toast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 
 async function getTweets(page: number = 1) {
 	const client = await gqlClient();
@@ -51,7 +52,7 @@ export default function TweetsPage() {
 	const [tweets, setTweets] = useState<TweetsType>([]);
 	const [meta, setMeta] = useState<MetaType>();
 	const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		async function subscribeToTweets() {
@@ -105,11 +106,11 @@ export default function TweetsPage() {
 
 	useEffect(() => {
 		async function getTweetsFunc() {
-            setLoading(true)
+			setLoading(true);
 			const res = await getTweets(page);
-			setTweets(prev => [...prev ?? [], ...res?.tweets.data ?? []]);
+			setTweets((prev) => [...(prev ?? []), ...(res?.tweets.data ?? [])]);
 			setMeta(res?.tweets.meta);
-            setLoading(false)
+			setLoading(false);
 		}
 		getTweetsFunc();
 	}, [page]);
@@ -174,9 +175,17 @@ export default function TweetsPage() {
 						</div>
 					</div>
 				))}
-				{meta?.hasNextPage && <Button loading={loading} disabled={!meta?.hasNextPage || loading} onClick={() => setPage((prev) => prev + 1)}>
-					Load More...
-				</Button>}
+				{meta?.hasNextPage && (
+					<Button
+						disabled={!meta?.hasNextPage || loading}
+						onClick={() => setPage((prev) => prev + 1)}
+					>
+						{loading && (
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+						)}
+						Load More...
+					</Button>
+				)}
 			</div>
 		</div>
 	);
