@@ -15,8 +15,8 @@ import { MailProcessor } from './mail-queue.processor';
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 transport: {
-                    host: 'smtp.mailtrap.io',
-                    port: 2525,
+                    host: configService.get('SMTP_USER'),
+                    port: configService.get('SMTP_PORT'),
                     auth: {
                         user: configService.get('SMTP_USER'),
                         pass: configService.get('SMTP_PASSWORD')

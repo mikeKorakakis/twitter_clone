@@ -5,9 +5,15 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 
 import { AppService } from './app.service'
 import { MailModule } from './mailer/mailer.module'
+import * as path from 'path'
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: path.join(process.cwd(), `.env.${process.env.NODE_ENV}`),
+            ignoreEnvFile: process.env.NODE_ENV === 'production',
+          }),
         BullModule.registerQueueAsync({
             name: 'mail-queue',
             imports: [ConfigModule],

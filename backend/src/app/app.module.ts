@@ -39,6 +39,7 @@ console.log(' process.cwd(),', process.cwd());
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: path.join(process.cwd(), `.env.${process.env.NODE_ENV}`),
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
 
     JwtModule.registerAsync({
@@ -130,13 +131,13 @@ console.log(' process.cwd(),', process.cwd());
                 throw new Error('Unauthorized');
               }
             },
+          },
+          context: async ({ extra }) => {
+            return {
+              user: extra.user,
+            };
+          },
         },
-        context: async ({ extra }) => {
-          return {
-            user: extra.user
-          };
-        },
-    },
       }),
       //   subscriptions: {
       //     'subscriptions-transport-ws': {

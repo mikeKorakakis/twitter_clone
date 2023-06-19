@@ -3,16 +3,19 @@
 #################
 FROM node:alpine AS development
 
+RUN apk add --no-cache git
+
 WORKDIR /twitter_clone/backend
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
-RUN npm install -g pnpm
-RUN pnpm install
+# RUN npm install -g pnpm
+# RUN pnpm install
+RUN npm install
 
 COPY . .
 
-RUN pnpm run build
+RUN npm run build
 
 ################
 ## PRODUCTION ##

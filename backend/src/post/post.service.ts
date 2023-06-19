@@ -9,8 +9,6 @@ import { PostError, PostErrorType } from '../common/errors/postError';
 import { RemovePostPayload } from './dtos/remove-post.payload';
 import { CreateUpdatePostPayload } from './dtos/create-update-post.payload';
 import { UserService } from '../user/user.service';
-import { AllPostsArgs } from './dtos/find-all-posts.input';
-import { Page } from './../../../frontend/contentlayer.config';
 import { PageOptionsDto } from '../common/dtos/page-options.dto';
 import { PageMetaDto } from '../common/dtos/page-meta.dto';
 import { PaginatedResult } from '../common/dtos/paginated-result.dto';

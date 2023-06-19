@@ -1,7 +1,4 @@
-import { toast } from "@/components/ui/use-toast";
 import { GraphQLClient, Variables } from "graphql-request";
-import { cookies } from "next/dist/client/components/headers";
-import { RefreshTokenDocument } from "@/gql/graphql";
 
  function isUnauthorizedError(error: any) {
 	return error.response.errors[0].message === "Unauthorized";
@@ -9,7 +6,7 @@ import { RefreshTokenDocument } from "@/gql/graphql";
 
 export const gqlClient = (token?: string) => {
 	const client: GraphQLClient = new GraphQLClient(
-		"http://localhost:4000/graphql",
+	process.env.NEXT_PUBLIC_BACKEND_URL as string   ,
 		{
 			fetch,
 			credentials: "include",

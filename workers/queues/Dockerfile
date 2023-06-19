@@ -5,14 +5,16 @@ FROM node:alpine AS development
 
 WORKDIR /twitter_clone/workers/queues
 
-COPY package.json pnpm-lock.yaml ./
+COPY package.json  ./
 
-RUN npm install -g pnpm
-RUN pnpm install
+# RUN npm install -g pnpm
+# RUN pnpm install
+RUN npm install
+RUN npm run rebuild
 
 COPY . .
 
-RUN pnpm run build
+RUN npm run build
 
 ################
 ## PRODUCTION ##

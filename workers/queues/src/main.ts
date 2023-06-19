@@ -5,7 +5,6 @@ import { INestApplicationContext, Logger } from '@nestjs/common'
 
 import { AppModule } from './app.module'
 import { AppService } from './app.service'
-import { ConfigService } from '@nestjs/config'
 
 export async function bootstrap(): Promise<INestApplicationContext> {
     const app = await NestFactory.createApplicationContext(AppModule)

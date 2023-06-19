@@ -40,7 +40,8 @@ export class MailProcessor {
                 subject: 'Confirm your email',
                 template: 'confirm-email',
                 context: {
-                    token
+                    token,
+                    url: process.env.ORIGIN
                 }
             })
 
@@ -61,7 +62,8 @@ export class MailProcessor {
                 subject: 'Reset your password',
                 template: 'reset-password',
                 context: {
-                    token
+                    token,
+                    url: process.env.ORIGIN
                 }
             })
 

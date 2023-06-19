@@ -19,7 +19,7 @@ import Cookies from 'js-cookie'
   
 
 export   const ws_client = createClient({
-    url: "ws://localhost:4000/graphql" as string,
+    url: process.env.NEXT_PUBLIC_WS_URL as string,
         
     // headers: {
     //     Authorization: `Bearer ${token}`,
