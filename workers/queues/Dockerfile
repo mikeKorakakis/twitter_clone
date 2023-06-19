@@ -10,7 +10,7 @@ COPY package.json  ./
 # RUN npm install -g pnpm
 # RUN pnpm install
 RUN npm install
-RUN npm run rebuild
+
 
 COPY . .
 

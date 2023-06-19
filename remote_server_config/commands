@@ -1,0 +1,15 @@
+#install ansible
+
+sudo apt update
+sudo apt install software-properties-common
+sudo apt-add-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
+ansible-galaxy collection install community.general
+
+cat > /home/mike/.ssh/known_hosts
+
+ansible-playbook -i hosts -k server.yml --ask-become-pass
+ssh root@208.87.129.148 worker sA2QPRvsn2
+ssh root@172.104.137.90 worker M@kaR0$650
+
+

@@ -19,7 +19,7 @@ import Cookies from 'js-cookie'
   
 
 export   const ws_client = createClient({
-    url: process.env.NEXT_PUBLIC_WS_URL as string,
+    url: `${process.env.NEXT_PUBLIC_BACKEND_WS_URL}`as string,
         
     // headers: {
     //     Authorization: `Bearer ${token}`,

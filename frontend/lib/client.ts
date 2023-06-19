@@ -6,7 +6,7 @@ import { GraphQLClient, Variables } from "graphql-request";
 
 export const gqlClient = (token?: string) => {
 	const client: GraphQLClient = new GraphQLClient(
-	process.env.NEXT_PUBLIC_BACKEND_URL as string   ,
+	`${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql` as string   ,
 		{
 			fetch,
 			credentials: "include",

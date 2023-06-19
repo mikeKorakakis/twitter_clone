@@ -1,0 +1,184 @@
+---
+# tasks file for docker
+# - name: install python-pip
+#   apt:
+#     state: latest
+#     name: python3-pip
+
+# - name: install docker
+#   pip:
+#     name:
+#       - docker
+#       - requests>=2.20.1
+
+# - name: install docker-compose
+#   pip:
+#     name:
+#       - docker-compose
+
+- name: Install aptitude using apt
+  apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu jammy stable
+    state: present
+
+- name: Update apt and install docker-ce
+  apt: update_cache=yes name=docker-ce state=latest
+
+- name: Update apt and install docker-compose
+  apt: update_cache=yes name=docker-compose state=latest
+
+- name: add docker group
+  group: name=docker state=present
+  # sudo: true
+
+- name: add user to docker group
+  user: name="{{ username }}" groups=docker state=present
+  # sudo: true
+
+- name: stop all docker containers
+  shell: docker stop $(docker ps -a -q)
+  ignore_errors: true
+
+- name: remove all docker containers
+  shell: docker rm $(docker ps -a -q)
+  ignore_errors: true
+
+#- name: remove all docker images
+#  shell: docker rmi $(docker images -q)
+#  ignore_errors: true
+
+- name: remove all docker volumes
+  shell: docker volume rm $(docker volume ls)
+  ignore_errors: true
+
+- name: prune everything left
+  shell: docker system prune --volumes -f
+  ignore_errors: true
+
+#- name: "Create a Volume"
+#  docker_volume:
+#    name: "{{ docker_volume }}"
+
+# - name: "Create a network"
+#   docker_network:
+#     name: "{{ docker_network }}"
+
+# - name: ansible create wordpress and nginx directory    
+#   file:
+#     path: "{{ item }}"
+#     state: directory
+#   with_items:
+#     - "/home/{{ username }}/wordpress/nginx/"
+#     - "/home/{{ username }}/proxy/"
+#     - "/home/{{ username }}/mail/"
+    
+# - name: copy proxy docker-compose file
+#   template:
+#     src: ../templates/proxy/docker-compose.yml.j2
+#     dest: "/home/{{ username }}/proxy//docker-compose.yml"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+# - name: copy nginx proxy config file
+#   copy:
+#     src: ../templates/proxy/uploadsize.conf
+#     dest: "/home/{{ username }}/proxy/uploadsize.conf"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+# - name: "Launch proxy container"
+#   docker_compose:
+#     project_src: "/home/{{ username }}/proxy/"
+#     state: present
+
+
+# - name: copy wordpress docker-compose file
+#   template:
+#     src: ../templates/wordpress/docker-compose.yml.j2
+#     dest: "/home/{{ username }}/wordpress/docker-compose.yml"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+# - name: copy nginx wordpress config file
+#   template:
+#     src: ../templates/wordpress/nginx/wordpress.conf.j2
+#     dest: "/home/{{ username }}/wordpress/nginx/wordpress.conf"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+# - name: "Launch wordpress container"
+#   docker_compose:
+#     project_src: "/home/{{ username }}/wordpress/"
+#     state: present
+
+# #- name: Add lines for multiline wordpress config
+# #  lineinfile: 
+# #    dest: /home/{{ username }}/wordpress/wordpress/wp-config.php
+# #    state: present
+# #    insertbefore: \/\* That's all, stop editing! Happy publishing\. \*\/
+# #    line: "{{ item }}"
+# #  with_items:
+# #   - "define( 'WP_ALLOW_MULTISITE', true );"
+# #   - "define('WP_DEBUG', false);"
+# #   - "define('MULTISITE', true);"
+# #   - "define('SUBDOMAIN_INSTALL', true);"
+# #   - "define('DOMAIN_CURRENT_SITE', 'wordpress.korakakis.com');"
+# #   - "define('PATH_CURRENT_SITE', '/');"
+# #   - "define('SITE_ID_CURRENT_SITE', 1);"
+# #   - "define('BLOG_ID_CURRENT_SITE', 1);"
+
+# - name: copy wordpress multisite and mail setup helpfile
+#   copy:
+#     src: ../templates/wordpress/wordpress_multisite
+#     dest: "/home/{{ username }}/wordpress/"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+
+# - name: copy mail server docker-compose and setup file
+#   template:
+#     src: ../templates/mail/docker-compose.yml.j2
+#     dest: "/home/{{ username }}/mail/docker-compose.yml"
+#     owner: root
+#     group: root
+#     mode: 0644
+
+
+# - name: copy mail server  setup file
+#   copy:
+#     src: ../templates/mail/setup.sh
+#     dest: "/home/{{ username }}/mail/"
+#     owner: root
+#     group: root
+#     mode: 0744
+
+# - name: Add mail server local dns entry
+#   lineinfile: 
+#     dest: /etc/hosts
+#     state: present
+#     line: "127.0.0.1       mail_server"
+
+# - name: "Launch mail container"
+#   docker_compose:
+#     project_src: "/home/{{ username }}/mail/"
+#     state: present
+
+
+

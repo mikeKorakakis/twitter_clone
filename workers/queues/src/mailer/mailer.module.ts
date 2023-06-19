@@ -15,7 +15,7 @@ import { MailProcessor } from './mail-queue.processor';
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 transport: {
-                    host: configService.get('SMTP_USER'),
+                    host: configService.get('SMTP_HOST'),
                     port: configService.get('SMTP_PORT'),
                     auth: {
                         user: configService.get('SMTP_USER'),
@@ -23,7 +23,7 @@ import { MailProcessor } from './mail-queue.processor';
                     }
                 },
                 defaults: {
-                    from: '"Mike Korakakis" <no-reply@mike.korakakis@gmail.com>', // outgoing email ID
+                    from: '"Mike Korakakis" <mike.korakakis@gmail.com>', // outgoing email ID
                 },
                 template: {
                     dir: path.join(__dirname, 'templates/pages'),

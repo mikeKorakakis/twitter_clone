@@ -38,7 +38,7 @@ export async function bootstrap(): Promise<NestExpressApplication> {
   // GLOBAL MIDDLEWARES
   app.enableCors({
     credentials: true,
-    origin: [configService.get('ORIGIN')],
+    origin: [configService.get('ORIGIN'), configService.get('ORIGIN_SSR')],
     optionsSuccessStatus: 200,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });

@@ -1,0 +1,44 @@
+---
+- name: Basic security settings and docker.
+
+  # Specify the hosts you want to target
+  hosts: server
+
+  # Specify the user you want to connect to the server.
+  # With a new installation, you will connect with `root`. If you want to
+  # re-run this playbook at a later date, you should change `remote_user` to
+  # the user you specified under `vars/username` below and uncomment the
+  # `become: true` line. You should then run the playbook using the
+  # `--ask-become-pass` flag, like so:
+  # `ansible-playbook -k provision.yml --ask-become-pass`.
+  remote_user: root
+  become: true
+
+  vars:
+    username: admin
+    # Before first using the playbook, run the below command to create a hashed
+    # password that Ansible will assign to your new user.
+    # python -c 'import crypt; print crypt.crypt("<b>password</b>", "$1$<b>SALT</b>$")'
+    # mkpasswd --method=sha-512
+    # password: $6$c4xDefqLaWk$d/tsitF2ekdhohOVafSuE5qoZcpEnF9Dd5YOh7sJjldQiYllqolmxTRYp1fAPJhKkwiTZMt/RSpYbOn1EklNv/
+    password: $6$jNIRg9uLoUw.e8Vp$aOTx3/AoKWpbmJ0BRDlbKWGTJOzJ.rYXiUuMwEn4IeW2tIaTkW8hGeFTiRegHSAqBGS.xXz8SlF.P4L2PlOxE0
+    public_key: /home/mike/.ssh/id_rsa.pub
+    # wp_db_name: db
+    # wp_db_password: Thi!IsTh3MySqlP@ssw0rd
+    # docker_network: nginx-proxy
+    # docker_wordpress_domain: wordpress.korakakis.com    
+    # docker_blog_domain: blog.korakakis.com
+    # docker_mail_domain: mail.korakakis.com
+    # letsencrypt_email: mike.korakakis@gmail.com
+    # domain_name: korakakis.com
+    # host1: 208.87.129.148 worker
+    # host2: 208.87.129.148 worker
+
+
+  roles:
+    - user
+    - packages
+    - ssh
+    - iptables
+    - docker
+

@@ -1,0 +1,71 @@
+---
+# tasks file for docker
+- name: install python-pip
+  apt:
+    state: latest
+    name: python-pip
+
+- name: install docker
+  pip:
+    name:
+      - docker
+      - requests>=2.20.1
+
+- name: add docker group
+  group: name=docker state=present
+  sudo: true
+
+- name: add user to docker group
+  user: name="{{ username }}" groups=docker state=present
+  sudo: true
+
+- name: stop all docker containers
+  shell: docker stop $(docker ps -a -q)
+  ignore_errors: true
+
+- name: remove all docker containers
+  shell: docker rm $(docker ps -a -q)
+  ignore_errors: true
+
+- name: remove all docker images
+  shell: docker rmi $(docker images -q)
+
+- name: clean unused docker containers
+  shell: docker rm -v $(docker ps -a -q -f status=exited)
+
+- name: clean unused docker images
+  shell: docker rmi $(docker images -f “dangling=true” -q)
+
+- name: "Create a Volume"
+  docker_volume:
+    name: "{{ docker_volume }}"
+
+- name: "Create a network"
+  docker_network:
+    name: "{{ docker_network }}"
+
+- name: "Launch database container"
+  docker_container:
+    name: "{{ db_name }}"
+    image: mysql:5.7
+    volumes:
+      - "{{ docker_volume }}:/var/lib/mysql:rw"
+    restart_policy: always
+    network_mode: "{{ docker_network }}"
+    env:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+- name: "Launch wordpress container"
+  docker_container:
+    name: "{{ wp_name }}"
+    image: wordpress:latest
+    ports:
+      - "{{ wp_host_port }}:{{ wp_container_port }}"
+    restart_policy: always
+    network_mode: "{{ docker_network }}"
+    env:
+      WORDPRESS_DB_HOST: "{{ db_name }}:3306"
+      WORDPRESS_DB_PASSWORD: wordpress

@@ -39,7 +39,7 @@ console.log(' process.cwd(),', process.cwd());
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: path.join(process.cwd(), `.env.${process.env.NODE_ENV}`),
-      ignoreEnvFile: process.env.NODE_ENV === 'production',
+    //   ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
 
     JwtModule.registerAsync({

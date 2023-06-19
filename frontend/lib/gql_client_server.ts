@@ -12,7 +12,7 @@ export const gqlClient = async () => {
 	const cookieStore = await cookies();
 	const token = cookieStore.get("access_token");
     const refreshToken = cookieStore.get("refresh_token");
-	const client = new GraphQLClient(process.env.NEXT_PUBLIC_BACKEND_SSR_URL as string, {
+	const client = new GraphQLClient(`${process.env.NEXT_PUBLIC_BACKEND_SSR_URL}/graphql` as string, {
 		fetch,
 		// credentials: "include",
 		headers: {
