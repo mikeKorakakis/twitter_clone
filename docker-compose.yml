@@ -22,6 +22,7 @@ services:
     networks:
       - main-network
     restart: unless-stopped
+    
   server:
     container_name: server
     environment:
@@ -141,6 +142,9 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    networks:
+      - main-network
+      - postgres-network
 
   proxy-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -155,6 +159,9 @@ services:
       - html:/usr/share/nginx/html
     depends_on:
       - "proxy"
+    networks:
+      - main-network
+      - postgres-network
 
   portainer:
     image: portainer/portainer
@@ -170,6 +177,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "9000:9000"
+    networks:
+      - main-network
 
 networks:
   postgres-network:
