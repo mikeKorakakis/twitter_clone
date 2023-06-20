@@ -134,13 +134,14 @@ services:
     labels:
       com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     volumes:
-      - docker_sock:/tmp/docker.sock:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
       - certs:/etc/nginx/certs:rw
       - vhost.d:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
     ports:
       - "80:80"
       - "443:443"
+
   proxy-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: letsencrypt
@@ -148,7 +149,7 @@ services:
     environment:
       NGINX_PROXY_CONTAINER: proxy
     volumes:
-      - docker_sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       - "proxy"
 
@@ -176,11 +177,11 @@ networks:
     driver: bridge
 
 volumes:
-    postgres-volume:
-    pgadmin-volume:
-    redis-volume:
-    portainer:
-    certs:
-    vhost.d:
-    html:
-    docker_sock:
+  docker_sock:
+  postgres-volume:
+  pgadmin-volume:
+  redis-volume:
+  portainer:
+  certs:
+  vhost.d:
+  html:
