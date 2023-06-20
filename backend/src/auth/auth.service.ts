@@ -207,6 +207,7 @@ export class AuthService {
       httpOnly: true,
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
+      domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : '',
     });
 
     if (refreshToken) {
@@ -215,6 +216,7 @@ export class AuthService {
         httpOnly: true,
         sameSite: true,
         secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : '',
       });
     }
   }
