@@ -122,9 +122,18 @@ export class AuthService {
         .getClient()
         .del(`refresh-token:${verifiedRefresh.id}:${verifiedRefresh.jti}`);
     }
-    req.res.clearCookie('access_token');
-    req.res.clearCookie('refresh_token');
-    req.res.clearCookie('ws_token');
+    req.res.clearCookie('access_token', {
+      domain: process.env.DOMAIN,
+      secure: true,
+    });
+    req.res.clearCookie('refresh_token', {
+      domain: process.env.DOMAIN,
+      secure: true,
+    });
+    req.res.clearCookie('ws_token', {
+      domain: process.env.DOMAIN,
+      secure: true,
+    });
   }
 
   private async generateWSToken(user: User) {
