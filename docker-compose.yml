@@ -3,6 +3,10 @@ version: '3.8'
 services:
   client: 
     container_name: client
+    environment:
+      VIRTUAL_HOST: twitter.korakakis.com
+      LETSENCRYPT_HOST: twitter.korakakis.com
+      LETSENCRYPT_EMAIL: mike.korakakis@gmail.com
     build:
       dockerfile: Dockerfile
       context: ./frontend
@@ -20,6 +24,10 @@ services:
     restart: unless-stopped
   server:
     container_name: server
+    environment:
+      VIRTUAL_HOST: twitter-api.korakakis.com
+      LETSENCRYPT_HOST: twitter-api.korakakis.com
+      LETSENCRYPT_EMAIL: mike.korakakis@gmail.com
     build:
       dockerfile: Dockerfile
       context: ./backend
@@ -37,6 +45,7 @@ services:
     networks:
       - main-network
     restart: unless-stopped
+
   queue-worker:
     container_name: queue-worker
     build:
@@ -53,6 +62,7 @@ services:
     networks:
       - main-network
     restart: unless-stopped
+
   postgres-main:
     container_name: postgres-nest
     image: postgres:latest
@@ -76,10 +86,13 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+      VIRTUAL_HOST: twitter-api.korakakis.com
+      LETSENCRYPT_HOST: twitter-api.korakakis.com
+      LETSENCRYPT_EMAIL: mike.korakakis@gmail.com
     volumes:
        - pgadmin-volume:/data/pgadmin
     ports:
-      - 5555:80
+      - 5555:5555
     depends_on:
       - postgres-main
     networks:
@@ -89,6 +102,7 @@ services:
   redis-main:
     container_name: redis-nest
     image: redis:latest
+    
     ports:
       - 6379:6379
     command: ["redis-server", "--appendonly", "yes"]
@@ -113,6 +127,32 @@ services:
   #   networks:
   #     - redis-network
   #   restart: unless-stopped
+
+  proxy-letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: letsencrypt
+    restart: unless-stopped
+    environment:
+      NGINX_PROXY_CONTAINER: proxy
+    volumes:
+      - docker_sock:/var/run/docker.sock:ro
+    depends_on:
+      - "proxy"
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    restart: always
+    environment:
+      VIRTUAL_PORT: 9000 
+      VIRTUAL_HOST: portainer.korakakis.com
+      LETSENCRYPT_HOST: portainer.korakakis.com
+      LETSENCRYPT_EMAIL: mike.korakakis@gmail.com
+    volumes:
+      - portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "9000:9000"
 
 networks:
   postgres-network:
