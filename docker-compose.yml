@@ -19,10 +19,8 @@ services:
       - 3000:3000
     links:
       - server
-    networks:
-      - main-network
     restart: unless-stopped
-    
+
   server:
     container_name: server
     environment:
@@ -43,8 +41,6 @@ services:
       - redis-main
     ports:
       - 4000:4000
-    networks:
-      - main-network
     restart: unless-stopped
 
   queue-worker:
@@ -60,8 +56,6 @@ services:
     command: npm run start:debug
     depends_on: 
       - server
-    networks:
-      - main-network
     restart: unless-stopped
 
   postgres-main:
@@ -76,9 +70,6 @@ services:
        - postgres-volume:/data/postgres
     ports:
       - 5432:5432
-    networks:
-      - postgres-network
-      - main-network
     restart: unless-stopped
   
   pgadmin-main:
@@ -96,8 +87,6 @@ services:
       - 5555:5555
     depends_on:
       - postgres-main
-    networks:
-      - postgres-network
     restart: unless-stopped
 
   redis-main:
@@ -109,9 +98,6 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - redis-volume:/data/redis
-    networks:
-      - redis-network
-      - main-network
     restart: unless-stopped
 
   # redis-commander:
@@ -142,9 +128,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    networks:
-      - main-network
-      - postgres-network
 
   proxy-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -159,9 +142,6 @@ services:
       - html:/usr/share/nginx/html
     depends_on:
       - "proxy"
-    networks:
-      - main-network
-      - postgres-network
 
   portainer:
     image: portainer/portainer
@@ -177,16 +157,14 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "9000:9000"
-    networks:
-      - main-network
 
-networks:
-  postgres-network:
-    driver: bridge
-  main-network:
-    driver: bridge
-  redis-network:
-    driver: bridge
+# networks:
+#   postgres-network:
+#     driver: bridge
+#   main-network:
+#     driver: bridge
+#   redis-network:
+#     driver: bridge
 
 volumes:
   docker_sock:
