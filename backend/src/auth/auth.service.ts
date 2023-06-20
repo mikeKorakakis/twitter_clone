@@ -54,8 +54,8 @@ export class AuthService {
       await this.sendConfirmationToken(user);
 
       const [accessToken, refreshToken] = await this.generateTokens(user);
-        await this.setTokens(req, { accessToken, refreshToken });
-        await this.setWSToken(req, { wsToken: await this.generateWSToken(user) });
+      await this.setTokens(req, { accessToken, refreshToken });
+      await this.setWSToken(req, { wsToken: await this.generateWSToken(user) });
 
       return {
         user,
@@ -96,7 +96,9 @@ export class AuthService {
       } else {
         const [accessToken, refreshToken] = await this.generateTokens(user);
         await this.setTokens(req, { accessToken, refreshToken });
-        await this.setWSToken(req, { wsToken: await this.generateWSToken(user) });
+        await this.setWSToken(req, {
+          wsToken: await this.generateWSToken(user),
+        });
         return {
           user,
           accessToken,
@@ -122,7 +124,7 @@ export class AuthService {
     }
     req.res.clearCookie('access_token');
     req.res.clearCookie('refresh_token');
-    req.res.clearCookie('ws_token')
+    req.res.clearCookie('ws_token');
   }
 
   private async generateWSToken(user: User) {
@@ -135,7 +137,7 @@ export class AuthService {
       {
         issuer: 'mikeKorakakis',
         secret: this.configService.get('JWT_ACCESS_SECRET_KEY'),
-        expiresIn: "360d",
+        expiresIn: '360d',
       },
     );
 
@@ -183,14 +185,13 @@ export class AuthService {
     return [accessToken, refreshToken];
   }
 
-  private async setWSToken(
-    req: Request,
-    { wsToken }: { wsToken: string;  },
-  ) {
+  private async setWSToken(req: Request, { wsToken }: { wsToken: string }) {
     req.res.cookie('ws_token', wsToken, {
       maxAge: 1000 * 60 * 60 * 24 * 30,
       httpOnly: false,
       sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN : '',
     });
   }
 
@@ -205,6 +206,7 @@ export class AuthService {
       maxAge: 1000 * 60 * 60 * 1,
       httpOnly: true,
       sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
     });
 
     if (refreshToken) {
@@ -212,6 +214,7 @@ export class AuthService {
         maxAge: 1000 * 60 * 60 * 24 * 30,
         httpOnly: true,
         sameSite: true,
+        secure: process.env.NODE_ENV === 'production',
       });
     }
   }
