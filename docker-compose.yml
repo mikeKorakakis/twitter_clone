@@ -86,8 +86,8 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-      VIRTUAL_HOST: twitter-api.korakakis.com
-      LETSENCRYPT_HOST: twitter-api.korakakis.com
+      VIRTUAL_HOST: pgadmin.korakakis.com
+      LETSENCRYPT_HOST: pgadmin.korakakis.com
       LETSENCRYPT_EMAIL: mike.korakakis@gmail.com
     volumes:
        - pgadmin-volume:/data/pgadmin
@@ -127,7 +127,20 @@ services:
   #   networks:
   #     - redis-network
   #   restart: unless-stopped
-
+  proxy:
+    image: jwilder/nginx-proxy
+    container_name: proxy
+    restart: unless-stopped
+    labels:
+      com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
+    volumes:
+      - docker_sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:rw
+      - vhost.d:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+    ports:
+      - "80:80"
+      - "443:443"
   proxy-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: letsencrypt
@@ -166,3 +179,8 @@ volumes:
     postgres-volume:
     pgadmin-volume:
     redis-volume:
+    portainer:
+    certs:
+    vhost.d:
+    html:
+    docker_sock:
